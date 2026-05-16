@@ -3,38 +3,31 @@ Capturing execution frames: merge_splats.json
   Validating workflow...
   Queuing workflow for execution...
   Node executed (1 total), capturing...
-  Frame 2 saved (frame_001.jpg, t=2.0s)
-  [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True
-  Frame 3 saved (frame_002.jpg, t=6.0s)
-  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=5ms saved=True
-  Frame 4 saved (frame_003.jpg, t=153.1s)
-  [capture-periodic] freeze=1111ms shot=1903ms unfreeze=5ms saved=True
-  Frame 5 saved (frame_004.jpg, t=159.7s)
-  [capture-periodic] freeze=1731ms shot=1947ms unfreeze=9ms saved=True
-  [capture-loop] iter=50 t=172.7s state={'complete': False, 'error': None, 'executedCount': 1, 'wsState': 1} eval_ms=1702 ram=4.7/16.0GB (30%) swap=0.7/2.9GB (26%) cpu=85% browser_rss=0.66GB
-  Frame 6 saved (frame_005.jpg, t=172.7s)
-  [capture-periodic] freeze=913ms shot=1934ms unfreeze=6ms saved=True
-  Frame 7 saved (frame_006.jpg, t=180.1s)
-  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=6ms saved=True
-  Frame 8 saved (frame_007.jpg, t=209.5s)
-  [capture-periodic] freeze=1783ms shot=1957ms unfreeze=48ms saved=True
+  Frame 2 saved (frame_001.jpg, t=0.7s)
+  [capture-node] freeze=82ms shot=199ms unfreeze=3ms saved=True
+  Frame 3 saved (frame_002.jpg, t=3.1s)
+  [capture-periodic] freeze=1371ms shot=1465ms unfreeze=3ms saved=True
+  Frame 4 saved (frame_003.jpg, t=58.5s)
+  [capture-periodic] freeze=1349ms shot=1431ms unfreeze=2ms saved=True
+  Frame 5 saved (frame_004.jpg, t=64.0s)
+  [capture-periodic] freeze=1350ms shot=1459ms unfreeze=2ms saved=True
   Node executed (2 total), capturing...
-  Frame 9 saved (frame_008.jpg, t=215.3s)
-  [capture-node] freeze=1605ms shot=1827ms unfreeze=0ms saved=True
-  Execution complete (t=215.3s)
+  Frame 6 saved (frame_005.jpg, t=101.4s)
+  [capture-node] freeze=1093ms shot=1434ms unfreeze=0ms saved=True
+  Execution complete (t=101.4s)
   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
   [3d-wait] Phase 1 done in 0.0s
   [3d-wait] Phase 2: iframes=2
-  [3d-wait] iframe viewer_ready=True (matched 2 console logs)
-  [3d-wait] Unfrozen in 0.003s, rendering for 5s...
-  [3d-wait] JS halted via CDP after 6.7s
-  [3d-wait] Re-frozen in 11.7s
-  [3d-wait] Total 3D wait: 11.8s
-  Captured 9 unique frames over 230.49s
+  [3d-wait] iframe viewer_ready=True (matched 1 console logs)
+  [3d-wait] Unfrozen in 0.002s, rendering for 5s...
+  [3d-wait] JS halted via CDP after 5.3s
+  [3d-wait] Re-frozen in 9.0s
+  [3d-wait] Total 3D wait: 9.0s
+  Captured 6 unique frames over 112.95s
   [debug] iframes: 2
-  [debug]   iframe[0]: src=http://127.0.0.1:41893/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
-  [debug]   iframe[1]: src=http://127.0.0.1:41893/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
+  [debug]   iframe[0]: src=http://127.0.0.1:41886/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
+  [debug]   iframe[1]: src=http://127.0.0.1:41886/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
   [timing] trigger_3d_previews: 0.0s
   Saved high-quality screenshot: merge_splats_executed.png
-  [timing] final_screenshot: 0.4s
-    Captured 10 video frames
+  [timing] final_screenshot: 0.2s
+    Captured 7 video frames

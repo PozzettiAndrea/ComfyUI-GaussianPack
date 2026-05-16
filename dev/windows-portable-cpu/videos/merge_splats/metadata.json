@@ -7,49 +7,34 @@
     },
     {
       "file": "frame_001.jpg",
-      "time": 1.97,
+      "time": 0.69,
       "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution..."
     },
     {
       "file": "frame_002.jpg",
-      "time": 6.04,
-      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=2.0s)\n  [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True"
+      "time": 3.15,
+      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=0.7s)\n  [capture-node] freeze=82ms shot=199ms unfreeze=3ms saved=True"
     },
     {
       "file": "frame_003.jpg",
-      "time": 153.06,
-      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=2.0s)\n  [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True\n  Frame 3 saved (frame_002.jpg, t=6.0s)\n  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=5ms saved=True"
+      "time": 58.54,
+      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=0.7s)\n  [capture-node] freeze=82ms shot=199ms unfreeze=3ms saved=True\n  Frame 3 saved (frame_002.jpg, t=3.1s)\n  [capture-periodic] freeze=1371ms shot=1465ms unfreeze=3ms saved=True"
     },
     {
       "file": "frame_004.jpg",
-      "time": 159.72,
-      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=2.0s)\n  [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True\n  Frame 3 saved (frame_002.jpg, t=6.0s)\n  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=5ms saved=True\n  Frame 4 saved (frame_003.jpg, t=153.1s)\n  [capture-periodic] freeze=1111ms shot=1903ms unfreeze=5ms saved=True"
+      "time": 64.05,
+      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=0.7s)\n  [capture-node] freeze=82ms shot=199ms unfreeze=3ms saved=True\n  Frame 3 saved (frame_002.jpg, t=3.1s)\n  [capture-periodic] freeze=1371ms shot=1465ms unfreeze=3ms saved=True\n  Frame 4 saved (frame_003.jpg, t=58.5s)\n  [capture-periodic] freeze=1349ms shot=1431ms unfreeze=2ms saved=True"
     },
     {
       "file": "frame_005.jpg",
-      "time": 172.65,
-      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=2.0s)\n  [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True\n  Frame 3 saved (frame_002.jpg, t=6.0s)\n  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=5ms saved=True\n  Frame 4 saved (frame_003.jpg, t=153.1s)\n  [capture-periodic] freeze=1111ms shot=1903ms unfreeze=5ms saved=True\n  Frame 5 saved (frame_004.jpg, t=159.7s)\n  [capture-periodic] freeze=1731ms shot=1947ms unfreeze=9ms saved=True"
+      "time": 101.42,
+      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=0.7s)\n  [capture-node] freeze=82ms shot=199ms unfreeze=3ms saved=True\n  Frame 3 saved (frame_002.jpg, t=3.1s)\n  [capture-periodic] freeze=1371ms shot=1465ms unfreeze=3ms saved=True\n  Frame 4 saved (frame_003.jpg, t=58.5s)\n  [capture-periodic] freeze=1349ms shot=1431ms unfreeze=2ms saved=True\n  Frame 5 saved (frame_004.jpg, t=64.0s)\n  [capture-periodic] freeze=1350ms shot=1459ms unfreeze=2ms saved=True"
     },
     {
       "file": "frame_006.jpg",
-      "time": 180.08,
-      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=2.0s)\n  [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True\n  Frame 3 saved (frame_002.jpg, t=6.0s)\n  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=5ms saved=True\n  Frame 4 saved (frame_003.jpg, t=153.1s)\n  [capture-periodic] freeze=1111ms shot=1903ms unfreeze=5ms saved=True\n  Frame 5 saved (frame_004.jpg, t=159.7s)\n  [capture-periodic] freeze=1731ms shot=1947ms unfreeze=9ms saved=True\n  [capture-loop] iter=50 t=172.7s state={'complete': False, 'error': None, 'executedCount': 1, 'wsState': 1} eval_ms=1702 ram=4.7/16.0GB (30%) swap=0.7/2.9GB (26%) cpu=85% browser_rss=0.66GB\n  Frame 6 saved (frame_005.jpg, t=172.7s)\n  [capture-periodic] freeze=913ms shot=1934ms unfreeze=6ms saved=True"
-    },
-    {
-      "file": "frame_007.jpg",
-      "time": 209.52,
-      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=2.0s)\n  [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True\n  Frame 3 saved (frame_002.jpg, t=6.0s)\n  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=5ms saved=True\n  Frame 4 saved (frame_003.jpg, t=153.1s)\n  [capture-periodic] freeze=1111ms shot=1903ms unfreeze=5ms saved=True\n  Frame 5 saved (frame_004.jpg, t=159.7s)\n  [capture-periodic] freeze=1731ms shot=1947ms unfreeze=9ms saved=True\n  [capture-loop] iter=50 t=172.7s state={'complete': False, 'error': None, 'executedCount': 1, 'wsState': 1} eval_ms=1702 ram=4.7/16.0GB (30%) swap=0.7/2.9GB (26%) cpu=85% browser_rss=0.66GB\n  Frame 6 saved (frame_005.jpg, t=172.7s)\n  [capture-periodic] freeze=913ms shot=1934ms unfreeze=6ms saved=True\n  Frame 7 saved (frame_006.jpg, t=180.1s)\n  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=6ms saved=True"
-    },
-    {
-      "file": "frame_008.jpg",
-      "time": 215.26,
-      "log": "Capturing execution frames: merge_splats.json\n  Frame 1 saved (frame_000.jpg, t=0.0s)\n  Validating workflow...\n  Queuing workflow for execution...\n  Node executed (1 total), capturing...\n  Frame 2 saved (frame_001.jpg, t=2.0s)\n  [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True\n  Frame 3 saved (frame_002.jpg, t=6.0s)\n  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=5ms saved=True\n  Frame 4 saved (frame_003.jpg, t=153.1s)\n  [capture-periodic] freeze=1111ms shot=1903ms unfreeze=5ms saved=True\n  Frame 5 saved (frame_004.jpg, t=159.7s)\n  [capture-periodic] freeze=1731ms shot=1947ms unfreeze=9ms saved=True\n  [capture-loop] iter=50 t=172.7s state={'complete': False, 'error': None, 'executedCount': 1, 'wsState': 1} eval_ms=1702 ram=4.7/16.0GB (30%) swap=0.7/2.9GB (26%) cpu=85% browser_rss=0.66GB\n  Frame 6 saved (frame_005.jpg, t=172.7s)\n  [capture-periodic] freeze=913ms shot=1934ms unfreeze=6ms saved=True\n  Frame 7 saved (frame_006.jpg, t=180.1s)\n  [capture-periodic] freeze=1800ms shot=1931ms unfreeze=6ms saved=True\n  Frame 8 saved (frame_007.jpg, t=209.5s)\n  [capture-periodic] freeze=1783ms shot=1957ms unfreeze=48ms saved=True"
-    },
-    {
-      "file": "frame_009.jpg",
-      "time": 232.91495871543884,
+      "time": 115.16838383674622,
       "log": "Final screenshot"
     }
   ],
-  "total_time": 230.49
+  "total_time": 112.95
 }

@@ -1,4 +1,4 @@
-[00:00] Crash dump logging enabled: D:\a\comfy-gpu-ci\comfy-gpu-ci\comfy-test-logs\GaussianPack-1849\dev\windows-portable-cpu\crash_dump.log
+[00:00] Crash dump logging enabled: D:\a\comfy-gpu-ci\comfy-gpu-ci\comfy-test-logs\GaussianPack-1944\dev\windows-portable-cpu\crash_dump.log
 [00:00] 
 [00:00] [1/5] SYNTAX
 [00:00] ----------------------------------------
@@ -25,114 +25,107 @@ Setting up ComfyUI...
 [00:06]   Downloaded: 40%
 [00:07]   Downloaded: 50%
 [00:08]   Downloaded: 60%
-[00:09]   Downloaded: 70%
-[00:11]   Downloaded: 80%
-[00:12]   Downloaded: 90%
-[00:13]   Downloaded: 100%
-[00:13] Downloaded to C:\Users\stduser\.comfy-test\cache\portable\ComfyUI_portable_v0.21.1.7z
-[00:13] Extracting to cache: C:\Users\stduser\.comfy-test\cache\portable\ComfyUI_portable_v0.21.1
-[00:13] Extracting ComfyUI_portable_v0.21.1.7z...
-[00:13] Using 7z: 7z
-[02:34] Extracted to C:\Users\stduser\.comfy-test\cache\portable\ComfyUI_portable_v0.21.1
-[02:34] Copying from cache to: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1849\portable-comfyui
-[02:54] Installing uv into embedded Python...
-[02:54] Running: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1849\portable-comfyui\ComfyUI_windows_portable\python_embeded\python.exe -m pip install uv
-[02:59] Installing ComfyUI requirements...
-[02:59] Running: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1849\portable-comfyui\ComfyUI_windows_portable\python_embeded\python.exe -m uv pip install -r D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1849\portable-comfyui\ComfyUI_windows_portable\ComfyUI\requirements.txt
-[02:59] 
+[00:08]   Downloaded: 70%
+[00:09]   Downloaded: 80%
+[00:10]   Downloaded: 90%
+[00:11]   Downloaded: 100%
+[00:11] Downloaded to C:\Users\stduser\.comfy-test\cache\portable\ComfyUI_portable_v0.21.1.7z
+[00:11] Extracting to cache: C:\Users\stduser\.comfy-test\cache\portable\ComfyUI_portable_v0.21.1
+[00:11] Extracting ComfyUI_portable_v0.21.1.7z...
+[00:11] Using 7z: 7z
+[02:45] Extracted to C:\Users\stduser\.comfy-test\cache\portable\ComfyUI_portable_v0.21.1
+[02:45] Copying from cache to: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui
+[03:17] Installing uv into embedded Python...
+[03:17] Running: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\python_embeded\python.exe -m pip install uv
+[03:22] Installing ComfyUI requirements...
+[03:22] Running: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\python_embeded\python.exe -m uv pip install -r D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\requirements.txt
+[03:23] 
 Installing custom node...
-[02:59] Copying ComfyUI-GaussianPack to custom_nodes/...
-[03:00] Installing node requirements...
-[03:00] Running: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1849\portable-comfyui\ComfyUI_windows_portable\python_embeded\python.exe -m pip install -r D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1849\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-GaussianPack\requirements.txt
-[03:09] Installing validation endpoint...
-[03:09]   Cloning PozzettiAndrea/ComfyUI-validate-endpoint...
-[03:09] Running: git clone --depth 1 https://x-access-token:***@github.com/PozzettiAndrea/ComfyUI-validate-endpoint.git D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1849\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-validate-endpoint
-[03:09] [INSTALL] PASSED
-[03:09] 
-[03:09] [3/5] REGISTRATION
-[03:09] ----------------------------------------
-[03:09] 
+[03:23] Copying ComfyUI-GaussianPack to custom_nodes/...
+[03:24] Installing node requirements...
+[03:24] Running: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\python_embeded\python.exe -m pip install -r D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-GaussianPack\requirements.txt
+[03:33] Installing validation endpoint...
+[03:33]   Cloning PozzettiAndrea/ComfyUI-validate-endpoint...
+[03:33] Running: git clone --depth 1 https://x-access-token:***@github.com/PozzettiAndrea/ComfyUI-validate-endpoint.git D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-validate-endpoint
+[03:34] [INSTALL] PASSED
+[03:34] 
+[03:34] [3/5] REGISTRATION
+[03:34] ----------------------------------------
+[03:34] 
 [DEBUG] server=None, api=None
-[03:09] 
+[03:34] 
 Starting ComfyUI server...
-[03:09] Starting ComfyUI server on port 41893...
-[03:09] Starting ComfyUI server on port 41893...
-[03:09] Server stdout/stderr -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1849\server.log
-[03:09] Waiting for server to be ready (timeout: 600s)...
-[03:09]   [ComfyUI:stdout] reader thread died: AttributeError("'NoneType' object has no attribute 'readline'")
-[03:09]   [ComfyUI:stderr] reader thread died: AttributeError("'NoneType' object has no attribute 'readline'")
-[03:20] Server responding, waiting for nodes to load...
-[03:40] Server is ready!
-[03:40] Checking for import errors in server logs...
-[03:40] No import errors detected
-[03:41] Found 720 registered nodes
-[03:41] [REGISTRATION] PASSED
-[03:41] 
-[03:41] [4/5] INSTANTIATION
-[03:41] ----------------------------------------
-[03:41] 
-[DEBUG] server=<comfy_test.comfyui.server.ComfyUIServer object at 0x000001EC06129940>, api=<comfy_test.comfyui.api.ComfyUIAPI object at 0x000001EC0612B4D0>
-[03:41] Testing node constructors...
-[03:45] All 5 node(s) instantiated successfully!
-[03:45] [INSTANTIATION] PASSED
-[03:45] 
-[03:45] [5/5] EXECUTION
-[03:45] ----------------------------------------
-[03:45] 
-[DEBUG] server=<comfy_test.comfyui.server.ComfyUIServer object at 0x000001EC06129940>, api=<comfy_test.comfyui.api.ComfyUIAPI object at 0x000001EC0612B4D0>
-[03:45] CPU runner - will execute 1 workflow(s)
-[03:45] Running 1 workflow(s) (all with videos)...
-[03:45] Installing screenshot dependencies (playwright, pillow)...
-[03:54]   Packages installed, downloading chromium browser...
-[04:09]   Screenshot dependencies installed successfully
-[04:11] Starting headless browser...
-[04:12]   Downloading Mesa llvmpipe for Windows...
-[04:17]   Copied opengl32.dll to Chromium dir
-[04:17]   Copied libgallium_wgl.dll to Chromium dir
-[04:17]   Using Mesa llvmpipe (desktop GL) -- multithreaded CPU rendering
-[04:18] Capturing execution frames: merge_splats.json
-[04:28]   Frame 1 saved (frame_000.jpg, t=0.0s)
-[04:28]   Validating workflow...
-[04:28]   Queuing workflow for execution...
-[04:28]   Node executed (1 total), capturing...
-[04:30]   Frame 2 saved (frame_001.jpg, t=2.0s)
-[04:30]   [capture-node] freeze=50ms shot=1365ms unfreeze=23ms saved=True
-[04:36]   Frame 3 saved (frame_002.jpg, t=6.0s)
-[04:36]   [capture-periodic] freeze=1800ms shot=1931ms unfreeze=5ms saved=True
-[07:03]   Frame 4 saved (frame_003.jpg, t=153.1s)
-[07:03]   [capture-periodic] freeze=1111ms shot=1903ms unfreeze=5ms saved=True
-[07:10]   Frame 5 saved (frame_004.jpg, t=159.7s)
-[07:10]   [capture-periodic] freeze=1731ms shot=1947ms unfreeze=9ms saved=True
-[07:20]   [capture-loop] iter=50 t=172.7s state={'complete': False, 'error': None, 'executedCount': 1, 'wsState': 1} eval_ms=1702 ram=4.7/16.0GB (30%) swap=0.7/2.9GB (26%) cpu=85% browser_rss=0.66GB
-[07:23]   Frame 6 saved (frame_005.jpg, t=172.7s)
-[07:23]   [capture-periodic] freeze=913ms shot=1934ms unfreeze=6ms saved=True
-[07:30]   Frame 7 saved (frame_006.jpg, t=180.1s)
-[07:30]   [capture-periodic] freeze=1800ms shot=1931ms unfreeze=6ms saved=True
-[08:00]   Frame 8 saved (frame_007.jpg, t=209.5s)
-[08:00]   [capture-periodic] freeze=1783ms shot=1957ms unfreeze=48ms saved=True
-[08:01]   Node executed (2 total), capturing...
-[08:05]   Frame 9 saved (frame_008.jpg, t=215.3s)
-[08:05]   [capture-node] freeze=1605ms shot=1827ms unfreeze=0ms saved=True
-[08:05]   Execution complete (t=215.3s)
-[08:05]   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
-[08:05]   [3d-wait] Phase 1 done in 0.0s
-[08:05]   [3d-wait] Phase 2: iframes=2
-[08:05]   [3d-wait] iframe viewer_ready=True (matched 2 console logs)
-[08:05]   [3d-wait] Unfrozen in 0.003s, rendering for 5s...
-[08:12]   [3d-wait] JS halted via CDP after 6.7s
-[08:17]   [3d-wait] Re-frozen in 11.7s
-[08:17]   [3d-wait] Total 3D wait: 11.8s
-[08:17]   Captured 9 unique frames over 230.49s
-[08:17]   [debug] iframes: 2
-[08:17]   [debug]   iframe[0]: src=http://127.0.0.1:41893/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
-[08:17]   [debug]   iframe[1]: src=http://127.0.0.1:41893/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
-[08:17]   [timing] trigger_3d_previews: 0.0s
-[08:19]   Saved high-quality screenshot: merge_splats_executed.png
-[08:19]   [timing] final_screenshot: 0.4s
-[08:19] Results saved to D:\a\comfy-gpu-ci\comfy-gpu-ci\comfy-test-logs\GaussianPack-1849\dev\windows-portable-cpu\results.json
-[08:20] Model report: 8 files, 18.7 MB -> D:\a\comfy-gpu-ci\comfy-gpu-ci\comfy-test-logs\GaussianPack-1849\dev\windows-portable-cpu\models.json
-[08:20] Saved: D:\a\comfy-gpu-ci\comfy-gpu-ci\comfy-test-logs\GaussianPack-1849\dev\windows-portable-cpu\index.html
-[08:20] [EXECUTION] PASSED
-[08:20] 
+[03:34] Starting ComfyUI server on port 41886...
+[03:34] Starting ComfyUI server on port 41886...
+[03:34] Server stdout/stderr -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\server.log
+[03:34] Waiting for server to be ready (timeout: 600s)...
+[03:34]   [ComfyUI:stdout] reader thread died: AttributeError("'NoneType' object has no attribute 'readline'")
+[03:34]   [ComfyUI:stderr] reader thread died: AttributeError("'NoneType' object has no attribute 'readline'")
+[03:45] Server responding, waiting for nodes to load...
+[04:05] Server is ready!
+[04:05] Checking for import errors in server logs...
+[04:05] No import errors detected
+[04:05] Found 720 registered nodes
+[04:05] [REGISTRATION] PASSED
+[04:05] 
+[04:05] [4/5] INSTANTIATION
+[04:05] ----------------------------------------
+[04:05] 
+[DEBUG] server=<comfy_test.comfyui.server.ComfyUIServer object at 0x0000025B6F792A40>, api=<comfy_test.comfyui.api.ComfyUIAPI object at 0x0000025B6F7AC190>
+[04:05] Testing node constructors...
+[04:08] All 5 node(s) instantiated successfully!
+[04:08] [INSTANTIATION] PASSED
+[04:08] 
+[04:08] [5/5] EXECUTION
+[04:08] ----------------------------------------
+[04:08] 
+[DEBUG] server=<comfy_test.comfyui.server.ComfyUIServer object at 0x0000025B6F792A40>, api=<comfy_test.comfyui.api.ComfyUIAPI object at 0x0000025B6F7AC190>
+[04:08] CPU runner - will execute 1 workflow(s)
+[04:08] Running 1 workflow(s) (all with videos)...
+[04:08] Installing screenshot dependencies (playwright, pillow)...
+[04:13]   Packages installed, downloading chromium browser...
+[04:24]   Screenshot dependencies installed successfully
+[04:25] Starting headless browser...
+[04:25]   Downloading Mesa llvmpipe for Windows...
+[04:29]   Copied opengl32.dll to Chromium dir
+[04:29]   Copied libgallium_wgl.dll to Chromium dir
+[04:29]   Using Mesa llvmpipe (desktop GL) -- multithreaded CPU rendering
+[04:31] Capturing execution frames: merge_splats.json
+[04:40]   Frame 1 saved (frame_000.jpg, t=0.0s)
+[04:40]   Validating workflow...
+[04:40]   Queuing workflow for execution...
+[04:40]   Node executed (1 total), capturing...
+[04:41]   Frame 2 saved (frame_001.jpg, t=0.7s)
+[04:41]   [capture-node] freeze=82ms shot=199ms unfreeze=3ms saved=True
+[04:46]   Frame 3 saved (frame_002.jpg, t=3.1s)
+[04:46]   [capture-periodic] freeze=1371ms shot=1465ms unfreeze=3ms saved=True
+[05:41]   Frame 4 saved (frame_003.jpg, t=58.5s)
+[05:41]   [capture-periodic] freeze=1349ms shot=1431ms unfreeze=2ms saved=True
+[05:47]   Frame 5 saved (frame_004.jpg, t=64.0s)
+[05:47]   [capture-periodic] freeze=1350ms shot=1459ms unfreeze=2ms saved=True
+[06:21]   Node executed (2 total), capturing...
+[06:24]   Frame 6 saved (frame_005.jpg, t=101.4s)
+[06:24]   [capture-node] freeze=1093ms shot=1434ms unfreeze=0ms saved=True
+[06:24]   Execution complete (t=101.4s)
+[06:24]   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
+[06:24]   [3d-wait] Phase 1 done in 0.0s
+[06:24]   [3d-wait] Phase 2: iframes=2
+[06:24]   [3d-wait] iframe viewer_ready=True (matched 1 console logs)
+[06:24]   [3d-wait] Unfrozen in 0.002s, rendering for 5s...
+[06:29]   [3d-wait] JS halted via CDP after 5.3s
+[06:33]   [3d-wait] Re-frozen in 9.0s
+[06:33]   [3d-wait] Total 3D wait: 9.0s
+[06:33]   Captured 6 unique frames over 112.95s
+[06:33]   [debug] iframes: 2
+[06:33]   [debug]   iframe[0]: src=http://127.0.0.1:41886/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
+[06:33]   [debug]   iframe[1]: src=http://127.0.0.1:41886/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
+[06:33]   [timing] trigger_3d_previews: 0.0s
+[06:35]   Saved high-quality screenshot: merge_splats_executed.png
+[06:35]   [timing] final_screenshot: 0.2s
+[06:35] Results saved to D:\a\comfy-gpu-ci\comfy-gpu-ci\comfy-test-logs\GaussianPack-1944\dev\windows-portable-cpu\results.json
+[06:35] Model report: 8 files, 18.7 MB -> D:\a\comfy-gpu-ci\comfy-gpu-ci\comfy-test-logs\GaussianPack-1944\dev\windows-portable-cpu\models.json
+[06:35] Saved: D:\a\comfy-gpu-ci\comfy-gpu-ci\comfy-test-logs\GaussianPack-1944\dev\windows-portable-cpu\index.html
+[06:35] [EXECUTION] PASSED
+[06:35] 
 windows_portable: PASSED
-[08:20] Stopping ComfyUI server...
+[06:35] Stopping ComfyUI server...
