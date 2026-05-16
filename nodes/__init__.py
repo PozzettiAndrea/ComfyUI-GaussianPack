@@ -2,9 +2,9 @@
 
 """GaussianPack nodes — preview, merge, and load PLY-format 3D Gaussian splats.
 
-The root `__init__.py` calls `comfy_env.register_nodes()`, which imports
-this module and harvests its `NODE_CLASS_MAPPINGS` /
-`NODE_DISPLAY_NAME_MAPPINGS`. `WEB_DIRECTORY` is set at the root, not here.
+The root `__init__.py` re-exports `NODE_CLASS_MAPPINGS` /
+`NODE_DISPLAY_NAME_MAPPINGS` from this subpackage. `WEB_DIRECTORY` is
+set at the root, not here.
 """
 
 from .preview_gaussian import PreviewGaussians
