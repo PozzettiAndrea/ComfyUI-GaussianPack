@@ -476,6 +476,13 @@ app.registerExtension({
                         const intrinsics = message.intrinsics?.[0] || null;
                         const renderer = message.renderer?.[0] || "spark";
                         const transportFormat = message.transport_format?.[0] || "ply";
+                        // Which Comfy folder the PLY lives under — "input" or
+                        // "output". Set by the Python preview node so /view can
+                        // resolve files dropped via LoadPLY (under input/) as
+                        // well as artifacts written by GaussianMerge / Export
+                        // / LiToExportPLY (under output/).
+                        const plyType = message.ply_type?.[0] || "output";
+                        const plySubfolder = message.ply_subfolder?.[0] || "";
 
                         // Resize node to match image aspect ratio from intrinsics
                         if (intrinsics && intrinsics[0] && intrinsics[1]) {
@@ -510,13 +517,15 @@ app.registerExtension({
                         // the renderer's auto-detect (Spark sniffs bytes
                         // either way, but extension keeps the info panel
                         // honest).
+                        const qsType = encodeURIComponent(plyType);
+                        const qsSub  = encodeURIComponent(plySubfolder);
                         let filepath, iframeFilename, loadLabel;
                         if (transportFormat === "spz") {
-                            filepath       = `/gaussianpack/spz?filename=${encodeURIComponent(filename)}&type=output&subfolder=`;
+                            filepath       = `/gaussianpack/spz?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
                             iframeFilename = filename.replace(/\.ply$/i, ".spz");
                             loadLabel      = "Transcoding + downloading SPZ...";
                         } else {
-                            filepath       = `/view?filename=${encodeURIComponent(filename)}&type=output&subfolder=`;
+                            filepath       = `/view?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
                             iframeFilename = filename;
                             loadLabel      = "Downloading PLY...";
                         }

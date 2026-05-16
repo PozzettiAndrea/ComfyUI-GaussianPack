@@ -372,7 +372,6 @@
                 this.renderer.render(this.scene, this.camera);
                 this._frameCount += 1;
                 if (this._frameCount === 1) console.log(`[${logTag}] first frame rendered.`);
-                else if (this._frameCount % 120 === 0) console.log(`[${logTag}] heartbeat: ${this._frameCount} frames`);
             };
             tick();
         }

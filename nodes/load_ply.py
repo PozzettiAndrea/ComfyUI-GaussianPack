@@ -2,90 +2,61 @@
 
 """LoadPLY — file picker for 3D Gaussian Splatting PLY files.
 
-Scans both `input/` and `output/` of the running ComfyUI instance so
-users can pick PLYs they uploaded OR PLYs produced upstream (e.g. by
-ComfyUI-Lito's `LiToExportPLY`) without copying files around. Output
-is the absolute path, ready to wire into `PreviewGaussians` /
-`GaussianMerge`.
+Mirrors ComfyUI's LoadImage idiom: lists bare filenames from
+`input/`, resolves via `folder_paths.get_annotated_filepath()` (which
+handles `[input]/...` and `[temp]/...` annotations transparently),
+and validates with `exists_annotated_filepath`.
+
+For PLYs produced UPSTREAM in a workflow (e.g. `GaussianMerge` ->
+`PreviewGaussians`), wire the path directly — don't go through this
+node.
 """
 
 import logging
 import os
 
+import folder_paths
+
 log = logging.getLogger("comfyui-gaussianpack")
 
 
-def _scan_ply_files() -> tuple[list[str], dict[str, str]]:
-    """Walk ComfyUI's input/ and output/ for .ply files.
-
-    Returns:
-        (combo_entries, resolver):
-            combo_entries — sorted list of "<kind>/<relpath>" strings
-              displayed in the dropdown.
-            resolver — combo entry -> absolute path on disk.
-    """
-    try:
-        import folder_paths
-    except ImportError:
-        return ([], {})
-
-    roots = {
-        "input":  folder_paths.get_input_directory(),
-        "output": folder_paths.get_output_directory(),
-    }
-    entries: list[str] = []
-    resolver: dict[str, str] = {}
-    for kind, base in roots.items():
-        if not base or not os.path.isdir(base):
-            continue
-        for dirpath, _, names in os.walk(base):
-            for name in names:
-                if not name.lower().endswith(".ply"):
-                    continue
-                abs_path = os.path.join(dirpath, name)
-                rel = os.path.relpath(abs_path, base).replace(os.sep, "/")
-                key = f"{kind}/{rel}"
-                entries.append(key)
-                resolver[key] = abs_path
-    entries.sort()
-    return entries, resolver
+def _list_input_plys() -> list[str]:
+    """Bare filenames of .ply files in ComfyUI's input/ directory."""
+    input_dir = folder_paths.get_input_directory()
+    if not input_dir or not os.path.isdir(input_dir):
+        return []
+    return sorted(
+        f for f in os.listdir(input_dir)
+        if f.lower().endswith(".ply")
+        and os.path.isfile(os.path.join(input_dir, f))
+    )
 
 
 class LoadPLY:
-    """Browse a `.ply` file from ComfyUI's input/ or output/ directories."""
+    """Browse a `.ply` file from ComfyUI's input/ directory."""
 
     @classmethod
     def INPUT_TYPES(cls):
-        entries, _ = _scan_ply_files()
-        if not entries:
-            entries = ["<no .ply files found in input/ or output/>"]
+        files = _list_input_plys() or ["<no .ply files in input/>"]
         return {
             "required": {
-                "ply_file": (entries, {
-                    "tooltip": (
-                        "Pick a .ply from ComfyUI's input/ or output/ folders. "
-                        "LiTo's LiToExportPLY writes to output/, so its outputs "
-                        "appear here directly. Drop your own PLYs into input/ "
-                        "to make them appear in this list."
-                    ),
+                "ply_file": (files, {
+                    "tooltip": "Pick a .ply file from ComfyUI's input/ folder.",
                 }),
             },
         }
 
     @classmethod
     def IS_CHANGED(cls, ply_file):
-        """Re-execute the node if the picked file's mtime changes."""
-        _, resolver = _scan_ply_files()
-        path = resolver.get(ply_file)
+        path = folder_paths.get_annotated_filepath(ply_file)
         if path and os.path.exists(path):
             return str(os.path.getmtime(path))
         return ""
 
     @classmethod
     def VALIDATE_INPUTS(cls, ply_file):
-        _, resolver = _scan_ply_files()
-        if ply_file not in resolver:
-            return f"LoadPLY: {ply_file!r} is not a known PLY in input/ or output/"
+        if not folder_paths.exists_annotated_filepath(ply_file):
+            return f"Invalid PLY file: {ply_file}"
         return True
 
     RETURN_TYPES = ("STRING",)
@@ -94,9 +65,8 @@ class LoadPLY:
     CATEGORY = "viewer"
 
     def load(self, ply_file: str):
-        _, resolver = _scan_ply_files()
-        path = resolver.get(ply_file)
+        path = folder_paths.get_annotated_filepath(ply_file)
         if not path or not os.path.exists(path):
-            raise FileNotFoundError(f"LoadPLY: {ply_file!r} not found on disk")
+            raise FileNotFoundError(f"LoadPLY: {ply_file!r} not found")
         log.info("LoadPLY: %s -> %s", ply_file, path)
         return (path,)

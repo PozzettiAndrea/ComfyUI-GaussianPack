@@ -74,7 +74,15 @@ class GaussianMerge:
                 }),
                 "k": ("INT", {
                     "default": 16, "min": 4, "max": 64,
-                    "tooltip": "kNN candidate count for the merge graph.",
+                    "tooltip": (
+                        "k nearest neighbors per splat that the merge graph "
+                        "considers as candidate pairs. Higher k -> slightly "
+                        "better quality (more options for the greedy "
+                        "selector) but more RAM + slower (O(N*k) edges).\n"
+                        "16 is the upstream sweet spot. 8 = fast draft. "
+                        "24-32 helps on specular-heavy scenes; 32+ rarely "
+                        "pays off."
+                    ),
                 }),
             },
         }

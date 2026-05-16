@@ -100,11 +100,20 @@ async def _transcode_ply_to_spz(ply_path: Path, spz_path: Path) -> dict:
 
 def register_routes() -> None:
     """Register the SPZ transcode route. Idempotent no-op if PromptServer
-    isn't available (static analysis, tests, etc.)."""
+    isn't available (static analysis, tests, etc.).
+
+    Catches Exception (not just ImportError) because `from server import
+    PromptServer` triggers ComfyUI's nodes.py -> comfy.sd ->
+    comfy.model_management, and model_management.py:254 evaluates
+    `torch.device(torch.cuda.current_device())` at import time. On
+    CPU-only systems (e.g. comfy-test's instantiation subprocess) that
+    raises RuntimeError, not ImportError. In real ComfyUI startup
+    `server` is already in sys.modules so the import is a sys.modules
+    lookup and the cascade doesn't re-run."""
     try:
         from server import PromptServer
-    except ImportError:
-        log.warning("PromptServer not importable; SPZ route not registered.")
+    except Exception as e:
+        log.warning("SPZ route not registered (%s: %s)", type(e).__name__, e)
         return
     if PromptServer.instance is None:
         log.warning("PromptServer.instance is None; SPZ route not registered.")

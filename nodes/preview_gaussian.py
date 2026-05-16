@@ -3,10 +3,37 @@
 import os
 
 from .common import (
-    COMFYUI_OUTPUT_FOLDER,
     get_default_extrinsics,
     get_default_intrinsics,
 )
+
+
+def _resolve_for_view(abs_path: str) -> tuple[str, str, str]:
+    """Map an absolute on-disk PLY to ComfyUI's `/view` parameters.
+
+    Returns (filename, subfolder, folder_kind) where folder_kind is one
+    of `"output"`, `"input"`, `"temp"`. Reads `folder_paths` live
+    (the runtime API in folder_paths.py:214) so a `--input-directory`
+    CLI override or any other runtime config is honored. The JS fetches
+    `/view?filename=...&type=<kind>&subfolder=...`.
+    """
+    import folder_paths
+
+    a = os.path.normpath(abs_path)
+    for kind in ("output", "input", "temp"):
+        base = folder_paths.get_directory_by_type(kind)
+        if not base:
+            continue
+        b = os.path.normpath(base) + os.sep
+        if a.startswith(b):
+            rel = os.path.relpath(a, base)
+            subfolder, filename = os.path.split(rel)
+            return filename, subfolder.replace(os.sep, "/"), kind
+
+    # Path lives outside any of Comfy's directories — `/view` will 404.
+    # Return a bare basename + "output" so the caller still sees a
+    # reasonable filename in the info panel.
+    return os.path.basename(abs_path), "", "output"
 
 
 def _count_gaussians(path: str) -> int:
@@ -86,11 +113,7 @@ class PreviewGaussians:
         if not os.path.exists(ply_path):
             return {"ui": {"error": [f"File not found: {ply_path}"]}}
 
-        filename = os.path.basename(ply_path)
-        if COMFYUI_OUTPUT_FOLDER and ply_path.startswith(COMFYUI_OUTPUT_FOLDER):
-            relative_path = os.path.relpath(ply_path, COMFYUI_OUTPUT_FOLDER)
-        else:
-            relative_path = filename
+        filename, subfolder, folder_kind = _resolve_for_view(ply_path)
 
         file_size_mb = round(os.path.getsize(ply_path) / (1024 * 1024), 2)
         num_gaussians = _count_gaussians(ply_path)
@@ -98,8 +121,10 @@ class PreviewGaussians:
         extrinsics = get_default_extrinsics()
 
         return {"ui": {
-            "ply_file": [relative_path],
+            "ply_file": [filename],
             "filename": [filename],
+            "ply_type": [folder_kind],         # "input" | "output" — JS passes to /view?type=
+            "ply_subfolder": [subfolder],
             "file_size_mb": [file_size_mb],
             "num_gaussians": [num_gaussians],
             "extrinsics": [extrinsics],

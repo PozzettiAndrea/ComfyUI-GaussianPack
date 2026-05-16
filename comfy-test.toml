@@ -1,20 +1,19 @@
 [test]
-levels = ["syntax", "install", "registration", "instantiation"]
-publish = true
+levels = ["syntax", "install", "registration", "instantiation", "execution"]
+publish = 'true'
 
 [test.workflows]
-# Workflow-level testing lives downstream in ComfyUI-LiTo (which is
-# the consumer of GaussianPack's PreviewGaussians + GaussianMerge
-# nodes). GaussianPack itself only verifies registration/instantiation.
+cpu = ["merge_splats"]
+gpu = []
 
 [test.platforms]
+# CPU platforms (GaussianPack runs on CPU — pure-Python NanoGS,
+# no CUDA wheels needed).
 linux = true
 macos = true
 windows = true
 windows_portable = true
-linux_gpu = true
-windows_gpu = true
-windows_portable_gpu = true
-macos_desktop = false
-windows_desktop = false
+linux_gpu = false
+windows_gpu = false
+windows_portable_gpu = false
 windows_desktop_gpu = false
