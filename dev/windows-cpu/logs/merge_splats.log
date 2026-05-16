@@ -7,144 +7,105 @@ Capturing execution frames: merge_splats.json
   [ComfyUI]   Node 1: LoadPLY
   [ComfyUI]     Inputs: {"ply_file": "apple.ply"}
   [ComfyUI]   Node 2: PreviewGaussians
-  Queuing workflow for execution...
   [ComfyUI]     Inputs: {"fov_degrees": 50, "image_width": 512, "image_height": 512, "renderer": "spark", "transport_format": "ply", "ply_path": ["1", 0]}
   [ComfyUI]   Node 3: GaussianMerge
+  Queuing workflow for execution...
   [ComfyUI]     Inputs: {"target_count": 100000, "output_filename": "merged", "opacity_threshold": 0, "k": 24, "ply_path": ["1", 0]}
   [ComfyUI]   Node 4: PreviewGaussians
   [ComfyUI]     Inputs: {"fov_degrees": 50, "image_width": 512, "image_height": 512, "renderer": "spark", "transport_format": "ply", "ply_path": ["3", 0]}
-  [ComfyUI] Generated prompt_id: 04b382ba-8864-4fca-8f15-db25eba359f2
+  [ComfyUI] Generated prompt_id: 77f602fe-fc46-46b5-95d3-34e18a873c59
   [ComfyUI] Calling execution.validate_prompt()...
   [ComfyUI] Validation result: valid=True
   [ComfyUI] === Validation PASSED ===
   [ComfyUI] got prompt
-  [ComfyUI] LoadPLY: apple.ply -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1807\ComfyUI\input\apple.ply
-  [ComfyUI] GaussianMerge: 200000 -> 100000 splats (ratio=0.5000) via NanoGS MPMM on D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1807\ComfyUI\input\apple.ply
+  [ComfyUI] LoadPLY: apple.ply -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1848\ComfyUI\input\apple.ply
+  [ComfyUI] GaussianMerge: 200000 -> 100000 splats (ratio=0.5000) via NanoGS MPMM on D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1848\ComfyUI\input\apple.ply
   Node executed (1 total), capturing...
-  Frame 2 saved (frame_001.jpg, t=0.5s)
-  [capture-node] freeze=124ms shot=167ms unfreeze=4ms saved=True
-  Frame 3 saved (frame_002.jpg, t=3.9s)
-  [capture-periodic] freeze=2037ms shot=2124ms unfreeze=2ms saved=True
-  [ComfyUI] Loading PLY: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1807\ComfyUI\input\apple.ply
+  Frame 2 saved (frame_001.jpg, t=0.6s)
+  [capture-node] freeze=134ms shot=205ms unfreeze=6ms saved=True
+  Frame 3 saved (frame_002.jpg, t=4.2s)
+  [capture-periodic] freeze=2071ms shot=2185ms unfreeze=8ms saved=True
+  Frame 4 saved (frame_003.jpg, t=16.9s)
+  [capture-periodic] freeze=2070ms shot=2181ms unfreeze=7ms saved=True
+  Frame 5 saved (frame_004.jpg, t=23.3s)
+  [capture-periodic] freeze=2385ms shot=1827ms unfreeze=4ms saved=True
+  [ComfyUI] Loading PLY: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1848\ComfyUI\input\apple.ply
   [ComfyUI] Initial splats: 200000
   [ComfyUI] Pruned splats: 200000, target: 100000
   [ComfyUI] Opacity Mean: 0.53443545 Median: 0.48362076
   [ComfyUI] Pruning splats with opacity below 0.0000
   [ComfyUI] Original count: 200000, after opacity pruning: 200000
   [ComfyUI] After opacity pruning, 200000 splats remain.
-  [ComfyUI] 
   [ComfyUI] Pass 1: 200000 splats
+  [ComfyUI] 
   [ComfyUI] Edge costs:   0%|          | 0/27 [00:00<?, ?it/s]
-  [ComfyUI] Edge costs:   4%|3         | 1/27 [00:00<00:24,  1.06it/s]
-  [ComfyUI] Edge costs:   7%|7         | 2/27 [00:02<00:25,  1.03s/it]
-  [ComfyUI] Edge costs:  11%|#1        | 3/27 [00:03<00:26,  1.11s/it]
-  [ComfyUI] Edge costs:  15%|#4        | 4/27 [00:04<00:28,  1.22s/it]
-  [ComfyUI] Edge costs:  19%|#8        | 5/27 [00:05<00:27,  1.26s/it]
-  [ComfyUI] Edge costs:  22%|##2       | 6/27 [00:07<00:28,  1.34s/it]
-  [ComfyUI] Edge costs:  26%|##5       | 7/27 [00:08<00:27,  1.37s/it]
-  [ComfyUI] Edge costs:  30%|##9       | 8/27 [00:09<00:22,  1.18s/it]
-  [ComfyUI] Edge costs:  33%|###3      | 9/27 [00:10<00:20,  1.17s/it]
-  [ComfyUI] Edge costs:  37%|###7      | 10/27 [00:12<00:22,  1.30s/it]
-  [ComfyUI] Edge costs:  41%|####      | 11/27 [00:13<00:21,  1.34s/it]
-  [ComfyUI] Edge costs:  44%|####4     | 12/27 [00:15<00:20,  1.39s/it]
-  [ComfyUI] Edge costs:  48%|####8     | 13/27 [00:16<00:19,  1.41s/it]
-  [ComfyUI] Edge costs:  52%|#####1    | 14/27 [00:17<00:15,  1.21s/it]
-  [ComfyUI] Edge costs:  56%|#####5    | 15/27 [00:18<00:15,  1.29s/it]
-  [ComfyUI] Edge costs:  59%|#####9    | 16/27 [00:20<00:14,  1.35s/it]
-  [ComfyUI] Edge costs:  63%|######2   | 17/27 [00:21<00:13,  1.37s/it]
-  [ComfyUI] Edge costs:  67%|######6   | 18/27 [00:23<00:12,  1.38s/it]
-  [ComfyUI] Edge costs:  70%|#######   | 19/27 [00:24<00:09,  1.19s/it]
-  [ComfyUI] Edge costs:  74%|#######4  | 20/27 [00:25<00:08,  1.16s/it]
-  [ComfyUI] Edge costs:  78%|#######7  | 21/27 [00:28<00:10,  1.73s/it]
-  [ComfyUI] Edge costs:  81%|########1 | 22/27 [00:31<00:10,  2.18s/it]
-  [ComfyUI] Edge costs:  85%|########5 | 23/27 [00:32<00:07,  1.94s/it]
-  [ComfyUI] Edge costs:  89%|########8 | 24/27 [00:35<00:06,  2.08s/it]
-  Frame 4 saved (frame_003.jpg, t=76.1s)
-  [capture-periodic] freeze=2098ms shot=2169ms unfreeze=4ms saved=True
-  [ComfyUI] Edge costs:  93%|#########2| 25/27 [00:37<00:04,  2.28s/it]
-  [ComfyUI] Edge costs:  96%|#########6| 26/27 [00:39<00:02,  2.07s/it]
-  [ComfyUI] Edge costs: 100%|##########| 27/27 [00:42<00:00,  2.48s/it]
-  Frame 5 saved (frame_004.jpg, t=84.5s)
-  [capture-periodic] freeze=2083ms shot=2209ms unfreeze=5ms saved=True
-  Frame 6 saved (frame_005.jpg, t=105.5s)
-  [capture-periodic] freeze=1989ms shot=2198ms unfreeze=5ms saved=True
-  Frame 7 saved (frame_006.jpg, t=112.9s)
-  [capture-periodic] freeze=1592ms shot=1555ms unfreeze=7ms saved=True
-  Frame 8 saved (frame_007.jpg, t=133.1s)
-  [capture-periodic] freeze=1847ms shot=2185ms unfreeze=4ms saved=True
-  Frame 9 saved (frame_008.jpg, t=141.3s)
-  [capture-periodic] freeze=2061ms shot=2184ms unfreeze=5ms saved=True
-  [capture-loop] iter=50 t=220.4s state={'complete': False, 'error': None, 'executedCount': 1, 'wsState': 1} eval_ms=6869 ram=4.4/16.0GB (27%) swap=0.4/2.9GB (15%) cpu=92% browser_rss=0.52GB
-  Frame 10 saved (frame_009.jpg, t=242.5s)
-  [capture-periodic] freeze=2055ms shot=2183ms unfreeze=6ms saved=True
-  [ComfyUI] Edge costs: 100%|##########| 27/27 [00:42<00:00,  1.59s/it]
+  [ComfyUI] Edge costs:   4%|3         | 1/27 [00:01<00:33,  1.29s/it]
+  [ComfyUI] Edge costs:   7%|7         | 2/27 [00:02<00:31,  1.26s/it]
+  [ComfyUI] Edge costs:  11%|#1        | 3/27 [00:03<00:31,  1.30s/it]
+  [ComfyUI] Edge costs:  15%|#4        | 4/27 [00:05<00:31,  1.37s/it]
+  [ComfyUI] Edge costs:  19%|#8        | 5/27 [00:06<00:30,  1.40s/it]
+  [ComfyUI] Edge costs:  22%|##2       | 6/27 [00:08<00:29,  1.40s/it]
+  [ComfyUI] Edge costs:  26%|##5       | 7/27 [00:08<00:23,  1.18s/it]
+  [ComfyUI] Edge costs:  30%|##9       | 8/27 [00:09<00:21,  1.14s/it]
+  [ComfyUI] Edge costs:  33%|###3      | 9/27 [00:11<00:21,  1.18s/it]
+  [ComfyUI] Edge costs:  37%|###7      | 10/27 [00:12<00:21,  1.28s/it]
+  [ComfyUI] Edge costs:  41%|####      | 11/27 [00:14<00:23,  1.47s/it]
+  [ComfyUI] Edge costs:  44%|####4     | 12/27 [00:16<00:21,  1.44s/it]
+  [ComfyUI] Edge costs:  48%|####8     | 13/27 [00:16<00:17,  1.24s/it]
+  [ComfyUI] Edge costs:  52%|#####1    | 14/27 [00:18<00:16,  1.25s/it]
+  [ComfyUI] Edge costs:  56%|#####5    | 15/27 [00:19<00:15,  1.27s/it]
+  [ComfyUI] Edge costs:  59%|#####9    | 16/27 [00:20<00:14,  1.33s/it]
+  [ComfyUI] Edge costs:  63%|######2   | 17/27 [00:22<00:13,  1.33s/it]
+  [ComfyUI] Edge costs:  67%|######6   | 18/27 [00:23<00:10,  1.18s/it]
+  [ComfyUI] Edge costs:  70%|#######   | 19/27 [00:24<00:09,  1.15s/it]
+  [ComfyUI] Edge costs:  74%|#######4  | 20/27 [00:25<00:08,  1.21s/it]
+  [ComfyUI] Edge costs:  78%|#######7  | 21/27 [00:26<00:07,  1.26s/it]
+  [ComfyUI] Edge costs:  81%|########1 | 22/27 [00:28<00:06,  1.28s/it]
+  [ComfyUI] Edge costs:  85%|########5 | 23/27 [00:29<00:05,  1.31s/it]
+  [ComfyUI] Edge costs:  89%|########8 | 24/27 [00:30<00:03,  1.33s/it]
+  [ComfyUI] Edge costs:  93%|#########2| 25/27 [00:31<00:02,  1.18s/it]
+  [ComfyUI] Edge costs:  96%|#########6| 26/27 [00:33<00:01,  1.23s/it]
+  [ComfyUI] Edge costs: 100%|##########| 27/27 [00:34<00:00,  1.24s/it]
+  [ComfyUI] Edge costs: 100%|##########| 27/27 [00:34<00:00,  1.27s/it]
   [ComfyUI]   edges: 2697139, pairs: 97792 (need 100000)
+  [ComfyUI] 
   [ComfyUI]   Merging 97792 pairs
   [ComfyUI] Pass 2: 102208 splats
-  [ComfyUI] 
-  Frame 11 saved (frame_010.jpg, t=250.8s)
-  [capture-periodic] freeze=2069ms shot=2190ms unfreeze=4ms saved=True
   [ComfyUI] Edge costs:   0%|          | 0/14 [00:00<?, ?it/s]
-  [ComfyUI] Edge costs:   7%|7         | 1/14 [00:05<01:08,  5.24s/it]
-  [ComfyUI] Edge costs:  14%|#4        | 2/14 [00:11<01:10,  5.87s/it]
-  [ComfyUI] Edge costs:  21%|##1       | 3/14 [00:16<00:58,  5.30s/it]
-  [ComfyUI] Edge costs:  29%|##8       | 4/14 [00:19<00:46,  4.60s/it]
-  Frame 12 saved (frame_011.jpg, t=271.9s)
-  [capture-periodic] freeze=2149ms shot=2137ms unfreeze=4ms saved=True
-  [ComfyUI] Edge costs:  36%|###5      | 5/14 [00:24<00:41,  4.58s/it]
-  Frame 13 saved (frame_012.jpg, t=280.3s)
-  [capture-periodic] freeze=2045ms shot=2192ms unfreeze=4ms saved=True
-  [ComfyUI] Edge costs:  43%|####2     | 6/14 [00:30<00:41,  5.13s/it]
-  [ComfyUI] Edge costs:  50%|#####     | 7/14 [00:34<00:34,  4.88s/it]
-  [ComfyUI] Edge costs:  57%|#####7    | 8/14 [00:40<00:31,  5.29s/it]
-  Frame 14 saved (frame_013.jpg, t=295.0s)
-  [capture-periodic] freeze=2071ms shot=2211ms unfreeze=5ms saved=True
-  [ComfyUI] Edge costs:  64%|######4   | 9/14 [00:45<00:24,  4.93s/it]
-  [ComfyUI] Edge costs:  71%|#######1  | 10/14 [00:49<00:19,  4.84s/it]
-  Frame 15 saved (frame_014.jpg, t=303.4s)
-  [capture-periodic] freeze=2074ms shot=2208ms unfreeze=4ms saved=True
-  [ComfyUI] Edge costs:  79%|#######8  | 11/14 [00:55<00:15,  5.18s/it]
-  [ComfyUI] Edge costs:  86%|########5 | 12/14 [01:00<00:10,  5.07s/it]
-  [ComfyUI] Edge costs:  93%|#########2| 13/14 [01:04<00:04,  4.73s/it]
-  [ComfyUI] Edge costs: 100%|##########| 14/14 [01:06<00:00,  3.81s/it]
-  Frame 16 saved (frame_015.jpg, t=318.1s)
-  [capture-periodic] freeze=2063ms shot=2192ms unfreeze=5ms saved=True
-  Frame 17 saved (frame_016.jpg, t=326.5s)
-  [capture-periodic] freeze=2101ms shot=2206ms unfreeze=5ms saved=True
-  Frame 18 saved (frame_017.jpg, t=354.1s)
-  [capture-periodic] freeze=2085ms shot=2209ms unfreeze=5ms saved=True
-  Frame 19 saved (frame_018.jpg, t=362.6s)
-  [capture-periodic] freeze=2072ms shot=2206ms unfreeze=13ms saved=True
-  Frame 20 saved (frame_019.jpg, t=377.3s)
-  [capture-periodic] freeze=2055ms shot=2204ms unfreeze=4ms saved=True
-  Frame 21 saved (frame_020.jpg, t=387.5s)
-  [capture-periodic] freeze=2453ms shot=2235ms unfreeze=18ms saved=True
-  Frame 22 saved (frame_021.jpg, t=409.0s)
-  [capture-periodic] freeze=2077ms shot=2243ms unfreeze=6ms saved=True
-  Frame 23 saved (frame_022.jpg, t=417.4s)
-  [capture-periodic] freeze=1975ms shot=2120ms unfreeze=5ms saved=True
-  [ComfyUI] Edge costs: 100%|##########| 14/14 [01:06<00:00,  4.73s/it]
-  [ComfyUI] GaussianMerge: wrote D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1807\ComfyUI\output\merged.ply (100000 splats, 23.7 MB)
-  [ComfyUI] Prompt executed in 439.52 seconds
-  Frame 24 saved (frame_023.jpg, t=438.1s)
-  [capture-periodic] freeze=2053ms shot=2262ms unfreeze=38ms saved=True
+  [ComfyUI] Edge costs:   7%|7         | 1/14 [00:01<00:14,  1.13s/it]
+  [ComfyUI] Edge costs:  14%|#4        | 2/14 [00:02<00:16,  1.34s/it]
+  [ComfyUI] Edge costs:  21%|##1       | 3/14 [00:03<00:14,  1.34s/it]
+  [ComfyUI] Edge costs:  29%|##8       | 4/14 [00:05<00:13,  1.37s/it]
+  [ComfyUI] Edge costs:  36%|###5      | 5/14 [00:06<00:12,  1.35s/it]
+  [ComfyUI] Edge costs:  43%|####2     | 6/14 [00:07<00:10,  1.34s/it]
+  [ComfyUI] Edge costs:  50%|#####     | 7/14 [00:08<00:07,  1.11s/it]
+  [ComfyUI] Edge costs:  57%|#####7    | 8/14 [00:09<00:06,  1.16s/it]
+  [ComfyUI] Edge costs:  64%|######4   | 9/14 [00:11<00:06,  1.20s/it]
+  [ComfyUI] Edge costs:  71%|#######1  | 10/14 [00:12<00:05,  1.27s/it]
+  [ComfyUI] Edge costs:  79%|#######8  | 11/14 [00:13<00:03,  1.28s/it]
+  [ComfyUI] Edge costs:  86%|########5 | 12/14 [00:14<00:02,  1.10s/it]
+  [ComfyUI] Edge costs:  93%|#########2| 13/14 [00:15<00:01,  1.08s/it]
+  [ComfyUI] Edge costs: 100%|##########| 14/14 [00:16<00:00,  1.14it/s]
+  [ComfyUI] Edge costs: 100%|##########| 14/14 [00:16<00:00,  1.15s/it]
+  [ComfyUI] GaussianMerge: wrote D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1848\ComfyUI\output\merged.ply (100000 splats, 23.7 MB)
+  [ComfyUI] Prompt executed in 180.12 seconds
   Node executed (2 total), capturing...
-  Frame 25 saved (frame_024.jpg, t=444.6s)
-  [capture-node] freeze=1819ms shot=2127ms unfreeze=0ms saved=True
-  Execution complete (t=444.6s)
+  Frame 6 saved (frame_005.jpg, t=184.0s)
+  [capture-node] freeze=1584ms shot=1971ms unfreeze=0ms saved=True
+  Execution complete (t=184.0s)
   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
   [3d-wait] Phase 1 done in 0.0s
   [3d-wait] Phase 2: iframes=2
-  [3d-wait] iframe viewer_ready=True (matched 2 console logs)
-  [3d-wait] Unfrozen in 0.003s, rendering for 5s...
-  [3d-wait] JS halted via CDP after 6.7s
-  [3d-wait] Re-frozen in 12.1s
-  [3d-wait] Total 3D wait: 12.1s
-  Captured 25 unique frames over 460.67s
+  [3d-wait] iframe viewer_ready=True (matched 1 console logs)
+  [3d-wait] Unfrozen in 0.005s, rendering for 5s...
+  [3d-wait] JS halted via CDP after 5.4s
+  [3d-wait] Re-frozen in 10.2s
+  [3d-wait] Total 3D wait: 10.2s
+  Captured 6 unique frames over 197.84s
   [debug] iframes: 2
-  [debug]   iframe[0]: src=http://127.0.0.1:41887/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
-  [debug]   iframe[1]: src=http://127.0.0.1:41887/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
+  [debug]   iframe[0]: src=http://127.0.0.1:41895/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
+  [debug]   iframe[1]: src=http://127.0.0.1:41895/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?v=17, canvas=486x223, rafFrozen=True
   [timing] trigger_3d_previews: 0.0s
   Saved high-quality screenshot: merge_splats_executed.png
-  [timing] final_screenshot: 0.3s
-    Captured 26 video frames
+  [timing] final_screenshot: 0.2s
+    Captured 7 video frames
