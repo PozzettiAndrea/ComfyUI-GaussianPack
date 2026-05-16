@@ -1,3 +1,6 @@
+> [!WARNING]
+> Warning, uses experimental package `comfy-env` to attempt a one click isolated install. Will download and use pixi package manager.
+
 <div align="center">
 <a href="https://pozzettiandrea.github.io/ComfyUI-GaussianPack/">
 <img src="https://pozzettiandrea.github.io/ComfyUI-GaussianPack/gallery-preview.png" alt="Workflow Test Gallery" width="800">
