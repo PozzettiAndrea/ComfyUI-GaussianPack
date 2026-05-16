@@ -1,0 +1,36 @@
+{
+  "timestamp": "2026-05-16T18:08:42.312640+00:00",
+  "platform": "macos",
+  "hardware": {
+    "os": "macOS-15.7.4-arm64-arm-64bit",
+    "cpu": "arm"
+  },
+  "commit_hash": "b8de26b68c86492ec5a22cb7d73b11a347f6f1d3",
+  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/25969150936",
+  "success": true,
+  "summary": {
+    "total": 1,
+    "passed": 1,
+    "failed": 0
+  },
+  "workflows": [
+    {
+      "name": "merge_splats",
+      "status": "pass",
+      "duration_seconds": 40.69,
+      "error": null,
+      "hardware": {
+        "os": "macOS-15.7.4-arm64-arm-64bit",
+        "cpu": "arm"
+      },
+      "resources": {
+        "ram": {
+          "peak": 0.96,
+          "avg": 0.81
+        },
+        "total_ram_gb": 7.0,
+        "samples": 38
+      }
+    }
+  ]
+}
