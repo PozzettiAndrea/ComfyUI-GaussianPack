@@ -1,6 +1,3 @@
-
-https://github.com/user-attachments/assets/4e21f1fd-9ba2-4ecc-b777-34f5dd9f7075
-
 <div align="center">
 <a href="https://pozzettiandrea.github.io/ComfyUI-GaussianPack/">
 <img src="https://pozzettiandrea.github.io/ComfyUI-GaussianPack/gallery-preview.png" alt="Workflow Test Gallery" width="800">
@@ -8,6 +5,8 @@ https://github.com/user-attachments/assets/4e21f1fd-9ba2-4ecc-b777-34f5dd9f7075
 <br>
 <b><a href="https://pozzettiandrea.github.io/ComfyUI-GaussianPack/">View Live Test Gallery →</a></b>
 </div>
+
+https://github.com/user-attachments/assets/4ef6b921-52a0-4483-8efd-627d62c7e207
 
 # ComfyUI-GaussianPack
 
