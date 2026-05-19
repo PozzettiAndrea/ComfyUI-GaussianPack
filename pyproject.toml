@@ -9,8 +9,7 @@ Repository = "https://github.com/PozzettiAndrea/ComfyUI-GaussianPack"
 Documentation = "https://github.com/PozzettiAndrea/ComfyUI-GaussianPack"
 
 [tool.comfy]
-PublisherId = "pozzettiandrea"
+PublisherId = "pznodes"
 DisplayName = "ComfyUI-GaussianPack"
 Icon = ""
-includes = [] 
-
+includes = []
