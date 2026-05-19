@@ -6,12 +6,12 @@ setup plugin alembic.autogenerate.defaults
 setup plugin alembic.autogenerate.comments
 
 Prestartup times for custom nodes:
-   0.0 seconds: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-GaussianPack
+   0.0 seconds: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-GaussianPack
 
-D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\python_embeded\Lib\site-packages\torch\cuda\__init__.py:180: UserWarning: cudaGetDeviceCount() returned cudaErrorNotSupported, likely using older driver or on CPU machine (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\c10\cuda\CUDAFunctions.cpp:88.)
+D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\python_embeded\Lib\site-packages\torch\cuda\__init__.py:180: UserWarning: cudaGetDeviceCount() returned cudaErrorNotSupported, likely using older driver or on CPU machine (Triggered internally at C:\actions-runner\_work\pytorch\pytorch\pytorch\c10\cuda\CUDAFunctions.cpp:88.)
   return torch._C._cuda_getDeviceCount() > 0
-Found comfy_kitchen backend triton: {'available': False, 'disabled': True, 'unavailable_reason': "ImportError: No module named 'triton'", 'capabilities': []}
 Found comfy_kitchen backend eager: {'available': True, 'disabled': False, 'unavailable_reason': None, 'capabilities': ['apply_rope', 'apply_rope1', 'dequantize_mxfp8', 'dequantize_nvfp4', 'dequantize_per_tensor_fp8', 'quantize_mxfp8', 'quantize_nvfp4', 'quantize_per_tensor_fp8', 'scaled_mm_mxfp8', 'scaled_mm_nvfp4']}
+Found comfy_kitchen backend triton: {'available': False, 'disabled': True, 'unavailable_reason': "ImportError: No module named 'triton'", 'capabilities': []}
 Found comfy_kitchen backend cuda: {'available': False, 'disabled': False, 'unavailable_reason': 'CUDA not available on this system', 'capabilities': []}
 Checkpoint files will always be loaded safely.
 Total VRAM 16379 MB, total RAM 16379 MB
@@ -26,14 +26,14 @@ comfy-kitchen version: 0.2.8
 ****** User settings have been changed to be stored on the server instead of browser storage. ******
 ****** For multi-user setups add the --multi-user CLI argument to enable multiple user profiles. ******
 ComfyUI frontend version: 1.43.18
-[Prompt Server] web root: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\python_embeded\Lib\site-packages\comfyui_frontend_package\static
+[Prompt Server] web root: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\python_embeded\Lib\site-packages\comfyui_frontend_package\static
 Asset seeder disabled
 loading...
 
 Import times for custom nodes:
-   0.0 seconds: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\websocket_image_save.py
-   0.0 seconds: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-validate-endpoint
-   0.0 seconds: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-GaussianPack
+   0.0 seconds: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\websocket_image_save.py
+   0.0 seconds: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-validate-endpoint
+   0.0 seconds: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\ComfyUI\custom_nodes\ComfyUI-GaussianPack
 
 Context impl SQLiteImpl.
 Will assume non-transactional DDL.
@@ -49,7 +49,7 @@ Change preview_id FK from assets.id to asset_references.id.
 Database upgraded from None to 0003_add_metadata_job_id
 Starting server
 
-To see the GUI go to: http://127.0.0.1:41886
+To see the GUI go to: http://127.0.0.1:41891
 === /validate endpoint called ===
 Received JSON with keys: ['prompt']
 Prompt has 4 nodes
@@ -61,14 +61,14 @@ Prompt has 4 nodes
     Inputs: {"target_count": 100000, "output_filename": "merged", "opacity_threshold": 0, "k": 24, "ply_path": ["1", 0]}
   Node 4: PreviewGaussians
     Inputs: {"fov_degrees": 50, "image_width": 512, "image_height": 512, "renderer": "spark", "transport_format": "ply", "ply_path": ["3", 0]}
-Generated prompt_id: 9eb79041-01fa-4c3c-9a52-d5097a682453
+Generated prompt_id: 0112e46c-4de2-4676-be8f-b28685694a6f
 Calling execution.validate_prompt()...
 Validation result: valid=True
 === Validation PASSED ===
 got prompt
-LoadPLY: apple.ply -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\apple.ply
-GaussianMerge: 200000 -> 100000 splats (ratio=0.5000) via NanoGS MPMM on D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\apple.ply
-Loading PLY: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\apple.ply
+LoadPLY: apple.ply -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\apple.ply
+GaussianMerge: 200000 -> 100000 splats (ratio=0.5000) via NanoGS MPMM on D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\apple.ply
+Loading PLY: D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\apple.ply
 Initial splats: 200000
 Pruned splats: 200000, target: 100000
 Opacity Mean: 0.53443545 Median: 0.48362076
@@ -76,10 +76,10 @@ Pruning splats with opacity below 0.0000
 Original count: 200000, after opacity pruning: 200000
 After opacity pruning, 200000 splats remain.
 Pass 1: 200000 splats
-Edge costs:   0%|          | 0/27 [00:00<?, ?it/s]Edge costs:   4%|3         | 1/27 [00:01<00:35,  1.36s/it]Edge costs:   7%|7         | 2/27 [00:02<00:29,  1.17s/it]Edge costs:  11%|#1        | 3/27 [00:03<00:22,  1.08it/s]Edge costs:  15%|#4        | 4/27 [00:03<00:18,  1.24it/s]Edge costs:  19%|#8        | 5/27 [00:04<00:18,  1.20it/s]Edge costs:  22%|##2       | 6/27 [00:05<00:16,  1.24it/s]Edge costs:  26%|##5       | 7/27 [00:06<00:16,  1.21it/s]Edge costs:  30%|##9       | 8/27 [00:07<00:16,  1.16it/s]Edge costs:  33%|###3      | 9/27 [00:07<00:15,  1.15it/s]Edge costs:  37%|###7      | 10/27 [00:08<00:14,  1.21it/s]Edge costs:  41%|####      | 11/27 [00:09<00:13,  1.20it/s]Edge costs:  44%|####4     | 12/27 [00:10<00:12,  1.22it/s]Edge costs:  48%|####8     | 13/27 [00:11<00:11,  1.25it/s]Edge costs:  52%|#####1    | 14/27 [00:12<00:10,  1.20it/s]Edge costs:  56%|#####5    | 15/27 [00:12<00:09,  1.24it/s]Edge costs:  59%|#####9    | 16/27 [00:13<00:08,  1.29it/s]Edge costs:  63%|######2   | 17/27 [00:14<00:07,  1.40it/s]Edge costs:  67%|######6   | 18/27 [00:14<00:05,  1.51it/s]Edge costs:  70%|#######   | 19/27 [00:15<00:05,  1.49it/s]Edge costs:  74%|#######4  | 20/27 [00:16<00:05,  1.27it/s]Edge costs:  78%|#######7  | 21/27 [00:17<00:05,  1.15it/s]Edge costs:  81%|########1 | 22/27 [00:18<00:04,  1.16it/s]Edge costs:  85%|########5 | 23/27 [00:19<00:03,  1.19it/s]Edge costs:  89%|########8 | 24/27 [00:19<00:02,  1.30it/s]Edge costs:  93%|#########2| 25/27 [00:20<00:01,  1.45it/s]Edge costs:  96%|#########6| 26/27 [00:20<00:00,  1.49it/s]Edge costs: 100%|##########| 27/27 [00:21<00:00,  1.51it/s]Edge costs: 100%|##########| 27/27 [00:21<00:00,  1.26it/s]
+Edge costs:   0%|          | 0/27 [00:00<?, ?it/s]Edge costs:   4%|3         | 1/27 [00:02<01:03,  2.43s/it]Edge costs:   7%|7         | 2/27 [00:03<00:44,  1.76s/it]Edge costs:  11%|#1        | 3/27 [00:05<00:38,  1.61s/it]Edge costs:  15%|#4        | 4/27 [00:07<00:40,  1.77s/it]Edge costs:  19%|#8        | 5/27 [00:08<00:37,  1.72s/it]Edge costs:  22%|##2       | 6/27 [00:10<00:37,  1.78s/it]Edge costs:  26%|##5       | 7/27 [00:12<00:37,  1.85s/it]Edge costs:  30%|##9       | 8/27 [00:13<00:31,  1.64s/it]Edge costs:  33%|###3      | 9/27 [00:15<00:31,  1.77s/it]Edge costs:  37%|###7      | 10/27 [00:17<00:30,  1.81s/it]Edge costs:  41%|####      | 11/27 [00:20<00:32,  2.00s/it]Edge costs:  44%|####4     | 12/27 [00:25<00:42,  2.83s/it]Edge costs:  48%|####8     | 13/27 [00:36<01:15,  5.42s/it]Edge costs:  52%|#####1    | 14/27 [00:40<01:03,  4.88s/it]Edge costs:  56%|#####5    | 15/27 [00:42<00:51,  4.29s/it]Edge costs:  59%|#####9    | 16/27 [00:44<00:37,  3.43s/it]Edge costs:  63%|######2   | 17/27 [00:45<00:27,  2.75s/it]Edge costs:  67%|######6   | 18/27 [00:46<00:19,  2.15s/it]Edge costs:  70%|#######   | 19/27 [00:47<00:14,  1.83s/it]Edge costs:  74%|#######4  | 20/27 [00:48<00:11,  1.58s/it]Edge costs:  78%|#######7  | 21/27 [00:49<00:08,  1.37s/it]Edge costs:  81%|########1 | 22/27 [00:50<00:07,  1.46s/it]Edge costs:  85%|########5 | 23/27 [00:51<00:05,  1.27s/it]Edge costs:  89%|########8 | 24/27 [00:53<00:03,  1.27s/it]Edge costs:  93%|#########2| 25/27 [00:54<00:02,  1.26s/it]Edge costs:  96%|#########6| 26/27 [00:55<00:01,  1.25s/it]Edge costs: 100%|##########| 27/27 [00:56<00:00,  1.23s/it]Edge costs: 100%|##########| 27/27 [00:56<00:00,  2.10s/it]
   edges: 2697139, pairs: 97792 (need 100000)
   Merging 97792 pairs
 Pass 2: 102208 splats
-Edge costs:   0%|          | 0/14 [00:00<?, ?it/s]Edge costs:   7%|7         | 1/14 [00:00<00:09,  1.39it/s]Edge costs:  14%|#4        | 2/14 [00:01<00:08,  1.46it/s]Edge costs:  21%|##1       | 3/14 [00:02<00:07,  1.48it/s]Edge costs:  29%|##8       | 4/14 [00:02<00:06,  1.51it/s]Edge costs:  36%|###5      | 5/14 [00:03<00:05,  1.54it/s]Edge costs:  43%|####2     | 6/14 [00:03<00:04,  1.65it/s]Edge costs:  50%|#####     | 7/14 [00:04<00:04,  1.66it/s]Edge costs:  57%|#####7    | 8/14 [00:06<00:05,  1.02it/s]Edge costs:  64%|######4   | 9/14 [00:07<00:04,  1.02it/s]Edge costs:  71%|#######1  | 10/14 [00:08<00:03,  1.01it/s]Edge costs:  79%|#######8  | 11/14 [00:08<00:02,  1.12it/s]Edge costs:  86%|########5 | 12/14 [00:09<00:01,  1.28it/s]Edge costs:  93%|#########2| 13/14 [00:09<00:00,  1.39it/s]Edge costs: 100%|##########| 14/14 [00:10<00:00,  1.77it/s]Edge costs: 100%|##########| 14/14 [00:10<00:00,  1.37it/s]
-GaussianMerge: wrote D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1944\portable-comfyui\ComfyUI_windows_portable\ComfyUI\output\merged.ply (100000 splats, 23.7 MB)
-Prompt executed in 99.47 seconds
+Edge costs:   0%|          | 0/14 [00:00<?, ?it/s]Edge costs:   7%|7         | 1/14 [00:01<00:15,  1.16s/it]Edge costs:  14%|#4        | 2/14 [00:02<00:11,  1.01it/s]Edge costs:  21%|##1       | 3/14 [00:02<00:10,  1.08it/s]Edge costs:  29%|##8       | 4/14 [00:03<00:09,  1.08it/s]Edge costs:  36%|###5      | 5/14 [00:04<00:08,  1.12it/s]Edge costs:  43%|####2     | 6/14 [00:05<00:06,  1.22it/s]Edge costs:  50%|#####     | 7/14 [00:06<00:05,  1.23it/s]Edge costs:  57%|#####7    | 8/14 [00:07<00:05,  1.14it/s]Edge costs:  64%|######4   | 9/14 [00:08<00:05,  1.10s/it]Edge costs:  71%|#######1  | 10/14 [00:09<00:04,  1.13s/it]Edge costs:  79%|#######8  | 11/14 [00:12<00:04,  1.56s/it]Edge costs:  86%|########5 | 12/14 [00:13<00:02,  1.44s/it]Edge costs:  93%|#########2| 13/14 [00:14<00:01,  1.29s/it]Edge costs: 100%|##########| 14/14 [00:14<00:00,  1.00it/s]Edge costs: 100%|##########| 14/14 [00:14<00:00,  1.06s/it]
+GaussianMerge: wrote D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1657\portable-comfyui\ComfyUI_windows_portable\ComfyUI\output\merged.ply (100000 splats, 23.7 MB)
+Prompt executed in 154.96 seconds
