@@ -10,9 +10,9 @@
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
 [Console-warning] THREE.WARNING: Multiple instances of Three.js being imported.
-[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
-[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
+[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
+[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
 [Console-log] [GaussianPack] Loading extension...
 [Console-warning] [MaskEditor] ComfyApp.open_maskeditor is deprecated. Plugins should migrate to using the command system or direct node context menu integration.
@@ -24,14 +24,15 @@
 [Console-log] [GaussianPack] Resized node to: 512 x 572 (aspect ratio: 1.00 )
 [Console-log] [GaussianPack] fetch start: /view?filename=apple.ply&type=input&subfolder=
 [Console-log] [GaussianPack] fetch response 200; content-length=49601531
+[Console-log] [GaussianPack] download 5%  2.4/47.3 MB
 [Console-log] [GaussianPack] download 25%  12.0/47.3 MB
-[Console-log] [GaussianPack] download 35%  16.7/47.3 MB
-[Console-log] [GaussianPack] download 45%  21.6/47.3 MB
+[Console-log] [GaussianPack] download 40%  19.1/47.3 MB
+[Console-log] [GaussianPack] download 45%  21.3/47.3 MB
 [Console-log] [GaussianPack] download 50%  24.0/47.3 MB
 [Console-log] [GaussianPack] download 80%  38.0/47.3 MB
-[Console-log] [GaussianPack] download 95%  45.1/47.3 MB
+[Console-log] [GaussianPack] download 95%  45.2/47.3 MB
 [Console-log] [GaussianPack] download 100%  47.3/47.3 MB
-[Console-log] [GaussianPack] fetch done: 49601531 bytes in 215 ms (220.5 MB/s)
+[Console-log] [GaussianPack] fetch done: 49601531 bytes in 213 ms (222.1 MB/s)
 [Console-log] [GaussianPack] posting LOAD_MESH_DATA to iframe, renderer: spark filename: apple.ply
 [Console-log] [GaussianViewer] Received LOAD_MESH_DATA, size: 49601531 renderer: spark
 [Console-log] [GaussianViewer] ensureRenderer('spark') starting...
@@ -41,19 +42,15 @@
 [Console-log] [GaussianViewer] Adapter ready: spark
 [Console-log] [GaussianViewer] Loading splat (49,601,531 bytes) via spark...
 [Console-log] [Spark] new SplatMesh url=apple.ply
-[Console-warning] [.WebGL-0x3c54048a8200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
-[Console-warning] [.WebGL-0x3c54048a8200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
-[Console-warning] [.WebGL-0x3c54048a8200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
-[Console-warning] [.WebGL-0x3c54048a8200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)
-[Console-log] [Spark] parse 0%
-[Console-log] [Spark] parse 0%
-[Console-log] [Spark] parse 0%
-[Console-log] [Spark] parse 10%
+[Console-warning] [.WebGL-0x39fc00132600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[Console-warning] [.WebGL-0x39fc00132600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[Console-warning] [.WebGL-0x39fc00132600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[Console-warning] [.WebGL-0x39fc00132600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)
 [Console-log] [Spark] parse 51%
 [Console-log] [Spark] parse 80%
 [Console-log] [Spark] parse 100%
-[Console-log] [Spark] loaded 200000 splats in 960 ms
-[Console-log] [GaussianViewer] adapter.loadSplat resolved in 960 ms
+[Console-log] [Spark] loaded 200000 splats in 704 ms
+[Console-log] [GaussianViewer] adapter.loadSplat resolved in 704 ms
 [Console-log] [GaussianViewer] frameOnBounds: bounds center=(0.002, -0.005, -0.015) size=(1.808, 1.857, 1.969)
 [Console-log] [GaussianViewer] Framed: cam=(0.00, -0.01, -2.44) target=(0.00, -0.01, -0.02) maxExtent=1.97 radius=2.43 fov=50
 [Console-log] [GaussianViewer] Loaded successfully
@@ -62,10 +59,11 @@
 [Console-log] [GaussianPack] fetch start: /view?filename=merged.ply&type=output&subfolder=
 [Console-log] [GaussianPack] fetch response 200; content-length=24801531
 [Console-log] [GaussianPack] download 25%  6.0/23.7 MB
+[Console-log] [GaussianPack] download 35%  8.3/23.7 MB
+[Console-log] [GaussianPack] download 40%  9.5/23.7 MB
 [Console-log] [GaussianPack] download 50%  12.0/23.7 MB
-[Console-log] [GaussianPack] download 85%  20.3/23.7 MB
 [Console-log] [GaussianPack] download 100%  23.7/23.7 MB
-[Console-log] [GaussianPack] fetch done: 24801531 bytes in 2007 ms (11.8 MB/s)
+[Console-log] [GaussianPack] fetch done: 24801531 bytes in 1931 ms (12.3 MB/s)
 [Console-log] [GaussianPack] posting LOAD_MESH_DATA to iframe, renderer: spark filename: merged.ply
 [Console-log] [GaussianViewer] Received LOAD_MESH_DATA, size: 24801531 renderer: spark
 [Console-log] [GaussianViewer] ensureRenderer('spark') starting...
@@ -77,10 +75,9 @@
 [Console-log] [Spark] new SplatMesh url=merged.ply
 [Console-log] [Spark] parse 1%
 [Console-log] [Spark] parse 51%
-[Console-log] [Spark] parse 70%
 [Console-log] [Spark] parse 100%
-[Console-log] [Spark] loaded 100000 splats in 3664 ms
-[Console-log] [GaussianViewer] adapter.loadSplat resolved in 3664 ms
+[Console-log] [Spark] loaded 100000 splats in 3649 ms
+[Console-log] [GaussianViewer] adapter.loadSplat resolved in 3650 ms
 [Console-log] [GaussianViewer] frameOnBounds: bounds center=(0.001, -0.005, -0.015) size=(1.807, 1.857, 1.968)
 [Console-log] [GaussianViewer] Framed: cam=(0.00, -0.01, -2.44) target=(0.00, -0.01, -0.02) maxExtent=1.97 radius=2.43 fov=50
 [Console-log] [GaussianViewer] Loaded successfully
