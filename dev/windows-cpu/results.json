@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-05-19T17:04:38.402532+00:00",
+  "timestamp": "2026-05-25T19:30:29.905053+00:00",
   "platform": "windows",
   "hardware": {
     "os": "Windows-2025Server-10.0.26100-SP0",
-    "cpu": "AMD64 Family 25 Model 17 Stepping 1, AuthenticAMD"
+    "cpu": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD"
   },
   "commit_hash": "6f8632efff00b21d22fb9ed493c85f4f0e2de9d4",
-  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/26108986643",
+  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/26416330931",
   "success": true,
   "summary": {
     "total": 1,
@@ -17,19 +17,19 @@
     {
       "name": "merge_splats",
       "status": "pass",
-      "duration_seconds": 132.93,
+      "duration_seconds": 248.67,
       "error": null,
       "hardware": {
         "os": "Windows-2025Server-10.0.26100-SP0",
-        "cpu": "AMD64 Family 25 Model 17 Stepping 1, AuthenticAMD"
+        "cpu": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
           "peak": 0.75,
-          "avg": 0.62
+          "avg": 0.56
         },
         "total_ram_gb": 16.0,
-        "samples": 123
+        "samples": 232
       }
     }
   ]
