@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-05-19T17:02:08.508231+00:00",
+  "timestamp": "2026-05-25T19:25:07.252005+00:00",
   "platform": "linux",
   "hardware": {
     "os": "Linux-6.17.0-1013-azure-x86_64-with-glibc2.39",
-    "cpu": "AMD EPYC 7763 64-Core Processor"
+    "cpu": "AMD EPYC 9V74 80-Core Processor"
   },
   "commit_hash": "6f8632efff00b21d22fb9ed493c85f4f0e2de9d4",
-  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/26108984725",
+  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/26416330269",
   "success": true,
   "summary": {
     "total": 1,
@@ -17,19 +17,19 @@
     {
       "name": "merge_splats",
       "status": "pass",
-      "duration_seconds": 59.3,
+      "duration_seconds": 60.02,
       "error": null,
       "hardware": {
         "os": "Linux-6.17.0-1013-azure-x86_64-with-glibc2.39",
-        "cpu": "AMD EPYC 7763 64-Core Processor"
+        "cpu": "AMD EPYC 9V74 80-Core Processor"
       },
       "resources": {
         "ram": {
-          "peak": 0.8,
-          "avg": 0.74
+          "peak": 0.73,
+          "avg": 0.64
         },
         "total_ram_gb": 15.6,
-        "samples": 59
+        "samples": 60
       }
     }
   ]
