@@ -65,8 +65,9 @@ app.registerExtension({
             };
         }
 
-        if (nodeData.name === "PreviewGaussians") {
-            console.log("[GaussianPack] Registering Preview Gaussians node");
+        if (nodeData.name === "PreviewGaussians" || nodeData.name === "PreviewGaussianSpectate") {
+            const _isSpectate = nodeData.name === "PreviewGaussianSpectate";
+            console.log("[GaussianPack] Registering " + (_isSpectate ? "Preview Gaussian Spectate" : "Preview Gaussians") + " node");
 
             // After ComfyUI applies serialized widgets_values, defend
             // against stale workflow schemas. Two shapes have shipped
@@ -275,8 +276,13 @@ app.registerExtension({
                 iframe.style.border = "none";
                 iframe.style.backgroundColor = "#1a1a1a";
 
-                // Point to gsplat.js HTML viewer (with cache buster)
-                iframe.src = `/extensions/${EXTENSION_FOLDER}/viewer_gaussian.html?v=` + Date.now();
+                // Point to gsplat.js HTML viewer (with cache buster).
+                // PreviewGaussianSpectate appends `mode=spectate` so the
+                // viewer swaps TrackballControls for SpectateControls.
+                {
+                    const _qs = _isSpectate ? "mode=spectate&" : "";
+                    iframe.src = `/extensions/${EXTENSION_FOLDER}/viewer_gaussian.html?${_qs}v=` + Date.now();
+                }
 
                 // Create info panel
                 const infoPanel = document.createElement("div");
@@ -489,6 +495,25 @@ app.registerExtension({
                             const imageWidth = intrinsics[0][2] * 2;   // cx * 2
                             const imageHeight = intrinsics[1][2] * 2;  // cy * 2
                             this.resizeToAspectRatio(imageWidth, imageHeight);
+                        }
+
+                        // Spectate mode: forward the move_speed slider to the
+                        // iframe so the in-viewer SpectateControls picks up
+                        // the node's current setting. URL params seed the
+                        // initial value on first iframe load; this
+                        // postMessage updates the running viewer on
+                        // subsequent executions without an iframe reload.
+                        const _mode = message.mode?.[0];
+                        const _moveSpeed = message.move_speed?.[0];
+                        if (_mode === "spectate" && iframe.contentWindow) {
+                            try {
+                                iframe.contentWindow.postMessage({
+                                    type: "SPECTATE_CONFIG",
+                                    moveSpeed: _moveSpeed,
+                                }, "*");
+                            } catch (e) {
+                                console.warn("[GaussianPack] failed to post SPECTATE_CONFIG", e);
+                            }
                         }
 
                         // Update info panel

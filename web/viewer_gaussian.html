@@ -209,6 +209,12 @@
         </span>
         <button id="resetCamera" title="Reset camera view">Reset View</button>
         <button id="screenshot" title="Take screenshot">Screenshot</button>
+        <!-- spectate-mode UI; shown only when ?mode=spectate -->
+        <span id="spectateBar" style="display:none; margin-left: 10px; align-items: center; gap: 6px;">
+            <label for="spectateSpeed" style="color:#aaa; font: 10px monospace;">Speed</label>
+            <input type="range" id="spectateSpeed" min="0.05" max="50" step="0.05" value="2.0" style="width: 120px;">
+            <span id="spectateSpeedLabel" style="color:#cfc; font: 10px monospace; min-width: 3em;">2.00</span>
+        </span>
     </div>
 
     <script type="module">
@@ -231,6 +237,176 @@
     // azimuth/up constraints which felt locked when looking from below.
     import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
     import { SparkRenderer, SplatMesh } from './js/spark.module.min.js';
+
+    // ============================================================
+    // Mode detection — `?mode=spectate` swaps TrackballControls for
+    // SpectateControls (WASD + Space/C + drag-to-look). Defaults to
+    // trackball when the URL param is absent.
+    // ============================================================
+    const _urlParams = new URLSearchParams(window.location.search);
+    const VIEWER_MODE = _urlParams.get("mode") === "spectate" ? "spectate" : "trackball";
+    const SPECTATE_INITIAL_SPEED = parseFloat(_urlParams.get("speed") || "2.0");
+
+    // ============================================================
+    // SpectateControls — TrackballControls-compatible API for fly-cam.
+    //
+    // Bindings:
+    //     W A S D            in-plane move (camera-local forward/strafe)
+    //     Space / C          up / down (world up axis)
+    //     Shift              boost (3x speed)
+    //     Left-drag          mouse look (yaw + clamped pitch)
+    //     Wheel              scale move speed
+    //
+    // Mirrors the TrackballControls surface used elsewhere in this file
+    // (`target`, `update()`, `handleResize()`, `dispose()`) so the
+    // adapter's existing update loop and resize observer keep working.
+    // ============================================================
+    class SpectateControls {
+        constructor(camera, domElement) {
+            this.camera = camera;
+            this.dom = domElement;
+            this.moveSpeed = SPECTATE_INITIAL_SPEED;
+            this.lookSensitivity = 0.0025;  // radians per pixel
+            this.boostMultiplier = 3.0;
+
+            this._keys = new Set();
+            this._isDragging = false;
+            this._lastX = 0;
+            this._lastY = 0;
+            this._yaw = 0;
+            this._pitch = 0;
+            this._lastTime = performance.now();
+
+            // TrackballControls API compat — target is unused but read by
+            // some scene framers; expose it so they don't crash.
+            this.target = new THREE.Vector3(0, 0, 0);
+
+            // Reusable scratch vectors (avoid alloc in hot path)
+            this._scratchEuler = new THREE.Euler();
+            this._scratchQ = new THREE.Quaternion();
+            this._scratchFwd = new THREE.Vector3();
+            this._scratchRight = new THREE.Vector3();
+            this._scratchUp = new THREE.Vector3(0, 1, 0);
+            this._scratchMove = new THREE.Vector3();
+
+            this._syncFromCamera();
+
+            this._onKeyDown = this._onKeyDown.bind(this);
+            this._onKeyUp = this._onKeyUp.bind(this);
+            this._onMouseDown = this._onMouseDown.bind(this);
+            this._onMouseMove = this._onMouseMove.bind(this);
+            this._onMouseUp = this._onMouseUp.bind(this);
+            this._onContextMenu = (e) => e.preventDefault();
+            this._onWheel = this._onWheel.bind(this);
+            this._onBlur = () => this._keys.clear();
+
+            // window-level keydown so focus state doesn't eat input
+            window.addEventListener("keydown", this._onKeyDown);
+            window.addEventListener("keyup", this._onKeyUp);
+            window.addEventListener("blur", this._onBlur);
+            this.dom.addEventListener("mousedown", this._onMouseDown);
+            window.addEventListener("mousemove", this._onMouseMove);
+            window.addEventListener("mouseup", this._onMouseUp);
+            this.dom.addEventListener("contextmenu", this._onContextMenu);
+            this.dom.addEventListener("wheel", this._onWheel, { passive: false });
+        }
+
+        _syncFromCamera() {
+            // Read current orientation into yaw/pitch so we start without a jump.
+            this._scratchEuler.setFromQuaternion(this.camera.quaternion, "YXZ");
+            this._yaw = this._scratchEuler.y;
+            this._pitch = this._scratchEuler.x;
+        }
+
+        _onKeyDown(e) {
+            this._keys.add(e.code);
+            // suppress browser scroll on movement keys
+            if (["Space", "KeyW", "KeyA", "KeyS", "KeyD", "KeyC"].includes(e.code)) {
+                e.preventDefault();
+            }
+        }
+        _onKeyUp(e) { this._keys.delete(e.code); }
+
+        _onMouseDown(e) {
+            if (e.button !== 0) return;  // left button only
+            this._isDragging = true;
+            this._lastX = e.clientX;
+            this._lastY = e.clientY;
+            this.dom.style.cursor = "grabbing";
+        }
+        _onMouseMove(e) {
+            if (!this._isDragging) return;
+            const dx = e.clientX - this._lastX;
+            const dy = e.clientY - this._lastY;
+            this._lastX = e.clientX;
+            this._lastY = e.clientY;
+            this._yaw   -= dx * this.lookSensitivity;
+            this._pitch -= dy * this.lookSensitivity;
+            const halfPi = Math.PI * 0.5 - 1e-4;
+            this._pitch = Math.max(-halfPi, Math.min(halfPi, this._pitch));
+        }
+        _onMouseUp() {
+            this._isDragging = false;
+            this.dom.style.cursor = "grab";
+        }
+        _onWheel(e) {
+            e.preventDefault();
+            const factor = e.deltaY > 0 ? 0.9 : 1.111;
+            this.setSpeed(this.moveSpeed * factor);
+        }
+
+        update() {
+            const now = performance.now();
+            const dt = Math.min(0.1, (now - this._lastTime) / 1000);
+            this._lastTime = now;
+
+            // apply yaw/pitch to camera
+            this._scratchQ.setFromEuler(
+                this._scratchEuler.set(this._pitch, this._yaw, 0, "YXZ"),
+            );
+            this.camera.quaternion.copy(this._scratchQ);
+
+            // camera-local basis vectors
+            this._scratchFwd.set(0, 0, -1).applyQuaternion(this._scratchQ);
+            this._scratchRight.set(1, 0, 0).applyQuaternion(this._scratchQ);
+
+            this._scratchMove.set(0, 0, 0);
+            if (this._keys.has("KeyW")) this._scratchMove.add(this._scratchFwd);
+            if (this._keys.has("KeyS")) this._scratchMove.sub(this._scratchFwd);
+            if (this._keys.has("KeyD")) this._scratchMove.add(this._scratchRight);
+            if (this._keys.has("KeyA")) this._scratchMove.sub(this._scratchRight);
+            if (this._keys.has("Space")) this._scratchMove.add(this._scratchUp);
+            if (this._keys.has("KeyC"))  this._scratchMove.sub(this._scratchUp);
+
+            if (this._scratchMove.lengthSq() > 0) {
+                const boost = (this._keys.has("ShiftLeft") || this._keys.has("ShiftRight"))
+                    ? this.boostMultiplier : 1;
+                this._scratchMove.normalize().multiplyScalar(this.moveSpeed * boost * dt);
+                this.camera.position.add(this._scratchMove);
+            }
+        }
+
+        setSpeed(s) {
+            this.moveSpeed = Math.max(0.05, Math.min(50, s));
+            // notify external UI (the slider in #spectateBar) so it stays in sync
+            try {
+                this.dom.dispatchEvent(new CustomEvent("spectatespeedchange",
+                    { detail: { speed: this.moveSpeed }}));
+            } catch (_) {}
+        }
+
+        handleResize() { /* no cached screen rect; nothing to do */ }
+        dispose() {
+            window.removeEventListener("keydown", this._onKeyDown);
+            window.removeEventListener("keyup", this._onKeyUp);
+            window.removeEventListener("blur", this._onBlur);
+            this.dom.removeEventListener("mousedown", this._onMouseDown);
+            window.removeEventListener("mousemove", this._onMouseMove);
+            window.removeEventListener("mouseup", this._onMouseUp);
+            this.dom.removeEventListener("contextmenu", this._onContextMenu);
+            this.dom.removeEventListener("wheel", this._onWheel);
+        }
+    }
 
     // Lazy <script> loader for non-module bundles (PlayCanvas).
     const _loaded = new Set();
@@ -343,15 +519,24 @@
             this.camera.position.set(0, 0, -3);
             this.camera.lookAt(0, 0, 0);
 
-            this.controls = new TrackballControls(this.camera, this.canvas);
-            // ParaView-ish tuning: snappier rotate, modest pan speed.
-            this.controls.rotateSpeed = 3.5;
-            this.controls.zoomSpeed = 1.2;
-            this.controls.panSpeed = 0.8;
-            this.controls.staticMoving = true;     // no inertia drift
-            this.controls.dynamicDampingFactor = 0.15;
-            this.controls.target.set(0, 0, 0);
-            this.controls.update();
+            if (VIEWER_MODE === "spectate") {
+                // Fly-cam: WASD + Space/C + drag-to-look. Initial position
+                // pulled back a bit so the user starts looking at the scene
+                // origin (the framing pass after splat load will replace
+                // this anyway).
+                this.controls = new SpectateControls(this.camera, this.canvas);
+                this.canvas.style.cursor = "grab";
+            } else {
+                this.controls = new TrackballControls(this.camera, this.canvas);
+                // ParaView-ish tuning: snappier rotate, modest pan speed.
+                this.controls.rotateSpeed = 3.5;
+                this.controls.zoomSpeed = 1.2;
+                this.controls.panSpeed = 0.8;
+                this.controls.staticMoving = true;     // no inertia drift
+                this.controls.dynamicDampingFactor = 0.15;
+                this.controls.target.set(0, 0, 0);
+                this.controls.update();
+            }
 
             const ro = new ResizeObserver(() => {
                 const w = this.canvas.clientWidth  || 1;
@@ -740,6 +925,34 @@
     canvas.addEventListener('pointerup',  () => emitCameraState());
     canvas.addEventListener('wheel',      () => emitCameraState(), { passive: true });
 
+    // -------- Spectate-mode speed slider + sync --------------------
+    // The slider in #spectateBar is hidden unless VIEWER_MODE==spectate.
+    // Two-way sync: slider input -> SpectateControls.setSpeed; wheel
+    // scroll on canvas -> CustomEvent("spectatespeedchange") -> slider.
+    const spectateBar = document.getElementById('spectateBar');
+    const spectateSlider = document.getElementById('spectateSpeed');
+    const spectateSpeedLabel = document.getElementById('spectateSpeedLabel');
+    function setSpectateSpeedUI(v) {
+        const clamped = Math.max(0.05, Math.min(50, v));
+        spectateSlider.value = clamped;
+        spectateSpeedLabel.textContent = clamped.toFixed(2);
+    }
+    if (VIEWER_MODE === "spectate") {
+        spectateBar.style.display = "inline-flex";
+        setSpectateSpeedUI(SPECTATE_INITIAL_SPEED);
+        spectateSlider.addEventListener('input', (e) => {
+            const v = parseFloat(e.target.value);
+            spectateSpeedLabel.textContent = v.toFixed(2);
+            if (adapter && adapter.controls && adapter.controls.setSpeed) {
+                adapter.controls.setSpeed(v);
+            }
+        });
+        // SpectateControls dispatches this on wheel-scroll speed changes
+        canvas.addEventListener('spectatespeedchange', (e) => {
+            setSpectateSpeedUI(e.detail.speed);
+        });
+    }
+
     // Receive from parent
     window.addEventListener('message', (event) => {
         const msg = event.data || {};
@@ -751,6 +964,16 @@
         } else if (msg.type === 'RESTORE_CAMERA_STATE' && msg.state) {
             if (adapterReady) applyCameraState(msg.state);
             else              pendingRestore = msg.state;
+        } else if (msg.type === 'SPECTATE_CONFIG') {
+            // Parent (ComfyUI JS) pushed an updated move_speed from the
+            // node widget. Apply to controls + UI slider if we're in
+            // spectate mode.
+            if (VIEWER_MODE === "spectate" && typeof msg.moveSpeed === "number") {
+                setSpectateSpeedUI(msg.moveSpeed);
+                if (adapter && adapter.controls && adapter.controls.setSpeed) {
+                    adapter.controls.setSpeed(msg.moveSpeed);
+                }
+            }
         }
     });
 
