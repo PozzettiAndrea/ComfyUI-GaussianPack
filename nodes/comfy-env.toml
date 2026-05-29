@@ -1,18 +1,4 @@
-# GaussianPack comfy-env isolation manifest.
-#
-# Most nodes (LoadPLY, GaussianMerge, GaussianAnalysis, GaussianExport,
-# TransformGaussian, PreviewGaussians) are pure-numpy / pure-Python and
-# only need plyfile + standard scientific deps. PreviewGaussianCamera is
-# the only one that wants a CUDA Gaussian-splat rasterizer; declared as
-# an OPTIONAL [cuda] package so non-NVIDIA installs (AMD / Apple Silicon
-# / CPU-only) get a no-op skip from cuda-wheels at install time and the
-# node's pure-torch fallback at runtime.
-
 [cuda]
-# gsplat is the reference rasterizer (CVPR 2025 nerfstudio-project).
-# cuda-wheels has a recipe at packages/gsplat.yml that publishes
-# prebuilt wheels for cu12.x/torch2.x/cp31x. On non-NVIDIA installs
-# cuda-wheels silently skips this and the node falls back to pure-torch.
 packages = ["gsplat"]
 
 [dependencies]
