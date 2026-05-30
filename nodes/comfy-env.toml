@@ -17,3 +17,10 @@ aiohttp = "*"
 # NanoGS — Gaussian-splat compression / decimation for GaussianMerge's
 # `cpu_nanogs` method. Git dep; matches the existing requirements.txt.
 nanogs = { git = "https://github.com/saliteta/NanoGS.git" }
+packaging = "*"
+psutil = "*"
+rich = "*"
+# SPZ route uses safetensors for compact splat I/O — cosmetic warning at
+# worker startup otherwise (and the SPZ format is unusable in the iframe
+# viewer without it).
+safetensors = "*"

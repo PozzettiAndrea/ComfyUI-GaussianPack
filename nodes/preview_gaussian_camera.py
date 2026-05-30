@@ -55,6 +55,55 @@ def _p(msg: str) -> None:
     print(f"[PreviewGaussianCamera] {msg}", file=sys.stderr, flush=True)
 
 
+def _request_vram_eviction(needed_bytes: int) -> None:
+    """Ask comfy-env's parent ComfyUI process to evict cross-worker models so
+    this transient-tensor node has VRAM headroom. Mirrors the helpers in
+    PanoramaDepthMerge / HYWM2GaussianTrain — see depth_merge.py:
+    _request_vram_eviction for the full rationale.
+
+    Three-step:
+      1. Ask the parent ComfyUI process (via comfy_worker.call_parent IPC) to
+         evict sibling-worker patchers across all worker subprocesses. The
+         parent's _handle_vram_budget calls mm.free_memory(N * 1.1, device)
+         on its side -- which iterates current_loaded_models across every
+         registered patcher (HYWM2Reconstruct's DiT lives in the hywm2-nodes
+         worker, MoGe2's model in moge2-nodes, etc.) and unloads as needed.
+      2. In-worker mm.free_memory as belt-and-braces (no-op for GaussianPack
+         since it doesn't register patchers itself).
+      3. torch.cuda.empty_cache() to release any cached blocks held by our
+         worker's allocator so the next big alloc sees the freshly-freed
+         space contiguously.
+
+    Cleanly no-ops outside a comfy-env worker subprocess (e.g. unit tests
+    in plain Python without the worker shim).
+    """
+    try:
+        import comfy_worker  # noqa: F401 - injected at worker startup
+        try:
+            comfy_worker.call_parent(
+                "request_vram_budget", total_size=int(needed_bytes)
+            )
+            _p(f"  -> requested {needed_bytes / 1e9:.2f} GB eviction "
+               f"via comfy_worker.call_parent")
+        except Exception as e:
+            _p(f"  -> comfy_worker.call_parent failed: {e}")
+    except ImportError:
+        _p("  -> comfy_worker module unavailable; local free_memory only")
+
+    try:
+        import comfy.model_management as mm
+        device = mm.get_torch_device()
+        mm.free_memory(int(needed_bytes), device)
+    except Exception as e:
+        _p(f"  -> local mm.free_memory failed: {e}")
+
+    try:
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+    except Exception:
+        pass
+
+
 # ---------------------------------------------------------------------------
 # PLY loading
 # ---------------------------------------------------------------------------
@@ -181,6 +230,7 @@ def _normalize_K_to_pixel(intr: torch.Tensor, W: int, H: int) -> torch.Tensor:
 # Render path 1: gsplat (CUDA, reference)
 # ---------------------------------------------------------------------------
 
+@torch.no_grad()
 def _render_gsplat(
     splat: dict,
     extrinsics: torch.Tensor,
@@ -191,8 +241,19 @@ def _render_gsplat(
     background: torch.Tensor,
     device: torch.device,
 ) -> torch.Tensor:
-    """Render via gsplat.rasterization. Raises ImportError if gsplat isn't
-    available -- the caller catches and falls back to the torch path.
+    """Render via gsplat.rasterization, one view at a time.
+
+    Why per-view: gsplat's multi-camera fused path allocates an
+    `image_ids = batch_ids * C + camera_ids` index tensor at line 442
+    of gsplat/rendering.py, sized by N_gauss × V × avg_tiles_per_gauss.
+    At V=12, N=5.5M, 1024² with deep tile overlap, that's >24 GB and
+    OOMs on a 3090. Per-view, the workspace shrinks by a factor of V
+    (here 12×) and fits comfortably. We lose the batched-fusion
+    marginal speedup but the cost is dwarfed by the cuda-kernel
+    runtime which already dominates.
+
+    Raises ImportError if gsplat isn't available -- the caller catches
+    and falls back to the torch path.
     """
     from gsplat.rendering import rasterization   # noqa: F401 - present check
 
@@ -216,22 +277,35 @@ def _render_gsplat(
     if Ks.dim() == 2:
         Ks = Ks.unsqueeze(0).expand(viewmats.shape[0], 3, 3).contiguous()
 
-    render_colors, _alphas, _info = rasterization(
-        means=means,
-        quats=quats,
-        scales=scales,
-        opacities=opacities,
-        colors=colors,
-        viewmats=viewmats,
-        Ks=Ks,
-        width=int(W),
-        height=int(H),
-        near_plane=float(near),
-        sh_degree=sh_degree,
-        backgrounds=background.to(device).unsqueeze(0).expand(viewmats.shape[0], 3),
-    )
-    # gsplat returns [V, H, W, 3] in [0, 1] (with bg applied).
-    return render_colors.clamp(0.0, 1.0)
+    V = int(viewmats.shape[0])
+    bg = background.to(device).unsqueeze(0)  # [1, 3]
+
+    out_frames = []
+    for v in range(V):
+        # Slice ONE view at a time. Per-view workspace ≈ 1×V smaller than
+        # the batched path, and the per-call overhead is negligible vs
+        # the cuda-kernel cost.
+        rc, _alphas, _info = rasterization(
+            means=means,
+            quats=quats,
+            scales=scales,
+            opacities=opacities,
+            colors=colors,
+            viewmats=viewmats[v:v + 1],
+            Ks=Ks[v:v + 1],
+            width=int(W),
+            height=int(H),
+            near_plane=float(near),
+            sh_degree=sh_degree,
+            backgrounds=bg,
+        )
+        out_frames.append(rc[0].clamp(0.0, 1.0))   # [H, W, 3]
+        # Release per-view cached blocks before the next iteration so the
+        # caching allocator doesn't pile up across views.
+        if torch.cuda.is_available():
+            torch.cuda.empty_cache()
+
+    return torch.stack(out_frames, dim=0)          # [V, H, W, 3]
 
 
 # ---------------------------------------------------------------------------
@@ -252,6 +326,7 @@ def _quat_to_rotmat(quats: torch.Tensor) -> torch.Tensor:
     return R
 
 
+@torch.no_grad()
 def _render_torch(
     splat: dict,
     extrinsics: torch.Tensor,
@@ -362,6 +437,29 @@ def _render_torch(
         trace = cov_2d[:, 0, 0] + cov_2d[:, 1, 1]
         lambda_max = 0.5 * (trace + torch.sqrt((trace * trace - 4 * det).clamp_min(0)))
         radius = 3.0 * torch.sqrt(lambda_max.clamp_min(1e-6))
+
+        # X/Y frustum cull: drop gaussians whose 3σ ellipse lies entirely
+        # outside the image bounds. gsplat does this internally; the torch
+        # fallback has to as well or it wastes per-pixel evaluation on
+        # off-screen splats (a 12-view panorama renders ~12× more gaussians
+        # than any one view actually sees).
+        orig_N = uv_pixel.shape[0]
+        in_bounds = (
+            (uv_pixel[:, 0] + radius >= 0) & (uv_pixel[:, 0] - radius < W) &
+            (uv_pixel[:, 1] + radius >= 0) & (uv_pixel[:, 1] - radius < H)
+        )
+        if not torch.all(in_bounds):
+            uv_pixel = uv_pixel[in_bounds]
+            conic = conic[in_bounds]
+            radius = radius[in_bounds]
+            rgbs_v = rgbs_v[in_bounds]
+            opa_v = opa_v[in_bounds]
+            Z = Z[in_bounds]
+            _p(f"  view {v}: {orig_N} → {uv_pixel.shape[0]} in-frustum gaussians "
+               f"({100 * uv_pixel.shape[0] / max(orig_N, 1):.0f}%)")
+            if uv_pixel.shape[0] == 0:
+                out_images.append(background.expand(H, W, 3).clone())
+                continue
 
         # Z-sort near-to-far for front-to-back alpha-compositing.
         sort_idx = torch.argsort(Z)
@@ -561,6 +659,17 @@ class PreviewGaussianCamera:
             f"rendering {V} view(s) @ {image_width}×{image_height} "
             f"({N_gauss} gaussians)"
         )
+
+        # Ask comfy to evict sibling-worker patchers so we have VRAM
+        # headroom for the rasterizer. Estimate: roughly N_gauss × H × W
+        # × 1e-3 bytes — empirically covers the gsplat per-view
+        # workspace (tile-intersection buffers + per-pixel accumulators)
+        # plus our own splat tensors with a comfortable margin. For 5.5M
+        # gauss @ 1024² this is ~5.8 GB. Helper handles the cross-worker
+        # IPC + local mm.free_memory + empty_cache.
+        peak_bytes = int(N_gauss * int(image_height) * int(image_width) * 1e-3)
+        _p(f"  -> requesting {peak_bytes / 1e9:.2f} GB VRAM headroom")
+        _request_vram_eviction(peak_bytes)
 
         # Render: tiered backend selection.
         used_backend = None
