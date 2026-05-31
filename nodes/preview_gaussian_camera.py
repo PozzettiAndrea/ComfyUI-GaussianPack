@@ -278,7 +278,18 @@ def _render_gsplat(
         Ks = Ks.unsqueeze(0).expand(viewmats.shape[0], 3, 3).contiguous()
 
     V = int(viewmats.shape[0])
-    bg = background.to(device).unsqueeze(0)  # [1, 3]
+    # gsplat's `rasterization` defaults packed=True. In packed mode the
+    # underlying `rasterize_to_pixels` flattens valid splats to (nnz, 2)
+    # so `image_dims = means2d.shape[:-2] = ()` and the bg-shape
+    # assertion expects exactly `(channels,) = (3,)` -- NOT (C, 3).
+    # Passing (1, 3) trips: `AssertionError: torch.Size([1, 3])` at
+    # _wrapper.py:598. So pass the 1D color and let gsplat broadcast.
+    bg = background.to(device).view(3).contiguous()  # [3]
+    _p(f"  gsplat: means={tuple(means.shape)} quats={tuple(quats.shape)} "
+       f"scales={tuple(scales.shape)} opacities={tuple(opacities.shape)} "
+       f"colors={tuple(colors.shape)} sh_degree={sh_degree} bg={tuple(bg.shape)}")
+    _p(f"  gsplat: viewmats={tuple(viewmats.shape)} Ks={tuple(Ks.shape)} "
+       f"H×W={H}×{W} near={near} V={V}")
 
     out_frames = []
     for v in range(V):
@@ -299,6 +310,13 @@ def _render_gsplat(
             sh_degree=sh_degree,
             backgrounds=bg,
         )
+        # Per-view memory probe so we can see whether VRAM is climbing or
+        # holding steady across views (useful when debugging OOMs).
+        if torch.cuda.is_available() and (v == 0 or v == V - 1):
+            alloc = torch.cuda.memory_allocated(device) / 1e9
+            reserv = torch.cuda.memory_reserved(device) / 1e9
+            _p(f"  view {v + 1}/{V}: out={tuple(rc.shape)} "
+               f"alloc={alloc:.2f} GB reserved={reserv:.2f} GB")
         out_frames.append(rc[0].clamp(0.0, 1.0))   # [H, W, 3]
         # Release per-view cached blocks before the next iteration so the
         # caching allocator doesn't pile up across views.
@@ -376,6 +394,8 @@ def _render_torch(
         ).contiguous()
     V = int(extrinsics.shape[0])
 
+    _p(f"  torch fallback: V={V} N={means_w.shape[0]} H×W={H}×{W} near={near}")
+
     out_images = []
     for v in range(V):
         w2c = extrinsics[v].to(device, torch.float32)
@@ -388,6 +408,9 @@ def _render_torch(
         z_cam = means_cam[:, 2]
         # Cull behind near plane.
         keep = z_cam > near
+        N_in_z = int(keep.sum())
+        _p(f"  view {v}: z-cull {means_w.shape[0]} -> {N_in_z} "
+           f"(z range [{z_cam.min():.3f}, {z_cam.max():.3f}])")
         if not torch.any(keep):
             out_images.append(background.expand(H, W, 3).clone())
             continue
@@ -613,6 +636,20 @@ class PreviewGaussianCamera:
         # Load splat dict.
         splat = _load_3dgs_ply(ply_path)
         N_gauss = int(splat["means"].shape[0])
+        _p(f"loaded {N_gauss} gaussians from {Path(ply_path).name}")
+        means_w = splat["means"]
+        _p(f"  splat world-space bounds: "
+           f"min=({means_w[:, 0].min():.3f}, {means_w[:, 1].min():.3f}, "
+           f"{means_w[:, 2].min():.3f}) "
+           f"max=({means_w[:, 0].max():.3f}, {means_w[:, 1].max():.3f}, "
+           f"{means_w[:, 2].max():.3f})")
+        _p(f"  log-scale range: "
+           f"[{splat['scales'].min():.2f}, {splat['scales'].max():.2f}] "
+           f"-> linear [{splat['scales'].min().exp():.4f}, "
+           f"{splat['scales'].max().exp():.4f}]")
+        _p(f"  opacity (sigmoid) range: "
+           f"[{splat['opacities'].sigmoid().min():.3f}, "
+           f"{splat['opacities'].sigmoid().max():.3f}]")
 
         # Normalize input shapes.
         ext = extrinsics.detach().float()
@@ -647,6 +684,12 @@ class PreviewGaussianCamera:
 
         # Convert normalized-K (PanoPack convention, fx<2) to pixel-K.
         intr_pixel = _normalize_K_to_pixel(intr, int(image_width), int(image_height))
+        _p(f"extrinsics shape={tuple(ext.shape)} "
+           f"intrinsics shape={tuple(intr_pixel.shape)}")
+        _p(f"  first extrinsic translation: "
+           f"({ext[0, 0, 3]:.3f}, {ext[0, 1, 3]:.3f}, {ext[0, 2, 3]:.3f})")
+        _p(f"  first K: fx={intr_pixel[0, 0, 0]:.1f} fy={intr_pixel[0, 1, 1]:.1f} "
+           f"cx={intr_pixel[0, 0, 2]:.1f} cy={intr_pixel[0, 1, 2]:.1f}")
 
         bg_color = (
             torch.zeros(3, dtype=torch.float32)
