@@ -24,3 +24,4 @@ rich = "*"
 # worker startup otherwise (and the SPZ format is unusable in the iframe
 # viewer without it).
 safetensors = "*"
+scikit-learn = "*"
