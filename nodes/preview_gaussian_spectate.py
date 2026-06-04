@@ -48,12 +48,6 @@ class PreviewGaussianSpectate:
                         "from PreviewGaussians' 50."
                     ),
                 }),
-                "image_width": ("INT", {
-                    "default": 768, "min": 64, "max": 4096, "step": 8,
-                }),
-                "image_height": ("INT", {
-                    "default": 512, "min": 64, "max": 4096, "step": 8,
-                }),
                 "move_speed": ("FLOAT", {
                     "default": 2.0, "min": 0.05, "max": 50.0, "step": 0.05,
                     "tooltip": (
@@ -62,12 +56,12 @@ class PreviewGaussianSpectate:
                         "scroll the mouse wheel. Shift = 3x boost."
                     ),
                 }),
-                "renderer": (["spark", "playcanvas"], {
-                    "default": "spark",
+                "renderer": (["playcanvas", "spark"], {
+                    "default": "playcanvas",
                     "tooltip": (
-                        "spark — Three.js + WebGL2, all formats. "
-                        "playcanvas — WebGPU adapter (falls back to spark "
-                        "for now)."
+                        "playcanvas — PlayCanvas Engine v2.19 GSplat. "
+                        "WebGPU when available, WebGL2 fallback. "
+                        "spark — Three.js + WebGL2, all formats."
                     ),
                 }),
                 "transport_format": (["ply", "spz"], {
@@ -86,7 +80,7 @@ class PreviewGaussianSpectate:
     FUNCTION = "preview"
     CATEGORY = "viewer"
 
-    def preview(self, ply_path, fov_degrees, image_width, image_height,
+    def preview(self, ply_path, fov_degrees,
                 move_speed, renderer, transport_format="ply"):
         if not ply_path:
             return {"ui": {"error": ["No PLY path provided"]}}
@@ -97,7 +91,6 @@ class PreviewGaussianSpectate:
 
         file_size_mb = round(os.path.getsize(ply_path) / (1024 * 1024), 2)
         num_gaussians = _count_gaussians(ply_path)
-        intrinsics = get_default_intrinsics(image_width, image_height, fov_degrees)
         extrinsics = get_default_extrinsics()
 
         return {"ui": {
@@ -108,7 +101,7 @@ class PreviewGaussianSpectate:
             "file_size_mb": [file_size_mb],
             "num_gaussians": [num_gaussians],
             "extrinsics": [extrinsics],
-            "intrinsics": [intrinsics],
+            "intrinsics": [None],
             "fov_degrees": [fov_degrees],
             "renderer": [renderer],
             "transport_format": [transport_format],

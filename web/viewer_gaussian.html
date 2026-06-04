@@ -209,6 +209,7 @@
         </span>
         <button id="resetCamera" title="Reset camera view">Reset View</button>
         <button id="screenshot" title="Take screenshot">Screenshot</button>
+        <button id="fullscreenBtn" title="Toggle fullscreen">Fullscreen</button>
         <!-- spectate-mode UI; shown only when ?mode=spectate -->
         <span id="spectateBar" style="display:none; margin-left: 10px; align-items: center; gap: 6px;">
             <label for="spectateSpeed" style="color:#aaa; font: 10px monospace;">Speed</label>
@@ -321,7 +322,8 @@
         _onKeyDown(e) {
             this._keys.add(e.code);
             // suppress browser scroll on movement keys
-            if (["Space", "KeyW", "KeyA", "KeyS", "KeyD", "KeyC"].includes(e.code)) {
+            if (["Space", "KeyW", "KeyA", "KeyS", "KeyD", "KeyC",
+                 "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
                 e.preventDefault();
             }
         }
@@ -359,6 +361,13 @@
             const now = performance.now();
             const dt = Math.min(0.1, (now - this._lastTime) / 1000);
             this._lastTime = now;
+
+            // Arrow keys: turn camera (yaw/pitch)
+            const turnSpeed = Math.PI / 2; // radians per second (~90°/s)
+            if (this._keys.has("ArrowLeft"))  this._yaw   += turnSpeed * dt;
+            if (this._keys.has("ArrowRight")) this._yaw   -= turnSpeed * dt;
+            if (this._keys.has("ArrowUp"))    this._pitch  = Math.min(Math.PI * 0.5 - 1e-4, this._pitch + turnSpeed * dt);
+            if (this._keys.has("ArrowDown"))  this._pitch  = Math.max(-Math.PI * 0.5 + 1e-4, this._pitch - turnSpeed * dt);
 
             // apply yaw/pitch to camera
             this._scratchQ.setFromEuler(
@@ -516,8 +525,13 @@
 
             this.scene = new THREE.Scene();
             this.camera = new THREE.PerspectiveCamera(50, W / Math.max(1, H), 0.05, 1000);
-            this.camera.position.set(0, 0, -3);
-            this.camera.lookAt(0, 0, 0);
+            if (VIEWER_MODE === "spectate") {
+                this.camera.position.set(0, 0, 0);
+                this.camera.lookAt(0, 0, 1);
+            } else {
+                this.camera.position.set(0, 0, -3);
+                this.camera.lookAt(0, 0, 0);
+            }
 
             if (VIEWER_MODE === "spectate") {
                 // Fly-cam: WASD + Space/C + drag-to-look. Initial position
@@ -658,34 +672,365 @@
     }
 
     // ============================================================
-    // Adapter: PlayCanvas Engine — WebGPU (TODO real impl)
+    // Adapter: PlayCanvas Engine v2.19+ — WebGPU GSplat
+    //
+    // Loads playcanvas.min.js as a classic <script> (attaches to
+    // window.pc). Creates a pc.Application on the shared canvas,
+    // adds a camera entity with orbit-style mouse controls, and
+    // loads gaussian splats via pc.Asset with file.contents.
     // ============================================================
     class PlayCanvasAdapter {
         constructor(canvas) {
             this.canvas = canvas;
-            this._fallback = null;
+            this._app = null;
+            this._cameraEntity = null;
+            this._splatEntity = null;
+            this._splatAsset = null;
+            this._target = { x: 0, y: 0, z: 0 };
+            this._frameCount = 0;
+            this._isDragging = false;
+            this._lastMouse = { x: 0, y: 0 };
+            this._orbitDist = 3;
+            this._yaw = 0;
+            this._pitch = 0;
+            // Spectate (fly-cam) state
+            this._keys = new Set();
+            this._moveSpeed = SPECTATE_INITIAL_SPEED;
+            this._lastTime = performance.now();
+            this._isSpectate = (VIEWER_MODE === "spectate");
+            this.controls = {
+                target: this._target,
+                update: () => this._tickControls(),
+                handleResize() {},
+                setSpeed: (s) => { this._moveSpeed = Math.max(0.05, Math.min(50, s)); },
+            };
+            // Stubs for compatibility with ThreeBaseAdapter consumers
+            this.scene = null;
+            this.camera = null;
+            this.renderer = null;
+            this.splatMesh = null;
         }
-        kind() { return "playcanvas-fallback"; }
+        kind() { return "playcanvas"; }
+
         async init() {
-            console.warn("[PlayCanvas] adapter not yet implemented; falling back to Spark.");
-            this._fallback = new SparkAdapter(this.canvas);
-            this._fallback.init();
+            // Load PlayCanvas engine (non-module, attaches to window.pc)
+            await loadScript('./js/playcanvas.min.js');
+            const pc = window.pc;
+            if (!pc) throw new Error("PlayCanvas engine failed to load");
+
+            console.log("[PlayCanvas] engine version:", pc.version);
+
+            const app = new pc.Application(this.canvas, {
+                graphicsDeviceOptions: {
+                    antialias: false,
+                    alpha: false,
+                    preserveDrawingBuffer: true,
+                },
+            });
+            app.setCanvasFillMode(pc.FILLMODE_NONE);
+            app.setCanvasResolution(pc.RESOLUTION_AUTO);
+            app.start();
+            this._app = app;
+
+            // Force initial canvas size to match container
+            const initW = this.canvas.clientWidth || 512;
+            const initH = this.canvas.clientHeight || 512;
+            app.resizeCanvas(initW, initH);
+            this.canvas.width = initW * (window.devicePixelRatio || 1);
+            this.canvas.height = initH * (window.devicePixelRatio || 1);
+
+            // Camera
+            const cam = new pc.Entity("Camera");
+            cam.addComponent("camera", {
+                nearClip: 0.05,
+                farClip: 1000,
+                fov: 50,
+                clearColor: new pc.Color(0.102, 0.102, 0.102, 1), // #1a1a1a
+            });
+            if (this._isSpectate) {
+                cam.setPosition(0, 0, 0);
+                cam.setEulerAngles(0, 0, 0);
+            } else {
+                cam.setPosition(0, 0, -3);
+                cam.lookAt(0, 0, 0);
+            }
+            app.root.addChild(cam);
+            this._cameraEntity = cam;
+
+            // Resize — sync canvas pixel size + PlayCanvas internal resolution
+            // to match the CSS layout size (which tracks the ComfyUI node/iframe).
+            const ro = new ResizeObserver(() => {
+                const w = this.canvas.clientWidth || 1;
+                const h = this.canvas.clientHeight || 1;
+                const dpr = window.devicePixelRatio || 1;
+                this.canvas.width = Math.round(w * dpr);
+                this.canvas.height = Math.round(h * dpr);
+                app.resizeCanvas(w, h);
+                if (cam.camera) {
+                    cam.camera.aspectRatio = w / h;
+                }
+            });
+            ro.observe(this.canvas);
+
+            // --- Input handling (orbit OR spectate) ---
+            this.canvas.addEventListener("pointerdown", (e) => {
+                this._isDragging = true;
+                this._lastMouse = { x: e.clientX, y: e.clientY };
+                this.canvas.setPointerCapture(e.pointerId);
+                this.canvas.style.cursor = this._isSpectate ? "grabbing" : "default";
+            });
+            this.canvas.addEventListener("pointermove", (e) => {
+                if (!this._isDragging) return;
+                const dx = e.clientX - this._lastMouse.x;
+                const dy = e.clientY - this._lastMouse.y;
+                this._lastMouse = { x: e.clientX, y: e.clientY };
+
+                if (this._isSpectate) {
+                    // Spectate: mouse-look (yaw + pitch)
+                    this._yaw -= dx * 0.15;
+                    this._pitch = Math.max(-89, Math.min(89, this._pitch - dy * 0.15));
+                } else if (e.buttons === 1) {
+                    // Orbit: left drag
+                    this._yaw -= dx * 0.3;
+                    this._pitch = Math.max(-89, Math.min(89, this._pitch - dy * 0.3));
+                    this._updateOrbitCamera();
+                } else if (e.buttons === 2 || e.buttons === 4) {
+                    // Orbit: right/middle drag -> pan
+                    const panScale = this._orbitDist * 0.002;
+                    const camRight = new pc.Vec3();
+                    const camUp = new pc.Vec3();
+                    cam.getWorldTransform().getX(camRight);
+                    cam.getWorldTransform().getY(camUp);
+                    this._target.x -= (camRight.x * dx - camUp.x * dy) * panScale;
+                    this._target.y -= (camRight.y * dx - camUp.y * dy) * panScale;
+                    this._target.z -= (camRight.z * dx - camUp.z * dy) * panScale;
+                    this._updateOrbitCamera();
+                }
+            });
+            this.canvas.addEventListener("pointerup", (e) => {
+                this._isDragging = false;
+                this.canvas.releasePointerCapture(e.pointerId);
+                this.canvas.style.cursor = this._isSpectate ? "grab" : "default";
+            });
+            this.canvas.addEventListener("wheel", (e) => {
+                if (this._isSpectate) {
+                    // Spectate: scroll = adjust speed
+                    const factor = e.deltaY > 0 ? 0.9 : 1.111;
+                    this._moveSpeed = Math.max(0.05, Math.min(50, this._moveSpeed * factor));
+                    try {
+                        this.canvas.dispatchEvent(new CustomEvent("spectatespeedchange",
+                            { detail: { speed: this._moveSpeed }}));
+                    } catch (_) {}
+                } else {
+                    // Orbit: scroll = zoom
+                    this._orbitDist *= (1 + e.deltaY * 0.001);
+                    this._orbitDist = Math.max(0.01, Math.min(1000, this._orbitDist));
+                    this._updateOrbitCamera();
+                }
+                e.preventDefault();
+            }, { passive: false });
+            this.canvas.addEventListener("contextmenu", (e) => e.preventDefault());
+
+            // Keyboard for spectate
+            window.addEventListener("keydown", (e) => {
+                this._keys.add(e.code);
+                if (this._isSpectate && ["Space","KeyW","KeyA","KeyS","KeyD","KeyC",
+                     "ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.code)) {
+                    e.preventDefault();
+                }
+            });
+            window.addEventListener("keyup", (e) => this._keys.delete(e.code));
+            window.addEventListener("blur", () => this._keys.clear());
+
+            if (!this._isSpectate) this._updateOrbitCamera();
+            this.canvas.style.cursor = this._isSpectate ? "grab" : "default";
+
+            // Per-frame update hook for spectate fly-cam movement
+            if (this._isSpectate) {
+                app.on("update", () => this._tickControls());
+            }
+
+            console.log(`[PlayCanvas] adapter initialized (mode=${this._isSpectate ? "spectate" : "orbit"})`);
         }
-        async loadSplat(u, f) { return this._fallback.loadSplat(u, f); }
-        getBounds()           { return this._fallback.getBounds(); }
-        getCameraPosition()   { return this._fallback.getCameraPosition(); }
-        setCameraPosition(x,y,z) { return this._fallback.setCameraPosition(x,y,z); }
-        getCameraTarget()     { return this._fallback.getCameraTarget(); }
-        setCameraTarget(x,y,z){ return this._fallback.setCameraTarget(x,y,z); }
-        setFov(d)             { return this._fallback.setFov(d); }
-        setScaleMultiplier(f) { return this._fallback.setScaleMultiplier(f); }
-        setOpacityMultiplier(f){ return this._fallback.setOpacityMultiplier(f); }
-        screenshot()          { return this._fallback.screenshot(); }
-        get scene()           { return this._fallback?.scene; }
-        get camera()          { return this._fallback?.camera; }
-        get renderer()        { return this._fallback?.renderer; }
-        get splatMesh()       { return this._fallback?.splatMesh; }
-        get _frameCount()     { return this._fallback?._frameCount; }
+
+        _updateOrbitCamera() {
+            const yawRad = this._yaw * Math.PI / 180;
+            const pitchRad = this._pitch * Math.PI / 180;
+            const d = this._orbitDist;
+            const x = this._target.x + d * Math.cos(pitchRad) * Math.sin(yawRad);
+            const y = this._target.y + d * Math.sin(pitchRad);
+            const z = this._target.z + d * Math.cos(pitchRad) * Math.cos(yawRad);
+            this._cameraEntity.setPosition(x, y, z);
+            this._cameraEntity.lookAt(this._target.x, this._target.y, this._target.z);
+        }
+
+        _tickControls() {
+            if (!this._isSpectate || !this._cameraEntity) return;
+            const now = performance.now();
+            const dt = Math.min(0.1, (now - this._lastTime) / 1000);
+            this._lastTime = now;
+
+            // Arrow keys: turn camera (yaw/pitch)
+            const turnSpeed = 90; // degrees per second
+            if (this._keys.has("ArrowLeft"))  this._yaw += turnSpeed * dt;
+            if (this._keys.has("ArrowRight")) this._yaw -= turnSpeed * dt;
+            if (this._keys.has("ArrowUp"))    this._pitch = Math.min(89, this._pitch + turnSpeed * dt);
+            if (this._keys.has("ArrowDown"))  this._pitch = Math.max(-89, this._pitch - turnSpeed * dt);
+
+            // Apply yaw/pitch as Euler rotation
+            const cam = this._cameraEntity;
+            cam.setEulerAngles(this._pitch, this._yaw, 0);
+
+            // Camera-local basis vectors from the transform
+            const fwd = new window.pc.Vec3();
+            const right = new window.pc.Vec3();
+            cam.getWorldTransform().getZ(fwd);   // PlayCanvas camera looks down -Z, getZ = forward
+            cam.getWorldTransform().getX(right);
+            fwd.mulScalar(-1); // getZ points backward in PC convention
+
+            // WASD: move camera
+            let mx = 0, my = 0, mz = 0;
+            if (this._keys.has("KeyW")) { mx += fwd.x; my += fwd.y; mz += fwd.z; }
+            if (this._keys.has("KeyS")) { mx -= fwd.x; my -= fwd.y; mz -= fwd.z; }
+            if (this._keys.has("KeyD")) { mx += right.x; my += right.y; mz += right.z; }
+            if (this._keys.has("KeyA")) { mx -= right.x; my -= right.y; mz -= right.z; }
+            if (this._keys.has("Space")) { my += 1; }
+            if (this._keys.has("KeyC"))  { my -= 1; }
+
+            const lenSq = mx*mx + my*my + mz*mz;
+            if (lenSq > 0) {
+                const boost = (this._keys.has("ShiftLeft") || this._keys.has("ShiftRight")) ? 3 : 1;
+                const s = this._moveSpeed * boost * dt / Math.sqrt(lenSq);
+                const pos = cam.getPosition();
+                cam.setPosition(pos.x + mx*s, pos.y + my*s, pos.z + mz*s);
+            }
+        }
+
+        async loadSplat(blobUrl, filename) {
+            const pc = window.pc;
+
+            // Remove existing splat
+            if (this._splatEntity) {
+                this._splatEntity.destroy();
+                this._splatEntity = null;
+            }
+            if (this._splatAsset) {
+                this._app.assets.remove(this._splatAsset);
+                this._splatAsset = null;
+            }
+
+            console.log(`[PlayCanvas] loading splat: ${filename}`);
+            const t0 = performance.now();
+
+            // Use loadFromUrlAndFilename with the blob URL — PlayCanvas
+            // fetches it internally and the PLY parser gets a proper
+            // Response object with a readable body stream.
+            const asset = await new Promise((resolve, reject) => {
+                this._app.assets.loadFromUrlAndFilename(
+                    blobUrl, filename, 'gsplat',
+                    (err, asset) => {
+                        if (err) reject(new Error(String(err)));
+                        else resolve(asset);
+                    },
+                );
+            });
+
+            const entity = new pc.Entity('Splat');
+            entity.addComponent('gsplat', { asset: asset });
+            // No euler flip — match Spark's convention (no transform on load).
+            this._app.root.addChild(entity);
+            this._splatEntity = entity;
+            this._splatAsset = asset;
+
+            this.splatMesh = { numSplats: 0 };
+            try {
+                const res = asset.resource;
+                if (res && res.numSplats) this.splatMesh.numSplats = res.numSplats;
+            } catch (_) {}
+
+            console.log(`[PlayCanvas] loaded in ${(performance.now() - t0).toFixed(0)} ms`);
+        }
+
+        getBounds() {
+            if (!this._splatEntity) return null;
+            try {
+                // Try multiple paths to get bounds from PlayCanvas GSplat
+                let aabb = null;
+                const gsplat = this._splatEntity.gsplat;
+                if (gsplat) {
+                    // v2.19: instance.meshInstance.aabb
+                    aabb = gsplat.instance?.meshInstance?.aabb;
+                    // Fallback: customAabb
+                    if (!aabb) aabb = gsplat.customAabb;
+                    // Fallback: resource.aabb
+                    if (!aabb && this._splatAsset?.resource) {
+                        aabb = this._splatAsset.resource.aabb;
+                    }
+                }
+                // Last resort: compute from entity's rendered bounding box
+                if (!aabb) {
+                    const renders = this._splatEntity.findComponents("gsplat");
+                    for (const r of renders) {
+                        if (r.instance?.meshInstance?.aabb) {
+                            aabb = r.instance.meshInstance.aabb;
+                            break;
+                        }
+                    }
+                }
+                if (!aabb) {
+                    console.warn("[PlayCanvas] getBounds: no AABB found, using fallback");
+                    return { center: { x: 0, y: 0, z: 0 }, size: { x: 2, y: 2, z: 2 } };
+                }
+                return {
+                    center: { x: aabb.center.x, y: aabb.center.y, z: aabb.center.z },
+                    size: { x: aabb.halfExtents.x * 2, y: aabb.halfExtents.y * 2, z: aabb.halfExtents.z * 2 },
+                };
+            } catch (e) {
+                console.warn("[PlayCanvas] getBounds error:", e);
+                return { center: { x: 0, y: 0, z: 0 }, size: { x: 2, y: 2, z: 2 } };
+            }
+        }
+
+        getCameraPosition() {
+            const p = this._cameraEntity.getPosition();
+            return { x: p.x, y: p.y, z: p.z };
+        }
+        setCameraPosition(x, y, z) {
+            // Reverse-engineer orbit params from position + target
+            const dx = x - this._target.x;
+            const dy = y - this._target.y;
+            const dz = z - this._target.z;
+            this._orbitDist = Math.sqrt(dx*dx + dy*dy + dz*dz);
+            this._pitch = Math.asin(dy / Math.max(this._orbitDist, 1e-6)) * 180 / Math.PI;
+            this._yaw = Math.atan2(dx, dz) * 180 / Math.PI;
+            this._updateOrbitCamera();
+        }
+        getCameraTarget() {
+            return { x: this._target.x, y: this._target.y, z: this._target.z };
+        }
+        setCameraTarget(x, y, z) {
+            this._target.x = x;
+            this._target.y = y;
+            this._target.z = z;
+            this._updateOrbitCamera();
+        }
+        setFov(deg) {
+            if (this._cameraEntity) this._cameraEntity.camera.fov = deg;
+        }
+        setScaleMultiplier(f) {
+            if (this._splatEntity) {
+                const s = f / 20.0;
+                this._splatEntity.setLocalScale(s, s, s);
+            }
+        }
+        setOpacityMultiplier(_f) {
+            // PlayCanvas GSplat doesn't expose a per-entity opacity multiplier.
+            // Scene-wide alpha clip is available but not equivalent.
+        }
+        screenshot() {
+            if (this._app) this._app.renderNextFrame = true;
+            return this.canvas.toDataURL("image/png");
+        }
     }
 
     async function bootRenderer(kind) {
@@ -861,7 +1206,16 @@
             }
             fovDeg = Math.max(20, Math.min(120, fovDeg));
             setFovInputs(fovDeg);
-            frameOnBounds(fovDeg);
+            if (VIEWER_MODE === "spectate") {
+                // Spectate: start at world origin looking forward
+                adapter.setFov(fovDeg);
+                adapter.setCameraPosition(0, 0, 0);
+                adapter.setCameraTarget(0, 0, 1);
+                currentFovDeg = fovDeg;
+                initialPose = { pos: [0, 0, 0], target: [0, 0, 1], fov: fovDeg };
+            } else {
+                frameOnBounds(fovDeg);
+            }
 
             adapter.setScaleMultiplier(currentScale);
             adapter.setOpacityMultiplier(currentOpacity);
@@ -908,6 +1262,13 @@
     });
 
     document.getElementById('resetCamera').addEventListener('click', resetCamera);
+    document.getElementById('fullscreenBtn').addEventListener('click', () => {
+        if (!document.fullscreenElement) {
+            document.documentElement.requestFullscreen().catch(() => {});
+        } else {
+            document.exitFullscreen().catch(() => {});
+        }
+    });
     document.getElementById('screenshot').addEventListener('click', () => {
         if (!adapterReady) return;
         try {

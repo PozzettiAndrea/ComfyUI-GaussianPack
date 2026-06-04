@@ -67,22 +67,16 @@ class PreviewGaussians:
                     "default": 50.0, "min": 5.0, "max": 170.0, "step": 1.0,
                     "tooltip": "Vertical field of view in degrees",
                 }),
-                "image_width": ("INT", {
-                    "default": 512, "min": 64, "max": 4096, "step": 8,
-                }),
-                "image_height": ("INT", {
-                    "default": 512, "min": 64, "max": 4096, "step": 8,
-                }),
-                "renderer": (["spark", "playcanvas"], {
-                    "default": "spark",
+                "renderer": (["playcanvas", "spark"], {
+                    "default": "playcanvas",
                     "tooltip": (
+                        "playcanvas — PlayCanvas Engine v2.19 GSplat renderer. "
+                        "WebGPU when available, WebGL2 fallback. Good "
+                        "performance on large scenes (5M+ splats). "
+                        "\n"
                         "spark — Three.js + WebGL2. Best SH3 fidelity, "
                         "auto-detects all formats (PLY, compressed.ply, SPZ, "
-                        "KSPLAT, SOG, SPLAT). "
-                        "\n"
-                        "playcanvas — WebGPU path (currently falls back to "
-                        "spark; real adapter pending). Will win on large "
-                        "scenes (5M+ splats) when implemented."
+                        "KSPLAT, SOG, SPLAT)."
                     ),
                 }),
                 "transport_format": (["ply", "spz"], {
@@ -107,7 +101,7 @@ class PreviewGaussians:
     FUNCTION = "preview"
     CATEGORY = "viewer"
 
-    def preview(self, ply_path, fov_degrees, image_width, image_height, renderer, transport_format="ply"):
+    def preview(self, ply_path, fov_degrees, renderer, transport_format="ply"):
         if not ply_path:
             return {"ui": {"error": ["No PLY path provided"]}}
         if not os.path.exists(ply_path):
@@ -117,18 +111,17 @@ class PreviewGaussians:
 
         file_size_mb = round(os.path.getsize(ply_path) / (1024 * 1024), 2)
         num_gaussians = _count_gaussians(ply_path)
-        intrinsics = get_default_intrinsics(image_width, image_height, fov_degrees)
         extrinsics = get_default_extrinsics()
 
         return {"ui": {
             "ply_file": [filename],
             "filename": [filename],
-            "ply_type": [folder_kind],         # "input" | "output" — JS passes to /view?type=
+            "ply_type": [folder_kind],
             "ply_subfolder": [subfolder],
             "file_size_mb": [file_size_mb],
             "num_gaussians": [num_gaussians],
             "extrinsics": [extrinsics],
-            "intrinsics": [intrinsics],
+            "intrinsics": [None],
             "fov_degrees": [fov_degrees],
             "renderer": [renderer],
             "transport_format": [transport_format],

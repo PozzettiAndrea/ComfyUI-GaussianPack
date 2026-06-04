@@ -203,7 +203,7 @@ app.registerExtension({
                 // immediately + wrap each widget's callback to keep the
                 // mirror up to date.
                 const TRACKED = new Set([
-                    "fov_degrees", "image_width", "image_height",
+                    "fov_degrees",
                     "renderer", "transport_format",
                 ]);
                 this.properties = this.properties || {};
@@ -490,11 +490,15 @@ app.registerExtension({
                         const plyType = message.ply_type?.[0] || "output";
                         const plySubfolder = message.ply_subfolder?.[0] || "";
 
-                        // Resize node to match image aspect ratio from intrinsics
+                        // Resize node to match image aspect ratio from intrinsics.
+                        // When width/height are 0 (auto), keep the current node
+                        // size and let the viewer fill whatever space is available.
                         if (intrinsics && intrinsics[0] && intrinsics[1]) {
                             const imageWidth = intrinsics[0][2] * 2;   // cx * 2
                             const imageHeight = intrinsics[1][2] * 2;  // cy * 2
-                            this.resizeToAspectRatio(imageWidth, imageHeight);
+                            if (imageWidth > 0 && imageHeight > 0) {
+                                this.resizeToAspectRatio(imageWidth, imageHeight);
+                            }
                         }
 
                         // Spectate mode: forward the move_speed slider to the
@@ -643,6 +647,170 @@ app.registerExtension({
                         } else {
                             setTimeout(fetchAndSend, 500);
                         }
+                    }
+                };
+
+                return r;
+            };
+        }
+
+        // ==============================================================
+        // Preview Gaussian Dual — side-by-side / slider comparison
+        // ==============================================================
+        if (nodeData.name === "PreviewGaussianDual") {
+            console.log("[GaussianPack] Registering Preview Gaussian Dual node");
+
+            const onNodeCreated = nodeType.prototype.onNodeCreated;
+            nodeType.prototype.onNodeCreated = function() {
+                const r = onNodeCreated ? onNodeCreated.apply(this, arguments) : undefined;
+                const node = this;
+
+                const container = document.createElement("div");
+                container.style.cssText = "width:100%;height:100%;display:flex;flex-direction:column;background:#1a1a1a;overflow:hidden;position:relative;";
+
+                // Loading bar
+                const loadBar = document.createElement("div");
+                loadBar.style.cssText = "position:absolute;top:0;left:0;right:0;height:4px;background:rgba(0,0,0,0.35);z-index:100;transition:opacity 0.3s;pointer-events:none;opacity:0;";
+                const loadFill = document.createElement("div");
+                loadFill.style.cssText = "height:100%;width:0%;background:linear-gradient(90deg,#3a8,#6c6);transition:width 0.15s;";
+                loadBar.appendChild(loadFill);
+
+                const iframe = document.createElement("iframe");
+                iframe.style.cssText = "width:100%;flex:1 1 0;min-height:0;border:none;background:#1a1a1a;";
+
+                const infoPanel = document.createElement("div");
+                infoPanel.style.cssText = "background:#1a1a1a;border-top:1px solid #444;padding:6px 12px;font:10px monospace;color:#ccc;line-height:1.3;flex-shrink:0;overflow:hidden;";
+                infoPanel.innerHTML = '<span style="color:#888;">Dual view info will appear after execution</span>';
+
+                container.appendChild(iframe);
+                container.appendChild(infoPanel);
+                container.appendChild(loadBar);
+
+                const widget = this.addDOMWidget("preview_gaussian_dual", "GAUSSIAN_DUAL_PREVIEW", container, { serialize: false });
+                let currentNodeSize = [768, 500];
+                widget.computeSize = () => currentNodeSize;
+
+                this.gaussianDualIframe = iframe;
+                this.gaussianDualInfoPanel = infoPanel;
+                this.setSize([768, 500]);
+
+                let iframeLoaded = false;
+                iframe.addEventListener('load', () => { iframeLoaded = true; });
+
+                // Camera state persistence
+                this.properties = this.properties || {};
+                window.addEventListener('message', (event) => {
+                    if (event.source !== iframe.contentWindow) return;
+                    if (event.data?.type === "CAMERA_STATE" && event.data.state) {
+                        node.properties["Camera Config"] = {
+                            cameraType: "perspective",
+                            state: JSON.stringify(event.data.state),
+                        };
+                    }
+                    if (event.data?.type === "MESH_LOADED") {
+                        loadBar.style.opacity = "0";
+                        const saved = node.properties["Camera Config"];
+                        if (saved?.state && iframe.contentWindow) {
+                            try {
+                                iframe.contentWindow.postMessage({
+                                    type: "RESTORE_CAMERA_STATE",
+                                    state: JSON.parse(saved.state),
+                                }, "*");
+                            } catch(_) {}
+                        }
+                    }
+                    if (event.data?.type === "MESH_ERROR") {
+                        loadFill.style.background = "#c44";
+                        loadFill.style.width = "100%";
+                    }
+                });
+
+                const onExecuted = this.onExecuted;
+                this.onExecuted = function(message) {
+                    onExecuted?.apply(this, arguments);
+                    if (message?.error?.[0]) {
+                        infoPanel.innerHTML = `<div style="color:#ff6b6b;">Error: ${message.error[0]}</div>`;
+                        return;
+                    }
+                    if (!message?.ply_file_1?.[0] || !message?.ply_file_2?.[0]) return;
+
+                    const layout = message.layout?.[0] || "side_by_side";
+                    const renderer = message.renderer?.[0] || "playcanvas";
+                    const transport = message.transport_format?.[0] || "ply";
+                    const fov = message.fov_degrees?.[0] || 50;
+
+                    // Set iframe src with layout param
+                    iframe.src = `/extensions/${EXTENSION_FOLDER}/viewer_gaussian_dual.html?layout=${layout}&v=${Date.now()}`;
+
+                    // Resize node for dual view
+                    currentNodeSize = layout === "side_by_side" ? [768, 500] : [512, 580];
+                    node.setSize(currentNodeSize);
+                    node.setDirtyCanvas(true, true);
+
+                    // Build URLs for both PLYs
+                    function buildUrl(filename, type, subfolder) {
+                        const qsType = encodeURIComponent(type);
+                        const qsSub = encodeURIComponent(subfolder);
+                        if (transport === "spz") {
+                            return `/gaussianpack/spz?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
+                        }
+                        return `/view?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
+                    }
+
+                    const url1 = buildUrl(message.ply_file_1[0], message.ply_type_1?.[0] || "output", message.ply_subfolder_1?.[0] || "");
+                    const url2 = buildUrl(message.ply_file_2[0], message.ply_type_2?.[0] || "output", message.ply_subfolder_2?.[0] || "");
+                    const fn1 = transport === "spz" ? message.ply_file_1[0].replace(/\.ply$/i, ".spz") : message.ply_file_1[0];
+                    const fn2 = transport === "spz" ? message.ply_file_2[0].replace(/\.ply$/i, ".spz") : message.ply_file_2[0];
+
+                    // Info panel
+                    const n1 = message.num_gaussians_1?.[0] || 0;
+                    const n2 = message.num_gaussians_2?.[0] || 0;
+                    const s1 = message.file_size_mb_1?.[0] || '?';
+                    const s2 = message.file_size_mb_2?.[0] || '?';
+                    infoPanel.innerHTML = `
+                        <div style="display:flex;gap:16px;">
+                            <div><span style="color:#888;">G1:</span> <span style="color:#6cc;">${message.ply_file_1[0]}</span> (${s1} MB, ${n1.toLocaleString()} splats)</div>
+                            <div><span style="color:#888;">G2:</span> <span style="color:#6cc;">${message.ply_file_2[0]}</span> (${s2} MB, ${n2.toLocaleString()} splats)</div>
+                        </div>`;
+
+                    // Fetch both PLYs and send to iframe
+                    loadFill.style.background = "linear-gradient(90deg,#3a8,#6c6)";
+                    loadFill.style.width = "0%";
+                    loadBar.style.opacity = "1";
+
+                    const fetchAndSend = async () => {
+                        if (!iframe.contentWindow) { setTimeout(fetchAndSend, 300); return; }
+                        try {
+                            loadFill.style.width = "10%";
+                            const [resp1, resp2] = await Promise.all([fetch(url1), fetch(url2)]);
+                            if (!resp1.ok) throw new Error(`G1 fetch failed: ${resp1.status}`);
+                            if (!resp2.ok) throw new Error(`G2 fetch failed: ${resp2.status}`);
+                            loadFill.style.width = "50%";
+                            const [ab1, ab2] = await Promise.all([resp1.arrayBuffer(), resp2.arrayBuffer()]);
+                            loadFill.style.width = "90%";
+
+                            iframe.contentWindow.postMessage({
+                                type: "LOAD_DUAL_GAUSSIAN",
+                                data1: ab1, data2: ab2,
+                                filename1: fn1, filename2: fn2,
+                                renderer: renderer,
+                                fov: fov,
+                                timestamp: Date.now(),
+                            }, "*", [ab1, ab2]);
+                            loadFill.style.width = "100%";
+                        } catch (err) {
+                            infoPanel.innerHTML = `<div style="color:#ff6b6b;">Error: ${err.message}</div>`;
+                            loadFill.style.background = "#c44";
+                            loadFill.style.width = "100%";
+                        }
+                    };
+
+                    if (iframeLoaded) {
+                        // iframe was already loaded from a previous execution — reload it
+                        iframeLoaded = false;
+                        iframe.addEventListener('load', () => { iframeLoaded = true; fetchAndSend(); }, { once: true });
+                    } else {
+                        iframe.addEventListener('load', () => { iframeLoaded = true; fetchAndSend(); }, { once: true });
                     }
                 };
 
