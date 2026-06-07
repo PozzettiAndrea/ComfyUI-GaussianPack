@@ -1,0 +1,96 @@
+  [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+Capturing execution frames: gaussian_analysis.json
+  [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+  Frame 1 saved (frame_000.jpg, t=0.0s)
+  Validating workflow...
+  [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
+  [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
+  [ComfyUI] [32m[INFO][0m Prompt has 4 nodes
+  [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
+  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "apple.ply"}
+  [ComfyUI] [32m[INFO][0m   Node 19: GaussianAnalysis
+  Queuing workflow for execution...
+  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_path": ["1", 0]}
+  [ComfyUI] [32m[INFO][0m   Node 20: LoadPLY
+  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "compressed_room.ply"}
+  [ComfyUI] [32m[INFO][0m   Node 21: GaussianAnalysis
+  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_path": ["20", 0]}
+  [ComfyUI] [32m[INFO][0m Generated prompt_id: c233e1cc-1cb5-4b63-b339-c7bcc552f02f
+  [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
+  [ComfyUI] [32m[INFO][0m Validation result: valid=True
+  [ComfyUI] [32m[INFO][0m === Validation PASSED ===
+  [ComfyUI] [32m[INFO][0m got prompt
+  [ComfyUI] [comfy-env] SubprocessWorker: C:\Users\stduser\AppData\Local\Programs\comfy-env\.pixi\envs\gaussianpack-nodes\python.exe
+  [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'compressed_room.ply'
+  [ComfyUI] [comfy-env] env_vars: {'COMFYUI_BASE': 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1247\\ComfyUI'}
+  [ComfyUI] [SubprocessWorker] call_method: nodes.load_ply.LoadPLY.load
+  [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+  [ComfyUI] [comfy-env] gaussianpack-nodes: Library/bin has 157 DLLs
+  [ComfyUI] [ComfyUI-GaussianPack] python: C:\Users\stduser\AppData\Local\Programs\comfy-env\.pixi\envs\gaussianpack-nodes\python.exe
+  [ComfyUI] [ComfyUI-GaussianPack] sys_path sent to worker: ['D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1247\\ComfyUI', 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1247\\ComfyUI\\custom_nodes\\ComfyUI-GaussianPack', 'C:\\Users\\stduser\\AppData\\Local\\Programs\\comfy-env\\.pixi\\envs\\gaussianpack-nodes\\Lib\\site-packages', 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1247\\ComfyUI\\custom_nodes\\ComfyUI-GaussianPack']
+  [ComfyUI] [SubprocessWorker] is_pixi=True, python=C:\Users\stduser\AppData\Local\Programs\comfy-env\.pixi\envs\gaussianpack-nodes\python.exe
+  [ComfyUI] [SubprocessWorker] launching cmd=['C:\\Users\\stduser\\.pixi\\bin\\pixi.exe', 'run', '--as-is', '--manifest-path', 'C:\\Users\\stduser\\AppData\\Local\\Programs\\comfy-env\\pixi.toml', '-e', 'gaussianpack-nodes', 'python', 'C:\\Users\\stduser\\AppData\\Local\\Temp\\comfyui_pvenv_d4yba5md\\persistent_worker.py', 'tcp://127.0.0.1:61051']...
+  Frame 2 saved (frame_001.jpg, t=2.3s)
+  [capture-periodic] freeze=4ms shot=88ms unfreeze=4ms saved=True
+  [ComfyUI] [SubprocessWorker] worker started/confirmed
+  [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+  [ComfyUI] [SubprocessWorker] created 0 shm blocks
+  [ComfyUI] [SubprocessWorker] sending request via socket...
+  [ComfyUI] [SubprocessWorker] call_id=1 sending call_method
+  [ComfyUI] [worker:ComfyUI-GaussianPack] WARNING: SPZ route not registered (ModuleNotFoundError: No module named 'comfy_aimdo')
+  [ComfyUI] [SubprocessWorker] got response: ok
+  [ComfyUI] [comfy-env] LoadPLY done (2.93s): result: list[1]
+  [ComfyUI] [comfy-env] Running GaussianAnalysis: ply_path: 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\Gaus...
+  [ComfyUI] [SubprocessWorker] call_method: nodes.analyze_gaussians.GaussianAnalysis.analyze
+  [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+  [ComfyUI] [SubprocessWorker] worker started/confirmed
+  [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+  [ComfyUI] [SubprocessWorker] created 0 shm blocks
+  [ComfyUI] [SubprocessWorker] sending request via socket...
+  [ComfyUI] [SubprocessWorker] call_id=2 sending call_method
+  [ComfyUI] [SubprocessWorker] got response: ok
+  [ComfyUI] [comfy-env] GaussianAnalysis done (0.05s): result: dict
+  [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'apple.ply'
+  [ComfyUI] [SubprocessWorker] call_method: nodes.load_ply.LoadPLY.load
+  [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+  [ComfyUI] [SubprocessWorker] worker started/confirmed
+  [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+  [ComfyUI] [SubprocessWorker] created 0 shm blocks
+  [ComfyUI] [SubprocessWorker] sending request via socket...
+  [ComfyUI] [SubprocessWorker] call_id=3 sending call_method
+  [ComfyUI] [SubprocessWorker] got response: ok
+  [ComfyUI] [comfy-env] LoadPLY done (0.06s): result: list[1]
+  [ComfyUI] [comfy-env] Running GaussianAnalysis: ply_path: 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\Gaus...
+  [ComfyUI] [SubprocessWorker] call_method: nodes.analyze_gaussians.GaussianAnalysis.analyze
+  [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+  [ComfyUI] [SubprocessWorker] worker started/confirmed
+  [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+  Node executed (1 total), capturing...
+  [ComfyUI] [SubprocessWorker] created 0 shm blocks
+  [ComfyUI] [SubprocessWorker] sending request via socket...
+  [ComfyUI] [SubprocessWorker] call_id=4 sending call_method
+  [ComfyUI] [SubprocessWorker] got response: ok
+  [ComfyUI] [comfy-env] GaussianAnalysis done (0.05s): result: dict
+  [ComfyUI] [32m[INFO][0m [32mPrompt executed in 3.11 seconds[0m
+  Frame 3 saved (frame_002.jpg, t=3.4s)
+  [capture-node] freeze=4ms shot=87ms unfreeze=4ms saved=True
+  Node executed (2 total), capturing...
+  Frame 4 saved (frame_003.jpg, t=3.8s)
+  [capture-node] freeze=4ms shot=104ms unfreeze=0ms saved=True
+  Execution complete (t=3.8s)
+  [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
+  [3d-wait] Phase 1 done in 0.0s
+  [3d-wait] Phase 2: iframes=0
+  [3d-wait] Total 3D wait: 0.0s
+  Captured 4 unique frames over 3.96s
+  [debug] iframes: 0
+  [timing] trigger_3d_previews: 0.0s
+  Saved high-quality screenshot: gaussian_analysis_executed.png
+  [timing] final_screenshot: 0.2s
+    Captured 5 video frames
