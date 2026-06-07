@@ -1,6 +1,6 @@
 [project]
 name = "ComfyUI-GaussianPack"
-description = "Tiny Gaussian Splat turntable viewer node for ComfyUI."
+description = "Warning, uses experimental package `comfy-env` to attempt a one click isolated install. Will download and use pixi package manager. Tiny Gaussian Splat viewer node for ComfyUI."
 version = "0.0.2"
 license = {file = "LICENSE"}
 
@@ -11,5 +11,5 @@ Documentation = "https://github.com/PozzettiAndrea/ComfyUI-GaussianPack"
 [tool.comfy]
 PublisherId = "pznodes"
 DisplayName = "ComfyUI-GaussianPack"
-Icon = ""
+Icon = "https://raw.githubusercontent.com/PozzettiAndrea/ComfyUI-GaussianPack/dev/assets/icon.png"
 includes = []
