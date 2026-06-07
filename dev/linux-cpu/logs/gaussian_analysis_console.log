@@ -18,12 +18,5 @@
 [Console-warning] [MaskEditor] ComfyApp.open_maskeditor is deprecated. Plugins should migrate to using the command system or direct node context menu integration.
 [Console-log] [GaussianPack] Registering Preview Gaussians node
 [Console-log] [GaussianPack] Registering Preview Gaussian Dual node
-[Console-warning] Allow attribute will take precedence over 'allowfullscreen'.
-[Console-log] [comfy-test] graphToPrompt: 3 nodes, missing class_type: [], sample: {"inputs":{"ply_file":"apple.ply"},"class_type":"LoadPLY","_meta":{"title":"Load PLY"}}
-[Console-log] [GaussianDualViewer] Ready (layout=slider)
-[Console-warning] [GaussianDualViewer] PlayCanvas can't render two gsplat views in one page; using Spark for the dual view.
-[Console-warning] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
-[Console-warning] [GaussianDualViewer] PlayCanvas can't render two gsplat views in one page; using Spark for the dual view.
-[Console-warning] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
-[Console-warning] [.WebGL-0x365c05e0e200]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
-[Console-warning] [.WebGL-0x365c05e07600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[Console-info] Autofocus processing was blocked because a document already has a focused element.
+[Console-log] [comfy-test] graphToPrompt: 4 nodes, missing class_type: [], sample: {"inputs":{"ply_file":"apple.ply"},"class_type":"LoadPLY","_meta":{"title":"Load PLY"}}
