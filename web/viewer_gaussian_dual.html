@@ -5,855 +5,503 @@
     <title>Gaussian Splat Dual Viewer</title>
     <style>
         * { margin: 0; padding: 0; box-sizing: border-box; }
-
         body {
-            background: #1a1a1a;
-            overflow: hidden;
+            background: #1a1a1a; overflow: hidden;
             font-family: -apple-system, BlinkMacSystemFont, 'Segoe UI', Roboto, sans-serif;
-            display: flex;
-            flex-direction: column;
-            height: 100vh;
+            display: flex; flex-direction: column; height: 100vh;
         }
-
-        #viewerContainer {
-            position: relative;
-            flex: 1;
-            min-height: 200px;
-            display: flex;
+        #viewerContainer { position: relative; flex: 1; min-height: 200px; display: flex; }
+        #viewerContainer.slider-mode { display: block; }
+        .viewport { flex: 1; position: relative; min-width: 0; }
+        .viewport canvas { width: 100%; height: 100%; display: block; }
+        .viewport-label {
+            position: absolute; top: 8px; left: 12px; z-index: 10;
+            font: 11px monospace; color: #aaa; background: rgba(0,0,0,0.6);
+            padding: 2px 8px; border-radius: 3px; pointer-events: none;
         }
-
-        /* Side-by-side layout */
-        .pane {
-            position: relative;
-            flex: 1;
-            overflow: hidden;
+        .viewport-label.right { left: auto; right: 12px; }
+        .divider { width: 2px; background: #333; flex-shrink: 0; }
+        /* Slider mode */
+        .slider-viewport { position: absolute; top: 0; left: 0; width: 100%; height: 100%; }
+        .slider-viewport canvas { width: 100%; height: 100%; display: block; }
+        #sliderOverlay {
+            position: absolute; top: 0; left: 0; width: 100%; height: 100%;
+            z-index: 50; cursor: col-resize; display: none;
         }
-        .pane canvas {
-            width: 100%;
-            height: 100%;
-            display: block;
-        }
-        .pane-divider {
-            width: 2px;
-            background: #555;
-            flex-shrink: 0;
-        }
-        .pane-label {
-            position: absolute;
-            bottom: 6px;
-            left: 50%;
-            transform: translateX(-50%);
-            background: rgba(0,0,0,0.65);
-            color: #aaa;
-            font: 10px monospace;
-            padding: 2px 8px;
-            border-radius: 3px;
-            z-index: 10;
+        #sliderLine {
+            position: absolute; top: 0; width: 2px; height: 100%;
+            background: #00e0ff; box-shadow: 0 0 6px #00e0ff;
             pointer-events: none;
-            white-space: nowrap;
         }
-
-        /* Slider layout */
-        #sliderContainer {
-            position: relative;
-            width: 100%;
-            height: 100%;
-            display: none;
-        }
-        #sliderContainer canvas {
-            position: absolute;
-            top: 0;
-            left: 0;
-            width: 100%;
-            height: 100%;
-        }
-        #canvasLeft { z-index: 1; }
-        #canvasRight { z-index: 2; }
         #sliderHandle {
-            position: absolute;
-            top: 0;
-            bottom: 0;
-            width: 4px;
-            background: #fff;
-            cursor: ew-resize;
-            z-index: 20;
-            left: 50%;
-            transform: translateX(-50%);
-            box-shadow: 0 0 6px rgba(0,0,0,0.8);
+            position: absolute; top: 50%; width: 20px; height: 40px;
+            margin-top: -20px; margin-left: -9px;
+            background: rgba(0,224,255,0.8); border-radius: 4px;
+            cursor: col-resize; pointer-events: auto;
         }
-        #sliderHandle::before,
-        #sliderHandle::after {
-            content: '';
-            position: absolute;
-            top: 50%;
-            width: 0;
-            height: 0;
-            border: 6px solid transparent;
-        }
-        #sliderHandle::before {
-            left: -14px;
-            border-right-color: #fff;
-            transform: translateY(-50%);
-        }
-        #sliderHandle::after {
-            right: -14px;
-            border-left-color: #fff;
-            transform: translateY(-50%);
-        }
-        .slider-label {
-            position: absolute;
-            bottom: 6px;
-            background: rgba(0,0,0,0.65);
-            color: #aaa;
-            font: 10px monospace;
-            padding: 2px 8px;
-            border-radius: 3px;
-            z-index: 30;
-            pointer-events: none;
-            white-space: nowrap;
-        }
-        .slider-label.left { left: 8px; }
-        .slider-label.right { right: 8px; }
-
-        .error {
-            position: absolute;
-            top: 50%;
-            left: 50%;
-            transform: translate(-50%, -50%);
-            text-align: center;
-            color: #ff6b6b;
-            padding: 20px;
-            max-width: 80%;
-        }
+        .error { position: absolute; top: 50%; left: 50%; transform: translate(-50%,-50%);
+            text-align: center; color: #ff6b6b; padding: 20px; max-width: 80%; }
         .error.hidden { display: none; }
-
         #controlsBar {
-            display: flex;
-            justify-content: center;
-            align-items: center;
-            gap: 16px;
-            background: #252525;
-            padding: 8px 12px;
-            border-top: 1px solid #333;
-            flex-shrink: 0;
+            display: flex; align-items: center; gap: 6px;
+            padding: 4px 8px; background: #111; border-top: 1px solid #333;
+            flex-shrink: 0; flex-wrap: wrap;
         }
         #controlsBar button {
-            background: #444;
-            border: none;
-            color: #fff;
-            padding: 4px 10px;
-            border-radius: 3px;
-            cursor: pointer;
-            font-size: 11px;
+            padding: 3px 8px; font-size: 10px; border: 1px solid #444;
+            border-radius: 3px; background: #222; color: #ccc; cursor: pointer;
         }
-        #controlsBar button:hover { background: #555; }
-
-        .view-axes {
-            display: inline-flex;
-            gap: 2px;
-            padding: 2px 4px;
-            background: #1f1f1f;
-            border-radius: 4px;
-        }
-        .view-axes .view-btn {
-            background: #333;
-            color: #ddd;
-            font-family: monospace;
-            font-size: 11px;
-            min-width: 30px;
-            padding: 4px 6px;
-        }
-        .view-axes .view-btn:hover { background: #4a6; color: #fff; }
-
-        #settingsPanel {
-            position: absolute;
-            top: 8px;
-            right: 8px;
-            background: rgba(20,20,20,0.92);
-            border: 1px solid #444;
-            border-radius: 4px;
-            padding: 10px 12px;
-            min-width: 220px;
-            z-index: 60;
-            font-size: 11px;
-            color: #ddd;
-            display: flex;
-            flex-direction: column;
-            gap: 10px;
-        }
-        #settingsPanel.hidden { display: none; }
-        #settingsPanel .row {
-            display: grid;
-            grid-template-columns: 70px 1fr 48px;
-            gap: 6px;
-            align-items: center;
-        }
-        #settingsPanel .row label { color: #888; }
-        #settingsPanel .row input[type="range"] { width: 100%; }
-        #settingsPanel .row input[type="number"] {
-            background: #333;
-            border: 1px solid #555;
-            color: #fff;
-            font-size: 11px;
-            padding: 2px 4px;
-            border-radius: 3px;
-            width: 100%;
-        }
-        #settingsPanel .panel-title {
-            font-weight: 600;
-            color: #ccc;
-            border-bottom: 1px solid #333;
-            padding-bottom: 4px;
-        }
+        #controlsBar button:hover { background: #333; }
+        .view-axes { display: flex; gap: 2px; }
     </style>
-
     <script type="importmap">
     {
         "imports": {
             "three": "./js/three.module.min.js",
-            "three/addons/controls/OrbitControls.js": "./js/OrbitControls.js",
             "three/addons/controls/TrackballControls.js": "./js/TrackballControls.js"
         }
     }
     </script>
 </head>
 <body>
-    <div id="viewerContainer">
-        <!-- Side-by-side layout (default) -->
-        <div id="paneLeft" class="pane">
-            <canvas id="canvasSBS_L"></canvas>
-            <span id="labelLeft" class="pane-label">Splat 1</span>
-        </div>
-        <div class="pane-divider" id="paneDivider"></div>
-        <div id="paneRight" class="pane">
-            <canvas id="canvasSBS_R"></canvas>
-            <span id="labelRight" class="pane-label">Splat 2</span>
-        </div>
-
-        <!-- Slider layout (toggled) -->
-        <div id="sliderContainer">
-            <canvas id="canvasLeft"></canvas>
-            <canvas id="canvasRight"></canvas>
-            <div id="sliderHandle"></div>
-            <span class="slider-label left" id="sliderLabelLeft">Splat 1</span>
-            <span class="slider-label right" id="sliderLabelRight">Splat 2</span>
-        </div>
-
-        <div id="error" class="error hidden"></div>
-
-        <div id="settingsPanel" class="hidden">
-            <div class="panel-title">Settings</div>
-            <div class="row">
-                <label for="fovInput">FOV</label>
-                <input type="range" id="fovRange" min="5" max="170" step="1" value="50">
-                <input type="number" id="fovInput" min="5" max="170" step="1" value="50">
-            </div>
-            <div class="row">
-                <label for="scaleInput">Scale</label>
-                <input type="range" id="scaleRange" min="1" max="50" step="0.5" value="20">
-                <input type="number" id="scaleInput" min="1" max="50" step="0.5" value="20">
-            </div>
-            <div class="row">
-                <label for="opacityInput">Opacity</label>
-                <input type="range" id="opacityRange" min="0.05" max="1" step="0.01" value="1.0">
-                <input type="number" id="opacityInput" min="0.05" max="1" step="0.01" value="1.0">
-            </div>
-        </div>
+<div id="viewerContainer">
+    <!-- Side-by-side: two viewports -->
+    <div id="vp1" class="viewport">
+        <canvas id="canvas1"></canvas>
+        <div class="viewport-label">Gaussian 1</div>
+    </div>
+    <div class="divider" id="divider"></div>
+    <div id="vp2" class="viewport">
+        <canvas id="canvas2"></canvas>
+        <div class="viewport-label right">Gaussian 2</div>
     </div>
 
-    <div id="controlsBar">
-        <button id="settingsBtn" title="Settings">&#9881; Settings</button>
-        <span class="view-axes">
-            <button class="view-btn" data-axis="x" data-sign="1">+X</button>
-            <button class="view-btn" data-axis="x" data-sign="-1">&minus;X</button>
-            <button class="view-btn" data-axis="y" data-sign="1">+Y</button>
-            <button class="view-btn" data-axis="y" data-sign="-1">&minus;Y</button>
-            <button class="view-btn" data-axis="z" data-sign="1">+Z</button>
-            <button class="view-btn" data-axis="z" data-sign="-1">&minus;Z</button>
-        </span>
-        <button id="resetCamera" title="Reset camera view">Reset View</button>
-        <button id="screenshot" title="Take screenshot">Screenshot</button>
+    <!-- Slider overlay (shown in slider mode) -->
+    <div id="sliderOverlay">
+        <div id="sliderLine"><div id="sliderHandle"></div></div>
     </div>
 
-    <script type="module">
-    import * as THREE from 'three';
-    import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
-    import { SparkRenderer, SplatMesh } from './js/spark.module.min.js';
+    <div id="error" class="error hidden"></div>
+</div>
 
-    const _urlParams = new URLSearchParams(window.location.search);
-    const LAYOUT = _urlParams.get("layout") === "slider" ? "slider" : "side_by_side";
+<div id="controlsBar">
+    <span class="view-axes">
+        <button class="view-btn" data-axis="x" data-sign="1">+X</button>
+        <button class="view-btn" data-axis="x" data-sign="-1">&minus;X</button>
+        <button class="view-btn" data-axis="y" data-sign="1">+Y</button>
+        <button class="view-btn" data-axis="y" data-sign="-1">&minus;Y</button>
+        <button class="view-btn" data-axis="z" data-sign="1">+Z</button>
+        <button class="view-btn" data-axis="z" data-sign="-1">&minus;Z</button>
+    </span>
+    <button id="resetCamera">Reset View</button>
+</div>
 
-    // ---- DOM references ----
-    const paneLeft     = document.getElementById('paneLeft');
-    const paneRight    = document.getElementById('paneRight');
-    const paneDivider  = document.getElementById('paneDivider');
-    const sliderContainer = document.getElementById('sliderContainer');
-    const sliderHandle = document.getElementById('sliderHandle');
-    const settingsPanel = document.getElementById('settingsPanel');
-    const settingsBtn   = document.getElementById('settingsBtn');
-    const fovRange      = document.getElementById('fovRange');
-    const fovInput      = document.getElementById('fovInput');
-    const scaleRange    = document.getElementById('scaleRange');
-    const scaleInput    = document.getElementById('scaleInput');
-    const opacityRange  = document.getElementById('opacityRange');
-    const opacityInput  = document.getElementById('opacityInput');
-    const errorEl       = document.getElementById('error');
+<script type="module">
+import * as THREE from 'three';
+import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
+import { SparkRenderer, SplatMesh } from './js/spark.module.min.js';
 
-    function showError(msg) {
-        errorEl.textContent = msg;
-        errorEl.classList.remove('hidden');
+const params = new URLSearchParams(window.location.search);
+const LAYOUT = params.get("layout") || "side_by_side";
+
+const container = document.getElementById('viewerContainer');
+const vp1       = document.getElementById('vp1');
+const vp2       = document.getElementById('vp2');
+const canvas1   = document.getElementById('canvas1');
+const canvas2   = document.getElementById('canvas2');
+const divider   = document.getElementById('divider');
+const errorEl   = document.getElementById('error');
+const sliderOverlay = document.getElementById('sliderOverlay');
+const sliderLine    = document.getElementById('sliderLine');
+
+// Lazy <script> loader
+const _loaded = new Set();
+function loadScript(src) {
+    if (_loaded.has(src)) return Promise.resolve();
+    return new Promise((resolve, reject) => {
+        const s = document.createElement('script');
+        s.src = src; s.async = false;
+        s.onload  = () => { _loaded.add(src); resolve(); };
+        s.onerror = () => reject(new Error("Failed to load " + src));
+        document.head.appendChild(s);
+    });
+}
+
+function showError(msg) { errorEl.textContent = msg; errorEl.classList.remove('hidden'); }
+
+// ============================================================
+// Minimal SparkAdapter (single canvas, no controls)
+// ============================================================
+class MiniSparkAdapter {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this.scene = new THREE.Scene();
+        this.camera = new THREE.PerspectiveCamera(50, 1, 0.05, 1000);
+        this.camera.position.set(0, 0, -3);
+        this.renderer = new THREE.WebGLRenderer({ canvas, antialias: false, alpha: false, preserveDrawingBuffer: true });
+        this.renderer.setClearColor(0x1a1a1a, 1);
+        this.sparkRenderer = new SparkRenderer({ renderer: this.renderer });
+        this.scene.add(this.sparkRenderer);
+        this.splatMesh = null;
+        this._resize();
     }
-
-    // ---- Layout init ----
-    let canvasL, canvasR;
-    if (LAYOUT === "slider") {
-        paneLeft.style.display = 'none';
-        paneRight.style.display = 'none';
-        paneDivider.style.display = 'none';
-        sliderContainer.style.display = 'block';
-        canvasL = document.getElementById('canvasLeft');
-        canvasR = document.getElementById('canvasRight');
-    } else {
-        sliderContainer.style.display = 'none';
-        canvasL = document.getElementById('canvasSBS_L');
-        canvasR = document.getElementById('canvasSBS_R');
+    _resize() {
+        const w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
+        this.renderer.setSize(w, h, false);
+        this.renderer.setPixelRatio(window.devicePixelRatio || 1);
+        this.camera.aspect = w / h;
+        this.camera.updateProjectionMatrix();
     }
-    canvasL.tabIndex = 0;
-    canvasL.style.outline = "none";
-    canvasR.tabIndex = 0;
-    canvasR.style.outline = "none";
-
-    // ---- Shared state ----
-    let currentFovDeg  = 50;
-    let currentScale   = 20.0;
-    let currentOpacity = 1.0;
-    let initialPose    = null;
-    let pendingRestore = null;
-
-    function setFovInputs(v)     { fovRange.value = v; fovInput.value = v; }
-    function setScaleInputs(v)   { scaleRange.value = v; scaleInput.value = v; }
-    function setOpacityInputs(v) { opacityRange.value = v; opacityInput.value = v; }
-
-    // ============================================================
-    // Dual Spark Adapter — two independent renderers sharing camera
-    // ============================================================
-    class DualSparkAdapter {
-        constructor(canvasL, canvasR) {
-            this.canvasL = canvasL;
-            this.canvasR = canvasR;
-            this.rendererL = null;
-            this.rendererR = null;
-            this.sparkL = null;
-            this.sparkR = null;
-            this.sceneL = null;
-            this.sceneR = null;
-            this.cameraL = null;
-            this.cameraR = null;
-            this.controls = null;      // primary controls on left canvas
-            this.splatMeshL = null;
-            this.splatMeshR = null;
-            this._raf = null;
-            this._frameCount = 0;
-        }
-
-        init() {
-            // Left renderer
-            this.rendererL = this._makeRenderer(this.canvasL, "DualL");
-            this.sceneL = new THREE.Scene();
-            this.sparkL = new SparkRenderer({ renderer: this.rendererL });
-            this.sceneL.add(this.sparkL);
-
-            // Right renderer
-            this.rendererR = this._makeRenderer(this.canvasR, "DualR");
-            this.sceneR = new THREE.Scene();
-            this.sparkR = new SparkRenderer({ renderer: this.rendererR });
-            this.sceneR.add(this.sparkR);
-
-            // Shared camera dimensions
-            const W = this.canvasL.clientWidth || 256;
-            const H = this.canvasL.clientHeight || 256;
-
-            this.cameraL = new THREE.PerspectiveCamera(50, W / Math.max(1, H), 0.05, 1000);
-            this.cameraL.position.set(0, 0, -3);
-            this.cameraL.lookAt(0, 0, 0);
-
-            this.cameraR = new THREE.PerspectiveCamera(50, W / Math.max(1, H), 0.05, 1000);
-            this.cameraR.position.set(0, 0, -3);
-            this.cameraR.lookAt(0, 0, 0);
-
-            // Controls on left canvas — synced to right each frame
-            this.controls = new TrackballControls(this.cameraL, this.canvasL);
-            this.controls.rotateSpeed = 3.5;
-            this.controls.zoomSpeed = 1.2;
-            this.controls.panSpeed = 0.8;
-            this.controls.staticMoving = true;
-            this.controls.dynamicDampingFactor = 0.15;
-            this.controls.target.set(0, 0, 0);
-            this.controls.update();
-
-            // Also allow interaction from right canvas
-            this._setupMirrorControls();
-
-            // Resize observers
-            this._setupResize(this.canvasL, this.rendererL, this.cameraL, "DualL");
-            this._setupResize(this.canvasR, this.rendererR, this.cameraR, "DualR");
-
-            this._startRenderLoop();
-        }
-
-        _makeRenderer(canvas, tag) {
-            const W = canvas.clientWidth || 256;
-            const H = canvas.clientHeight || 256;
-            const dpr = window.devicePixelRatio || 1;
-            const r = new THREE.WebGLRenderer({
-                canvas, antialias: false, alpha: false, preserveDrawingBuffer: true,
-            });
-            r.setPixelRatio(dpr);
-            r.setSize(W, H, false);
-            r.setClearColor(0x1a1a1a, 1.0);
-            return r;
-        }
-
-        _setupResize(canvas, renderer, camera, tag) {
-            const ro = new ResizeObserver(() => {
-                const w = canvas.clientWidth || 1;
-                const h = canvas.clientHeight || 1;
-                renderer.setSize(w, h, false);
-                camera.aspect = w / Math.max(1, h);
-                camera.updateProjectionMatrix();
-                this.controls.handleResize();
-            });
-            ro.observe(canvas);
-        }
-
-        _setupMirrorControls() {
-            // Forward pointer events from right canvas to left controls
-            // by creating a secondary TrackballControls that syncs back
-            const rightControls = new TrackballControls(this.cameraR, this.canvasR);
-            rightControls.rotateSpeed = 3.5;
-            rightControls.zoomSpeed = 1.2;
-            rightControls.panSpeed = 0.8;
-            rightControls.staticMoving = true;
-            rightControls.dynamicDampingFactor = 0.15;
-            rightControls.target.set(0, 0, 0);
-            this._rightControls = rightControls;
-
-            // Track which side was last interacted with
-            this._activeControls = this.controls; // default to left
-            this.canvasL.addEventListener('pointerdown', () => {
-                this._activeControls = this.controls;
-            });
-            this.canvasR.addEventListener('pointerdown', () => {
-                this._activeControls = this._rightControls;
-            });
-        }
-
-        _syncCameras() {
-            // Whichever side is active is the source of truth
-            const src = this._activeControls;
-            const srcCam = src === this.controls ? this.cameraL : this.cameraR;
-            const dstCam = src === this.controls ? this.cameraR : this.cameraL;
-            const dstCtrl = src === this.controls ? this._rightControls : this.controls;
-
-            dstCam.position.copy(srcCam.position);
-            dstCam.quaternion.copy(srcCam.quaternion);
-            dstCam.fov = srcCam.fov;
-            dstCam.updateProjectionMatrix();
-            dstCtrl.target.copy(src.target);
-        }
-
-        _startRenderLoop() {
-            const tick = () => {
-                this._raf = requestAnimationFrame(tick);
-
-                // Update active controls
-                this._activeControls.update();
-
-                // Sync passive side
-                this._syncCameras();
-
-                this.rendererL.render(this.sceneL, this.cameraL);
-                this.rendererR.render(this.sceneR, this.cameraR);
-                this._frameCount++;
-            };
-            tick();
-        }
-
-        async loadSplat(side, blobUrl, filename) {
-            const scene = side === 1 ? this.sceneL : this.sceneR;
-            const existing = side === 1 ? this.splatMeshL : this.splatMeshR;
-
-            if (existing) {
-                scene.remove(existing);
-                try { existing.dispose(); } catch (_) {}
-            }
-
-            const splatMesh = new SplatMesh({
-                url: blobUrl,
-                fileName: filename,
-            });
-            scene.add(splatMesh);
-            await splatMesh.initialized;
-
-            if (side === 1) this.splatMeshL = splatMesh;
-            else            this.splatMeshR = splatMesh;
-
-            console.log(`[DualViewer] Side ${side} loaded: ${splatMesh.numSplats} splats`);
-        }
-
-        getBounds() {
-            // Union bounds from both meshes
-            let minX = Infinity, minY = Infinity, minZ = Infinity;
-            let maxX = -Infinity, maxY = -Infinity, maxZ = -Infinity;
-            let hasAny = false;
-
-            for (const mesh of [this.splatMeshL, this.splatMeshR]) {
-                if (!mesh) continue;
-                let bbox;
-                try { bbox = mesh.getBoundingBox(true); } catch (_) { continue; }
-                if (!bbox || bbox.isEmpty()) continue;
-                hasAny = true;
-                minX = Math.min(minX, bbox.min.x);
-                minY = Math.min(minY, bbox.min.y);
-                minZ = Math.min(minZ, bbox.min.z);
-                maxX = Math.max(maxX, bbox.max.x);
-                maxY = Math.max(maxY, bbox.max.y);
-                maxZ = Math.max(maxZ, bbox.max.z);
-            }
-            if (!hasAny) return null;
+    render() { this.renderer.render(this.scene, this.camera); }
+    async loadSplat(blobUrl, filename) {
+        if (this.splatMesh) { this.scene.remove(this.splatMesh); this.splatMesh = null; }
+        const sm = new SplatMesh({ url: blobUrl, fileName: filename });
+        this.scene.add(sm);
+        await sm.initialized;
+        this.splatMesh = sm;
+    }
+    getBounds() {
+        if (!this.splatMesh) return null;
+        try {
+            const bb = this.splatMesh.getBoundingBox(true);
+            if (!bb || bb.isEmpty()) return null;
             return {
-                center: { x: (minX+maxX)/2, y: (minY+maxY)/2, z: (minZ+maxZ)/2 },
-                size:   { x: maxX-minX,     y: maxY-minY,     z: maxZ-minZ },
+                center: { x: (bb.min.x+bb.max.x)/2, y: (bb.min.y+bb.max.y)/2, z: (bb.min.z+bb.max.z)/2 },
+                size: { x: bb.max.x-bb.min.x, y: bb.max.y-bb.min.y, z: bb.max.z-bb.min.z },
             };
-        }
-
-        getCameraPosition() {
-            const p = this.cameraL.position;
-            return { x: p.x, y: p.y, z: p.z };
-        }
-        setCameraPosition(x, y, z) {
-            this.cameraL.position.set(x, y, z);
-            this.cameraR.position.set(x, y, z);
-        }
-        getCameraTarget() {
-            const t = this.controls.target;
-            return { x: t.x, y: t.y, z: t.z };
-        }
-        setCameraTarget(x, y, z) {
-            this.controls.target.set(x, y, z);
-            this._rightControls.target.set(x, y, z);
-            this.controls.update();
-            this._rightControls.update();
-        }
-        setFov(deg) {
-            this.cameraL.fov = deg;
-            this.cameraL.updateProjectionMatrix();
-            this.cameraR.fov = deg;
-            this.cameraR.updateProjectionMatrix();
-        }
-        setScaleMultiplier(f) {
-            const s = f / 20.0;
-            if (this.splatMeshL) this.splatMeshL.splatScale = s;
-            if (this.splatMeshR) this.splatMeshR.splatScale = s;
-        }
-        setOpacityMultiplier(f) {
-            if (this.splatMeshL) this.splatMeshL.splatOpacity = f;
-            if (this.splatMeshR) this.splatMeshR.splatOpacity = f;
-        }
-        screenshot() {
-            // Composite both canvases side by side
-            this.rendererL.render(this.sceneL, this.cameraL);
-            this.rendererR.render(this.sceneR, this.cameraR);
-            const w1 = this.canvasL.width, h1 = this.canvasL.height;
-            const w2 = this.canvasR.width, h2 = this.canvasR.height;
-            const offscreen = document.createElement('canvas');
-            offscreen.width = w1 + w2;
-            offscreen.height = Math.max(h1, h2);
-            const ctx = offscreen.getContext('2d');
-            ctx.drawImage(this.canvasL, 0, 0);
-            ctx.drawImage(this.canvasR, w1, 0);
-            return offscreen.toDataURL("image/png");
-        }
-        kind() { return "dual-spark"; }
+        } catch(_) { return null; }
     }
-
-    // ============================================================
-    // Slider clipping — masks right canvas to show only right half
-    // ============================================================
-    let sliderFrac = 0.5;
-
-    function updateSliderClip() {
-        if (LAYOUT !== "slider") return;
-        const w = sliderContainer.clientWidth;
-        const px = Math.round(sliderFrac * w);
-        sliderHandle.style.left = px + 'px';
-        // Right canvas: clip to only show from slider to right edge
-        canvasR.style.clipPath = `inset(0 0 0 ${px}px)`;
+    setScale(f) { if (this.splatMesh) this.splatMesh.splatScale = f / 20.0; }
+    setOpacity(f) { if (this.splatMesh) this.splatMesh.splatOpacity = f; }
+    setFov(d) { this.camera.fov = d; this.camera.updateProjectionMatrix(); }
+    setCamera(pos, target) {
+        this.camera.position.set(pos.x, pos.y, pos.z);
+        this.camera.lookAt(target.x, target.y, target.z);
     }
+}
 
-    if (LAYOUT === "slider") {
-        let dragging = false;
-        sliderHandle.addEventListener('pointerdown', (e) => {
-            dragging = true;
-            sliderHandle.setPointerCapture(e.pointerId);
-            e.preventDefault();
+// ============================================================
+// Minimal PlayCanvasAdapter (single canvas, no controls)
+// ============================================================
+class MiniPlayCanvasAdapter {
+    constructor(canvas) {
+        this.canvas = canvas;
+        this._app = null;
+        this._cam = null;
+        this._splatEntity = null;
+        this._splatAsset = null;
+        this.splatMesh = null;
+    }
+    async init() {
+        await loadScript('./js/playcanvas.min.js');
+        const pc = window.pc;
+        this._app = new pc.Application(this.canvas, {
+            graphicsDeviceOptions: { antialias: false, alpha: false, preserveDrawingBuffer: true },
         });
-        window.addEventListener('pointermove', (e) => {
-            if (!dragging) return;
-            const rect = sliderContainer.getBoundingClientRect();
-            sliderFrac = Math.max(0.02, Math.min(0.98,
-                (e.clientX - rect.left) / rect.width));
-            updateSliderClip();
+        this._app.setCanvasFillMode(pc.FILLMODE_NONE);
+        this._app.setCanvasResolution(pc.RESOLUTION_AUTO);
+        this._app.start();
+        this._cam = new pc.Entity("Camera");
+        this._cam.addComponent("camera", {
+            nearClip: 0.05, farClip: 1000, fov: 50,
+            clearColor: new pc.Color(0.102, 0.102, 0.102, 1),
         });
-        window.addEventListener('pointerup', () => { dragging = false; });
-
-        // Initial clip
-        requestAnimationFrame(updateSliderClip);
-        new ResizeObserver(updateSliderClip).observe(sliderContainer);
+        this._cam.setPosition(0, 0, -3);
+        this._cam.lookAt(0, 0, 0);
+        this._app.root.addChild(this._cam);
     }
-
-    // ============================================================
-    // Camera helpers
-    // ============================================================
-    let adapter = null;
-    let adapterReady = false;
-
-    let _lastEmitted = "";
-    function emitCameraState() {
-        if (!adapterReady) return;
-        const p = adapter.getCameraPosition();
-        const t = adapter.getCameraTarget();
-        const state = {
-            v: 1,
-            pos: [p.x, p.y, p.z],
-            target: [t.x, t.y, t.z],
-            fov: currentFovDeg,
-            scale: currentScale,
-            opacity: currentOpacity,
-        };
-        const s = JSON.stringify(state);
-        if (s === _lastEmitted) return;
-        _lastEmitted = s;
-        try { window.parent.postMessage({ type: "CAMERA_STATE", state }, "*"); }
-        catch (_) {}
-    }
-
-    function applyCameraState(state) {
-        if (!adapterReady || !state) return;
-        if (Array.isArray(state.pos))
-            adapter.setCameraPosition(state.pos[0], state.pos[1], state.pos[2]);
-        if (Array.isArray(state.target))
-            adapter.setCameraTarget(state.target[0], state.target[1], state.target[2]);
-        if (typeof state.fov === "number") {
-            currentFovDeg = state.fov;
-            setFovInputs(state.fov);
-            adapter.setFov(state.fov);
-        }
-        if (typeof state.scale === "number") {
-            currentScale = state.scale;
-            setScaleInputs(state.scale);
-            adapter.setScaleMultiplier(state.scale);
-        }
-        if (typeof state.opacity === "number") {
-            currentOpacity = state.opacity;
-            setOpacityInputs(state.opacity);
-            adapter.setOpacityMultiplier(state.opacity);
+    render() { /* PlayCanvas renders automatically */ }
+    _resize() {
+        if (this._app) {
+            const w = this.canvas.clientWidth || 1, h = this.canvas.clientHeight || 1;
+            this._app.resizeCanvas(w, h);
         }
     }
-
-    function frameOnBounds(fovDeg) {
-        const b = adapter.getBounds();
-        if (!b) return;
-        currentFovDeg = fovDeg;
-        adapter.setFov(fovDeg);
-        const maxExtent = Math.max(b.size.x, b.size.y, b.size.z);
-        const fovRad = fovDeg * Math.PI / 180;
-        const radius = Math.max(0.1, (maxExtent / 2) / Math.tan(fovRad / 2) * 1.15);
-        adapter.setCameraPosition(b.center.x, b.center.y, b.center.z - radius);
-        adapter.setCameraTarget(b.center.x, b.center.y, b.center.z);
-        initialPose = {
-            pos: [b.center.x, b.center.y, b.center.z - radius],
-            target: [b.center.x, b.center.y, b.center.z],
-            fov: fovDeg,
-        };
-        emitCameraState();
+    async loadSplat(blobUrl, filename) {
+        const pc = window.pc;
+        if (this._splatEntity) { this._splatEntity.destroy(); this._splatEntity = null; }
+        if (this._splatAsset) { this._app.assets.remove(this._splatAsset); this._splatAsset = null; }
+        const asset = await new Promise((res, rej) => {
+            this._app.assets.loadFromUrlAndFilename(blobUrl, filename, 'gsplat', (err, a) => {
+                if (err) rej(new Error(String(err))); else res(a);
+            });
+        });
+        const entity = new pc.Entity('Splat');
+        entity.addComponent('gsplat', { asset });
+        // No euler flip — match Spark's convention.
+        this._app.root.addChild(entity);
+        this._splatEntity = entity;
+        this._splatAsset = asset;
+        this.splatMesh = { numSplats: 0 };
+        try { const r = asset.resource; if (r?.numSplats) this.splatMesh.numSplats = r.numSplats; } catch(_) {}
     }
-
-    function viewAlongAxis(axis, sign) {
-        const b = adapter.getBounds();
-        if (!b) return;
-        const maxExtent = Math.max(b.size.x, b.size.y, b.size.z);
-        const fovRad = currentFovDeg * Math.PI / 180;
-        const radius = Math.max(0.1, (maxExtent / 2) / Math.tan(fovRad / 2) * 1.5);
-        const off = { x: 0, y: 0, z: 0 };
-        off[axis] = sign * radius;
-        adapter.setCameraPosition(b.center.x + off.x, b.center.y + off.y, b.center.z + off.z);
-        adapter.setCameraTarget(b.center.x, b.center.y, b.center.z);
-        emitCameraState();
-    }
-
-    function resetCamera() {
-        if (!initialPose) return;
-        const { pos, target, fov } = initialPose;
-        currentFovDeg = fov;
-        setFovInputs(fov);
-        adapter.setFov(fov);
-        adapter.setCameraPosition(pos[0], pos[1], pos[2]);
-        adapter.setCameraTarget(target[0], target[1], target[2]);
-        emitCameraState();
-    }
-
-    function updateFov(v) {
-        v = Math.max(5, Math.min(170, parseFloat(v) || 50));
-        currentFovDeg = v;
-        setFovInputs(v);
-        if (adapterReady) {
-            const b = adapter.getBounds();
-            if (b) frameOnBounds(v);
-            else { adapter.setFov(v); emitCameraState(); }
-        }
-    }
-    function updateGaussianScale(v) {
-        v = Math.max(0.1, Math.min(100, parseFloat(v) || 1.0));
-        currentScale = v;
-        setScaleInputs(v);
-        if (adapterReady) adapter.setScaleMultiplier(v);
-        emitCameraState();
-    }
-    function updateOpacity(v) {
-        v = Math.max(0, Math.min(1, parseFloat(v) || 1.0));
-        currentOpacity = v;
-        setOpacityInputs(v);
-        if (adapterReady) adapter.setOpacityMultiplier(v);
-        emitCameraState();
-    }
-
-    // ============================================================
-    // Bootstrap & load
-    // ============================================================
-    let loadedSides = new Set();
-
-    async function ensureAdapter() {
-        if (adapter) return;
-        adapter = new DualSparkAdapter(canvasL, canvasR);
-        adapter.init();
-        adapterReady = true;
-        console.log("[DualViewer] Adapter ready");
-    }
-
-    async function loadSplatSide(side, arrayBuffer, filename, intrinsics) {
-        await ensureAdapter();
-        const blob = new Blob([arrayBuffer], { type: 'application/octet-stream' });
-        const blobUrl = URL.createObjectURL(blob);
+    getBounds() {
+        if (!this._splatEntity) return null;
         try {
-            await adapter.loadSplat(side, blobUrl, filename);
-        } finally {
-            URL.revokeObjectURL(blobUrl);
-        }
-        loadedSides.add(side);
-
-        // Frame after both sides loaded
-        if (loadedSides.size >= 2) {
-            let fovDeg = currentFovDeg;
-            if (intrinsics && Array.isArray(intrinsics) && intrinsics.length >= 2) {
-                const fy = intrinsics[1][1];
-                const cy = intrinsics[1][2];
-                const h = cy * 2;
-                fovDeg = 2 * Math.atan(h / (2 * fy)) * 180 / Math.PI;
-            }
-            fovDeg = Math.max(20, Math.min(120, fovDeg));
-            setFovInputs(fovDeg);
-            frameOnBounds(fovDeg);
-            adapter.setScaleMultiplier(currentScale);
-            adapter.setOpacityMultiplier(currentOpacity);
-
-            if (pendingRestore) {
-                applyCameraState(pendingRestore);
-                pendingRestore = null;
-            }
-
-            window.parent.postMessage({
-                type: 'MESH_LOADED', error: null, timestamp: Date.now(),
-            }, '*');
-            console.log('[DualViewer] Both sides loaded');
+            const aabb = this._splatEntity.gsplat?.instance?.meshInstance?.aabb;
+            if (!aabb) return null;
+            return {
+                center: { x: aabb.center.x, y: aabb.center.y, z: aabb.center.z },
+                size: { x: aabb.halfExtents.x*2, y: aabb.halfExtents.y*2, z: aabb.halfExtents.z*2 },
+            };
+        } catch(_) { return null; }
+    }
+    setScale(f) { if (this._splatEntity) { const s = f/20; this._splatEntity.setLocalScale(s,s,s); } }
+    setOpacity(_f) { /* not supported */ }
+    setFov(d) { if (this._cam) this._cam.camera.fov = d; }
+    setCamera(pos, target) {
+        if (this._cam) {
+            this._cam.setPosition(pos.x, pos.y, pos.z);
+            this._cam.lookAt(target.x, target.y, target.z);
         }
     }
+}
 
-    // ============================================================
-    // Wiring
-    // ============================================================
-    fovRange.addEventListener('input', e => updateFov(e.target.value));
-    fovInput.addEventListener('change', e => updateFov(e.target.value));
-    scaleRange.addEventListener('input', e => updateGaussianScale(e.target.value));
-    scaleInput.addEventListener('change', e => updateGaussianScale(e.target.value));
-    opacityRange.addEventListener('input', e => updateOpacity(e.target.value));
-    opacityInput.addEventListener('change', e => updateOpacity(e.target.value));
+// ============================================================
+// Setup
+// ============================================================
+let adapter1, adapter2;
+let controls; // Single TrackballControls on canvas1, synced to both
+let currentFov = 50;
+let initialPose = null;
+let sliderPos = 0.5;
 
-    settingsBtn.addEventListener('click', () => settingsPanel.classList.toggle('hidden'));
-
-    document.querySelectorAll('.view-btn').forEach(btn => {
-        btn.addEventListener('click', () => {
-            viewAlongAxis(btn.dataset.axis, parseInt(btn.dataset.sign, 10));
-        });
-    });
-
-    document.getElementById('resetCamera').addEventListener('click', resetCamera);
-    document.getElementById('screenshot').addEventListener('click', () => {
-        if (!adapterReady) return;
-        try {
-            window.parent.postMessage({
-                type: 'SCREENSHOT',
-                image: adapter.screenshot(),
-                timestamp: Date.now(),
-            }, '*');
-        } catch (err) {
-            console.error('[DualViewer] Screenshot error:', err);
-        }
-    });
-
-    for (const c of [canvasL, canvasR]) {
-        c.addEventListener('pointerup', () => emitCameraState());
-        c.addEventListener('wheel', () => emitCameraState(), { passive: true });
+async function createAdapter(canvas, renderer) {
+    if (renderer === "playcanvas") {
+        const a = new MiniPlayCanvasAdapter(canvas);
+        await a.init();
+        return a;
     }
+    return new MiniSparkAdapter(canvas);
+}
 
-    // ---- Labels ----
-    function setLabels(name1, name2) {
-        if (LAYOUT === "slider") {
-            document.getElementById('sliderLabelLeft').textContent = name1 || 'Splat 1';
-            document.getElementById('sliderLabelRight').textContent = name2 || 'Splat 2';
-        } else {
-            document.getElementById('labelLeft').textContent = name1 || 'Splat 1';
-            document.getElementById('labelRight').textContent = name2 || 'Splat 2';
-        }
+// Slider mode: stack canvases, clip canvas2
+if (LAYOUT === "slider") {
+    container.classList.add('slider-mode');
+    divider.style.display = 'none';
+    vp1.style.position = 'absolute';
+    vp1.style.inset = '0';
+    vp2.style.position = 'absolute';
+    vp2.style.inset = '0';
+    vp2.style.zIndex = '2';
+    sliderOverlay.style.display = 'block';
+
+    function updateSlider(pct) {
+        sliderPos = Math.max(0, Math.min(1, pct));
+        const left = (sliderPos * 100).toFixed(2);
+        vp2.style.clipPath = `inset(0 0 0 ${left}%)`;
+        sliderLine.style.left = `calc(${left}% - 1px)`;
     }
+    updateSlider(0.5);
 
-    // ============================================================
-    // Message handling
-    // ============================================================
-    window.addEventListener('message', (event) => {
-        const msg = event.data || {};
-
-        if (msg.type === 'LOAD_DUAL_MESH_DATA') {
-            console.log('[DualViewer] Received LOAD_DUAL_MESH_DATA, side:', msg.side,
-                        'size:', msg.data?.byteLength);
-            loadSplatSide(msg.side, msg.data, msg.filename || 'gaussian.ply', msg.intrinsics)
-                .catch(err => {
-                    showError('Failed to load splat ' + msg.side + ': ' + (err?.message || err));
-                    window.parent.postMessage({
-                        type: 'MESH_ERROR',
-                        error: String(err?.message || err),
-                        timestamp: Date.now(),
-                    }, '*');
-                });
-        } else if (msg.type === 'SET_LABELS') {
-            setLabels(msg.label1, msg.label2);
-        } else if (msg.type === 'RESTORE_CAMERA_STATE' && msg.state) {
-            if (adapterReady) applyCameraState(msg.state);
-            else pendingRestore = msg.state;
-        }
+    let dragging = false;
+    sliderOverlay.addEventListener('pointerdown', (e) => {
+        dragging = true;
+        sliderOverlay.setPointerCapture(e.pointerId);
+        updateSlider(e.offsetX / sliderOverlay.clientWidth);
     });
+    sliderOverlay.addEventListener('pointermove', (e) => {
+        if (dragging) updateSlider(e.offsetX / sliderOverlay.clientWidth);
+    });
+    sliderOverlay.addEventListener('pointerup', (e) => {
+        dragging = false;
+        sliderOverlay.releasePointerCapture(e.pointerId);
+    });
+}
 
-    console.log('[DualViewer] Ready — layout:', LAYOUT);
-    </script>
+// TrackballControls on canvas1 (works for both layouts)
+function setupControls(camera) {
+    const target = LAYOUT === "slider" ? sliderOverlay : canvas1;
+    controls = new TrackballControls(camera, target);
+    controls.rotateSpeed = 3.5;
+    controls.zoomSpeed = 1.2;
+    controls.panSpeed = 0.8;
+    controls.staticMoving = true;
+    controls.dynamicDampingFactor = 0.15;
+    controls.target.set(0, 0, 0);
+    controls.update();
+}
+
+function syncCameras() {
+    if (!adapter1 || !adapter2) return;
+    const pos = { x: adapter1.camera?.position?.x ?? 0, y: adapter1.camera?.position?.y ?? 0, z: adapter1.camera?.position?.z ?? 0 };
+    const tgt = { x: controls.target.x, y: controls.target.y, z: controls.target.z };
+
+    // For Spark adapter, camera is Three.js — already controlled by TrackballControls
+    // For PlayCanvas, sync position + target
+    if (adapter1.setCamera) adapter1.setCamera(pos, tgt);
+    if (adapter2.setCamera) adapter2.setCamera(pos, tgt);
+}
+
+function frameOnBounds(fov) {
+    // Use bounds from adapter1, or adapter2 as fallback
+    const b = adapter1?.getBounds() || adapter2?.getBounds();
+    if (!b) return;
+    currentFov = fov;
+    adapter1?.setFov(fov);
+    adapter2?.setFov(fov);
+
+    const maxExt = Math.max(b.size.x, b.size.y, b.size.z);
+    const radius = Math.max(0.1, (maxExt / 2) / Math.tan(fov * Math.PI / 360) * 1.15);
+
+    if (controls) {
+        controls.target.set(b.center.x, b.center.y, b.center.z);
+    }
+    // Position camera along -Z
+    const camPos = { x: b.center.x, y: b.center.y, z: b.center.z - radius };
+    const camTgt = { x: b.center.x, y: b.center.y, z: b.center.z };
+
+    if (adapter1?.camera) {
+        adapter1.camera.position.set(camPos.x, camPos.y, camPos.z);
+        adapter1.camera.lookAt(camTgt.x, camTgt.y, camTgt.z);
+    }
+    adapter1?.setCamera?.(camPos, camTgt);
+    adapter2?.setCamera?.(camPos, camTgt);
+
+    initialPose = { pos: [camPos.x, camPos.y, camPos.z], target: [camTgt.x, camTgt.y, camTgt.z], fov };
+    emitCameraState();
+}
+
+function viewAlongAxis(axis, sign) {
+    const b = adapter1?.getBounds() || adapter2?.getBounds();
+    if (!b) return;
+    const maxExt = Math.max(b.size.x, b.size.y, b.size.z);
+    const radius = Math.max(0.1, (maxExt / 2) / Math.tan(currentFov * Math.PI / 360) * 1.5);
+    const off = { x: 0, y: 0, z: 0 };
+    off[axis] = sign * radius;
+    if (controls) controls.target.set(b.center.x, b.center.y, b.center.z);
+    const camPos = { x: b.center.x + off.x, y: b.center.y + off.y, z: b.center.z + off.z };
+    const camTgt = { x: b.center.x, y: b.center.y, z: b.center.z };
+    if (adapter1?.camera) {
+        adapter1.camera.position.set(camPos.x, camPos.y, camPos.z);
+        adapter1.camera.lookAt(camTgt.x, camTgt.y, camTgt.z);
+    }
+    adapter1?.setCamera?.(camPos, camTgt);
+    adapter2?.setCamera?.(camPos, camTgt);
+    emitCameraState();
+}
+
+// Camera state
+let _lastEmitted = "";
+function emitCameraState() {
+    const pos = adapter1?.camera?.position || { x: 0, y: 0, z: 0 };
+    const tgt = controls?.target || { x: 0, y: 0, z: 0 };
+    const state = {
+        v: 1,
+        pos: [pos.x, pos.y, pos.z],
+        target: [tgt.x, tgt.y, tgt.z],
+        fov: currentFov,
+    };
+    const s = JSON.stringify(state);
+    if (s === _lastEmitted) return;
+    _lastEmitted = s;
+    try { window.parent.postMessage({ type: "CAMERA_STATE", state }, "*"); } catch(_) {}
+}
+
+function applyCameraState(state) {
+    if (!state) return;
+    if (Array.isArray(state.pos) && controls && adapter1?.camera) {
+        adapter1.camera.position.set(state.pos[0], state.pos[1], state.pos[2]);
+    }
+    if (Array.isArray(state.target) && controls) {
+        controls.target.set(state.target[0], state.target[1], state.target[2]);
+    }
+    if (typeof state.fov === "number") {
+        currentFov = state.fov;
+        adapter1?.setFov(state.fov);
+        adapter2?.setFov(state.fov);
+    }
+    syncCameras();
+}
+
+// Render loop
+function tick() {
+    requestAnimationFrame(tick);
+    if (controls) controls.update();
+    syncCameras();
+    adapter1?.render();
+    adapter2?.render();
+}
+
+// Wiring
+document.querySelectorAll('.view-btn').forEach(btn => {
+    btn.addEventListener('click', () => viewAlongAxis(btn.dataset.axis, parseInt(btn.dataset.sign, 10)));
+});
+document.getElementById('resetCamera').addEventListener('click', () => {
+    if (!initialPose) return;
+    applyCameraState(initialPose);
+});
+canvas1.addEventListener('pointerup', emitCameraState);
+canvas1.addEventListener('wheel', emitCameraState, { passive: true });
+if (LAYOUT === "slider") {
+    sliderOverlay.addEventListener('pointerup', emitCameraState);
+    sliderOverlay.addEventListener('wheel', emitCameraState, { passive: true });
+}
+
+// Resize
+const ro = new ResizeObserver(() => {
+    adapter1?._resize();
+    adapter2?._resize();
+    controls?.handleResize();
+});
+ro.observe(container);
+
+// ============================================================
+// Message handling
+// ============================================================
+let pendingRestore = null;
+
+async function loadDual(data1, data2, filename1, filename2, renderer, fov) {
+    try {
+        adapter1 = await createAdapter(canvas1, renderer);
+        adapter2 = await createAdapter(canvas2, renderer);
+
+        // Setup controls on adapter1's Three.js camera (Spark) or a proxy (PlayCanvas)
+        if (adapter1.camera) {
+            setupControls(adapter1.camera);
+        }
+
+        adapter1._resize();
+        adapter2._resize();
+        tick(); // Start render loop
+
+        const blob1 = new Blob([data1], { type: 'application/octet-stream' });
+        const blob2 = new Blob([data2], { type: 'application/octet-stream' });
+        const url1 = URL.createObjectURL(blob1);
+        const url2 = URL.createObjectURL(blob2);
+
+        await Promise.all([
+            adapter1.loadSplat(url1, filename1),
+            adapter2.loadSplat(url2, filename2),
+        ]);
+
+        URL.revokeObjectURL(url1);
+        URL.revokeObjectURL(url2);
+
+        currentFov = fov || 50;
+        frameOnBounds(currentFov);
+
+        if (pendingRestore) { applyCameraState(pendingRestore); pendingRestore = null; }
+
+        window.parent.postMessage({ type: 'MESH_LOADED', timestamp: Date.now() }, '*');
+    } catch (err) {
+        showError('Load error: ' + (err?.message || err));
+        window.parent.postMessage({ type: 'MESH_ERROR', error: String(err?.message || err), timestamp: Date.now() }, '*');
+    }
+}
+
+window.addEventListener('message', (e) => {
+    const msg = e.data || {};
+    if (msg.type === 'LOAD_DUAL_GAUSSIAN' && msg.data1 && msg.data2) {
+        loadDual(msg.data1, msg.data2, msg.filename1 || 'g1.ply', msg.filename2 || 'g2.ply',
+                 msg.renderer || 'spark', msg.fov || 50);
+    } else if (msg.type === 'RESTORE_CAMERA_STATE' && msg.state) {
+        if (adapter1) applyCameraState(msg.state);
+        else pendingRestore = msg.state;
+    }
+});
+
+console.log(`[GaussianDualViewer] Ready (layout=${LAYOUT})`);
+</script>
 </body>
 </html>

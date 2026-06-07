@@ -11,6 +11,7 @@ from .preview_gaussian import PreviewGaussians
 from .preview_gaussian_spectate import PreviewGaussianSpectate
 from .preview_gaussian_dual import PreviewGaussianDual
 from .preview_gaussian_camera import PreviewGaussianCamera
+from .preview_gaussian_dual import PreviewGaussianDual
 from .merge_gaussians import GaussianMerge
 from .load_ply import LoadPLY
 from .load_ply_output import LoadPLYOutput
@@ -36,6 +37,7 @@ NODE_CLASS_MAPPINGS = {
     "GaussianExport": GaussianExport,
     "TransformGaussian": TransformGaussian,
     "GaussiansFromPointCloud": GaussiansFromPointCloud,
+    "PreviewGaussianDual": PreviewGaussianDual,
 }
 
 NODE_DISPLAY_NAME_MAPPINGS = {
@@ -50,4 +52,5 @@ NODE_DISPLAY_NAME_MAPPINGS = {
     "GaussianExport": "Gaussian Export",
     "TransformGaussian": "Transform Gaussian",
     "GaussiansFromPointCloud": "Gaussians From Point Cloud",
+    "PreviewGaussianDual": "Preview Gaussian Dual",
 }
