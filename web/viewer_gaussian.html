@@ -257,6 +257,18 @@
     const VIEWER_MODE = _urlParams.get("mode") === "spectate" ? "spectate" : "trackball";
     const SPECTATE_INITIAL_SPEED = parseFloat(_urlParams.get("speed") || "2.0");
 
+    // Forward navigation key state to the parent node so it can light up its
+    // on-screen keypad indicator (useful for screen recordings).
+    (() => {
+        const _down = new Set();
+        const fwd = (code, down) => {
+            try { window.parent.postMessage({ type: "KEY_STATE", code, down }, "*"); } catch (_) {}
+        };
+        window.addEventListener("keydown", (e) => { if (!_down.has(e.code)) { _down.add(e.code); fwd(e.code, true); } });
+        window.addEventListener("keyup",   (e) => { if (_down.delete(e.code)) fwd(e.code, false); });
+        window.addEventListener("blur",    () => { _down.forEach(c => fwd(c, false)); _down.clear(); });
+    })();
+
     // ============================================================
     // SpectateControls — TrackballControls-compatible API for fly-cam.
     //
@@ -390,6 +402,9 @@
 
             this._scratchFwd.set(0, 0, -1).applyQuaternion(this.camera.quaternion);
             this._scratchRight.set(1, 0, 0).applyQuaternion(this.camera.quaternion);
+            // Up/down is relative to the camera's CURRENT orientation, not a
+            // fixed world axis, so Space/C follow where you're looking now.
+            this._scratchUp.set(0, 1, 0).applyQuaternion(this.camera.quaternion);
 
             this._scratchMove.set(0, 0, 0);
             if (this._keys.has("KeyW")) this._scratchMove.add(this._scratchFwd);
@@ -948,18 +963,21 @@
 
             const fwd = new pc.Vec3();
             const right = new pc.Vec3();
+            const up = new pc.Vec3();
             cam.getWorldTransform().getZ(fwd);
             cam.getWorldTransform().getX(right);
+            cam.getWorldTransform().getY(up);   // camera's CURRENT up
             fwd.mulScalar(-1);
 
-            // WASD: move camera
+            // WASD: move camera. Space/C use the camera's current up axis, so
+            // up/down is relative to where you're looking now, not world Y.
             let mx = 0, my = 0, mz = 0;
             if (this._keys.has("KeyW")) { mx += fwd.x; my += fwd.y; mz += fwd.z; }
             if (this._keys.has("KeyS")) { mx -= fwd.x; my -= fwd.y; mz -= fwd.z; }
             if (this._keys.has("KeyD")) { mx += right.x; my += right.y; mz += right.z; }
             if (this._keys.has("KeyA")) { mx -= right.x; my -= right.y; mz -= right.z; }
-            if (this._keys.has("Space")) { my += 1; }
-            if (this._keys.has("KeyC"))  { my -= 1; }
+            if (this._keys.has("Space")) { mx += up.x; my += up.y; mz += up.z; }
+            if (this._keys.has("KeyC"))  { mx -= up.x; my -= up.y; mz -= up.z; }
 
             const lenSq = mx*mx + my*my + mz*mz;
             if (lenSq > 0) {

@@ -111,6 +111,18 @@ const LAYOUT = params.get("layout") || "side_by_side";
 const MODE = params.get("mode") === "spectate" ? "spectate" : "orbit";
 const SPECTATE_INITIAL_SPEED = parseFloat(params.get("speed") || "2.0");
 
+// Forward navigation key state to the parent node so it can light up its
+// on-screen keypad indicator (useful for screen recordings).
+(() => {
+    const _down = new Set();
+    const fwd = (code, down) => {
+        try { window.parent.postMessage({ type: "KEY_STATE", code, down }, "*"); } catch (_) {}
+    };
+    window.addEventListener("keydown", (e) => { if (!_down.has(e.code)) { _down.add(e.code); fwd(e.code, true); } });
+    window.addEventListener("keyup",   (e) => { if (_down.delete(e.code)) fwd(e.code, false); });
+    window.addEventListener("blur",    () => { _down.forEach(c => fwd(c, false)); _down.clear(); });
+})();
+
 const container = document.getElementById('viewerContainer');
 const vp1       = document.getElementById('vp1');
 const vp2       = document.getElementById('vp2');
@@ -420,6 +432,9 @@ class SpectateControls {
 
         this._fwd.set(0, 0, -1).applyQuaternion(this.camera.quaternion);
         this._right.set(1, 0, 0).applyQuaternion(this.camera.quaternion);
+        // Up/down relative to the camera's CURRENT orientation, not a fixed
+        // world axis, so Space/C follow where you're looking now.
+        this._up.set(0, 1, 0).applyQuaternion(this.camera.quaternion);
         this._move.set(0, 0, 0);
         if (this._keys.has("KeyW")) this._move.add(this._fwd);
         if (this._keys.has("KeyS")) this._move.sub(this._fwd);

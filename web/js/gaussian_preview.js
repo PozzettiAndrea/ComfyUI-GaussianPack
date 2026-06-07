@@ -15,6 +15,63 @@ const EXTENSION_FOLDER = (() => {
 
 console.log("[GaussianPack] Loading extension...");
 
+// Build a small WASD / arrows / Shift+Space+C keypad that lights up as keys
+// are pressed (driven by KEY_STATE messages the viewer iframe forwards). Handy
+// for screen-recording navigation. Returns { el, set(code,on), reset() }.
+function makeKeyPad() {
+    const codes = {};
+    const wrap = document.createElement("div");
+    Object.assign(wrap.style, {
+        display: "flex", gap: "10px", alignItems: "center",
+        padding: "4px 10px", flexShrink: "0", background: "#1a1a1a",
+        borderTop: "1px solid #444", borderLeft: "1px solid #333",
+    });
+    const keyEl = (label, code, w = 18) => {
+        const k = document.createElement("div");
+        k.textContent = label;
+        Object.assign(k.style, {
+            minWidth: w + "px", height: "18px", lineHeight: "16px", textAlign: "center",
+            fontSize: "10px", fontFamily: "monospace", color: "#aaa",
+            background: "#2a2a2a", border: "1px solid #444", borderRadius: "3px",
+            padding: "0 3px", boxSizing: "border-box", transition: "all 0.04s",
+        });
+        codes[code] = k;
+        return k;
+    };
+    const grid = (rows) => {
+        const g = document.createElement("div");
+        Object.assign(g.style, { display: "grid", gridTemplateColumns: "repeat(3, 18px)", gap: "2px" });
+        rows.forEach(r => r.forEach(cell => g.appendChild(cell || document.createElement("div"))));
+        return g;
+    };
+    const wasd = grid([
+        [null, keyEl("W", "KeyW"), null],
+        [keyEl("A", "KeyA"), keyEl("S", "KeyS"), keyEl("D", "KeyD")],
+    ]);
+    const arrows = grid([
+        [null, keyEl("↑", "ArrowUp"), null],
+        [keyEl("←", "ArrowLeft"), keyEl("↓", "ArrowDown"), keyEl("→", "ArrowRight")],
+    ]);
+    const extra = document.createElement("div");
+    Object.assign(extra.style, { display: "flex", gap: "2px", alignItems: "center" });
+    const shift = keyEl("⇧", "ShiftLeft", 24);
+    codes["ShiftRight"] = shift;             // both shifts light the same key
+    extra.appendChild(shift);
+    extra.appendChild(keyEl("Spc", "Space", 26));
+    extra.appendChild(keyEl("C", "KeyC"));
+    wrap.append(wasd, arrows, extra);
+
+    const set = (code, on) => {
+        const el = codes[code];
+        if (!el) return;
+        el.style.background = on ? "#00e0ff" : "#2a2a2a";
+        el.style.color = on ? "#002b30" : "#aaa";
+        el.style.borderColor = on ? "#00e0ff" : "#444";
+    };
+    const reset = () => Object.keys(codes).forEach(c => set(c, false));
+    return { el: wrap, set, reset };
+}
+
 app.registerExtension({
     name: "gaussianpack.previewgaussians",
 
@@ -302,10 +359,19 @@ app.registerExtension({
                 infoPanel.style.overflow = "hidden";
                 infoPanel.innerHTML = '<span style="color: #888;">Gaussian splat info will appear here after execution</span>';
 
-                // Add iframe + info panel + loading-bar overlay to container.
+                // Footer = info panel (left, grows) + key-press indicator (right).
+                const keyPad = makeKeyPad();
+                infoPanel.style.flex = "1 1 auto";
+                const footer = document.createElement("div");
+                Object.assign(footer.style, { display: "flex", alignItems: "stretch", flexShrink: "0" });
+                footer.appendChild(infoPanel);
+                footer.appendChild(keyPad.el);
+                this.gaussianKeyPad = keyPad;
+
+                // Add iframe + footer + loading-bar overlay to container.
                 // loadBar last so its overlay sits above the iframe.
                 container.appendChild(iframe);
-                container.appendChild(infoPanel);
+                container.appendChild(footer);
                 container.appendChild(loadBar);
 
                 // --- Persistent camera-state plumbing ---------------------
@@ -396,6 +462,12 @@ app.registerExtension({
                     // second PreviewGaussians node's iframe would stomp this
                     // node's state.
                     if (event.source !== iframe.contentWindow) return;
+
+                    // Key-press indicator: light up the footer keypad.
+                    if (event.data?.type === "KEY_STATE") {
+                        this.gaussianKeyPad?.set(event.data.code, !!event.data.down);
+                        return;
+                    }
 
                     // Camera-state pushes from iframe -> persist on
                     // node.properties["Camera Config"] (Load3D pattern).
@@ -752,8 +824,17 @@ app.registerExtension({
                 infoPanel.style.cssText = "background:#1a1a1a;border-top:1px solid #444;padding:6px 12px;font:10px monospace;color:#ccc;line-height:1.3;flex-shrink:0;overflow:hidden;";
                 infoPanel.innerHTML = '<span style="color:#888;">Dual view info will appear after execution</span>';
 
+                // Footer = info panel (left) + key-press indicator (right).
+                const keyPad = makeKeyPad();
+                infoPanel.style.flex = "1 1 auto";
+                const footer = document.createElement("div");
+                Object.assign(footer.style, { display: "flex", alignItems: "stretch", flexShrink: "0" });
+                footer.appendChild(infoPanel);
+                footer.appendChild(keyPad.el);
+                this.gaussianKeyPad = keyPad;
+
                 container.appendChild(iframe);
-                container.appendChild(infoPanel);
+                container.appendChild(footer);
                 container.appendChild(lb1.bar);
                 container.appendChild(lb2.bar);
 
@@ -775,6 +856,10 @@ app.registerExtension({
                 this.properties = this.properties || {};
                 window.addEventListener('message', (event) => {
                     if (event.source !== iframe.contentWindow) return;
+                    if (event.data?.type === "KEY_STATE") {
+                        this.gaussianKeyPad?.set(event.data.code, !!event.data.down);
+                        return;
+                    }
                     if (event.data?.type === "CAMERA_STATE" && event.data.state) {
                         node.properties["Camera Config"] = {
                             cameraType: "perspective",
