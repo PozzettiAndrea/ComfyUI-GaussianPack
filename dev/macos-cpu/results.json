@@ -1,89 +1,89 @@
 {
-  "timestamp": "2026-06-07T17:21:19.506218+00:00",
+  "timestamp": "2026-06-07T17:33:30.517698+00:00",
   "platform": "macos",
   "hardware": {
-    "os": "macOS-15.7.7-arm64-arm-64bit-Mach-O",
+    "os": "macOS-15.7.7-arm64-arm-64bit",
     "cpu": "arm"
   },
-  "commit_hash": "6753db6f21be5bb21c87b5358f3bd10fb98c0c1d",
-  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/27099445072",
-  "success": false,
+  "commit_hash": "39e4b5ebcdb33b937523d2c9bcb5506249b3da06",
+  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/27099645406",
+  "success": true,
   "summary": {
     "total": 4,
-    "passed": 0,
-    "failed": 4
+    "passed": 4,
+    "failed": 0
   },
   "workflows": [
     {
       "name": "gaussian_analysis",
-      "status": "fail",
-      "duration_seconds": 7.4,
-      "error": "Workflow validation failed\n\nDetails:\ngraphToPrompt produced nodes without class_type: graphToPrompt: 4 nodes, missing class_type: [1,19,20,21], sample: {\"inputs\":{\"UNKNOWN\":\"apple.ply\"},\"_meta\":{}}",
+      "status": "pass",
+      "duration_seconds": 14.34,
+      "error": null,
       "hardware": {
-        "os": "macOS-15.7.7-arm64-arm-64bit-Mach-O",
+        "os": "macOS-15.7.7-arm64-arm-64bit",
         "cpu": "arm"
       },
       "resources": {
         "ram": {
-          "peak": 0.49,
-          "avg": 0.49
+          "peak": 0.75,
+          "avg": 0.62
         },
         "total_ram_gb": 7.0,
-        "samples": 7
+        "samples": 14
       }
     },
     {
       "name": "merge_splats",
-      "status": "fail",
-      "duration_seconds": 4.78,
-      "error": "Workflow validation failed\n\nDetails:\ngraphToPrompt produced nodes without class_type: graphToPrompt: 3 nodes, missing class_type: [1,12,14], sample: {\"inputs\":{\"UNKNOWN\":\"apple.ply\"},\"_meta\":{}}",
+      "status": "pass",
+      "duration_seconds": 85.0,
+      "error": null,
       "hardware": {
-        "os": "macOS-15.7.7-arm64-arm-64bit-Mach-O",
+        "os": "macOS-15.7.7-arm64-arm-64bit",
         "cpu": "arm"
       },
       "resources": {
         "ram": {
-          "peak": 0.49,
-          "avg": 0.49
+          "peak": 1.22,
+          "avg": 0.84
         },
         "total_ram_gb": 7.0,
-        "samples": 5
+        "samples": 80
       }
     },
     {
       "name": "rotate_splats",
-      "status": "fail",
-      "duration_seconds": 5.01,
-      "error": "Workflow validation failed\n\nDetails:\ngraphToPrompt produced nodes without class_type: graphToPrompt: 3 nodes, missing class_type: [1,14,18], sample: {\"inputs\":{\"UNKNOWN\":\"apple.ply\"},\"_meta\":{}}",
+      "status": "pass",
+      "duration_seconds": 72.74,
+      "error": null,
       "hardware": {
-        "os": "macOS-15.7.7-arm64-arm-64bit-Mach-O",
+        "os": "macOS-15.7.7-arm64-arm-64bit",
         "cpu": "arm"
       },
       "resources": {
         "ram": {
-          "peak": 0.49,
-          "avg": 0.49
+          "peak": 0.92,
+          "avg": 0.87
         },
         "total_ram_gb": 7.0,
-        "samples": 5
+        "samples": 68
       }
     },
     {
       "name": "spectate",
-      "status": "fail",
-      "duration_seconds": 4.93,
-      "error": "Workflow validation failed\n\nDetails:\ngraphToPrompt produced nodes without class_type: graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {\"inputs\":{\"UNKNOWN\":\"compressed_room.ply\"},\"_meta\":{}}",
+      "status": "pass",
+      "duration_seconds": 18.32,
+      "error": null,
       "hardware": {
-        "os": "macOS-15.7.7-arm64-arm-64bit-Mach-O",
+        "os": "macOS-15.7.7-arm64-arm-64bit",
         "cpu": "arm"
       },
       "resources": {
         "ram": {
-          "peak": 0.49,
-          "avg": 0.49
+          "peak": 0.87,
+          "avg": 0.76
         },
         "total_ram_gb": 7.0,
-        "samples": 5
+        "samples": 17
       }
     }
   ]

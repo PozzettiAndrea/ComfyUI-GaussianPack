@@ -1,9 +1,72 @@
-  [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
 Capturing execution frames: spectate.json
   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
   Frame 1 saved (frame_000.jpg, t=0.0s)
   Validating workflow...
-  Validation failed: graphToPrompt produced nodes without class_type: graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {"inputs":{"UNKNOWN":"compressed_room.ply"},"_meta":{}}
-    Status: FAILED
-    Error: Workflow validation failed
-    Details: graphToPrompt produced nodes without class_type: graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {"inputs":{"UNKNOWN":"compressed_room.ply"},"_meta":{}}
+  [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
+  [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
+  [ComfyUI] [32m[INFO][0m Prompt has 2 nodes
+  [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
+  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "compressed_room.ply"}
+  [ComfyUI] [32m[INFO][0m   Node 2: PreviewGaussians
+  [ComfyUI] [32m[INFO][0m     Inputs: {"camera_mode": "spectate", "fov_degrees": 70, "renderer": "playcanvas", "transport_format": "ply", "ply_path": ["1", 0]}
+  [ComfyUI] [32m[INFO][0m Generated prompt_id: 503c86b3-4695-4bf5-ac22-873049b3e274
+  [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
+  [ComfyUI] [32m[INFO][0m Validation result: valid=True
+  [ComfyUI] [32m[INFO][0m === Validation PASSED ===
+  Queuing workflow for execution...
+  [ComfyUI] [32m[INFO][0m got prompt
+  [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'compressed_room.ply'
+  [ComfyUI] [SubprocessWorker] call_method: nodes.load_ply.LoadPLY.load
+  [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: failed
+  [ComfyUI] [ComfyUI-GaussianPack] Socket unhealthy, restarting worker...
+  [ComfyUI] [ComfyUI-GaussianPack] python: /Users/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+  [ComfyUI] [ComfyUI-GaussianPack] sys_path sent to worker: ['/Users/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI', '/Users/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack', '/Users/runner/.ce/.pixi/envs/gaussianpack-nodes/lib/python3.1/site-packages', '/Users/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack']
+  [ComfyUI] [SubprocessWorker] is_pixi=True, python=/Users/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+  [ComfyUI] [SubprocessWorker] launching cmd=['/Users/runner/.pixi/bin/pixi', 'run', '--as-is', '--manifest-path', '/Users/runner/.ce/pixi.toml', '-e', 'gaussianpack-nodes', 'python', '/var/folders/8d/778wjbv96mq1760tv6gk374m0000gn/T/comfyui_pvenv_2of_rxqy/persistent_worker.py', 'unix:///var/folders/8d/778wjbv96mq1760tv6gk374m0000gn/T/comfy_worker_ba98ea581b1c.sock']...
+  [ComfyUI] [SubprocessWorker] socket_addr=unix:///var/folders/8d/778wjbv96mq1760tv6gk374m0000gn/T/comfy_worker_ba98ea581b1c.sock exists=True
+  Frame 2 saved (frame_001.jpg, t=2.1s)
+  [capture-periodic] freeze=3ms shot=103ms unfreeze=2ms saved=True
+  [ComfyUI] [SubprocessWorker] worker started/confirmed
+  [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+  [ComfyUI] [SubprocessWorker] created 0 shm blocks
+  [ComfyUI] [SubprocessWorker] sending request via socket...
+  [ComfyUI] [SubprocessWorker] call_id=11 sending call_method
+  [ComfyUI] [worker:ComfyUI-GaussianPack] WARNING: SPZ route not registered (ModuleNotFoundError: No module named 'comfy_aimdo')
+  [ComfyUI] [SubprocessWorker] got response: ok
+  [ComfyUI] [comfy-env] LoadPLY done (3.06s): result: list[1]
+  [ComfyUI] [comfy-env] Running PreviewGaussians: camera_mode: 'spectate', fov_degrees: 70.0, renderer: 'playcanvas', transport_format: 'ply', ply_path: '/Users/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_worksp...
+  [ComfyUI] [SubprocessWorker] call_method: nodes.preview_gaussian.PreviewGaussians.preview
+  [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+  [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+  [ComfyUI] [SubprocessWorker] worker started/confirmed
+  [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+  [ComfyUI] [SubprocessWorker] created 0 shm blocks
+  [ComfyUI] [SubprocessWorker] sending request via socket...
+  [ComfyUI] [SubprocessWorker] call_id=12 sending call_method
+  [ComfyUI] [SubprocessWorker] got response: ok
+  [ComfyUI] [comfy-env] PreviewGaussians done (0.01s): result: dict
+  [ComfyUI] [32m[INFO][0m [32mPrompt executed in 3.07 seconds[0m
+  Node executed (1 total), capturing...
+  Frame 3 saved (frame_002.jpg, t=3.4s)
+  [capture-node] freeze=5ms shot=92ms unfreeze=0ms saved=True
+  Execution complete (t=3.4s)
+  [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
+  [3d-wait] Phase 1 done in 0.0s
+  [3d-wait] Phase 2: iframes=1
+  [3d-wait] iframe viewer_ready=False (matched 0 console logs)
+  [3d-wait] Waiting for 'Loaded successfully' console message (timeout=60s)...
+  [3d-wait] Got 'Loaded successfully' after 1.0s
+  [3d-wait] Unfrozen in 0.003s, rendering for 5s...
+  [3d-wait] JS halted via CDP after 5.1s
+  [3d-wait] Re-frozen in 6.3s
+  [3d-wait] Total 3D wait: 7.3s
+  Captured 3 unique frames over 10.81s
+  [debug] iframes: 1
+  [debug]   iframe[0]: src=http://127.0.0.1:41890/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?mode, canvas=781x404, rafFrozen=True
+  [timing] trigger_3d_previews: 0.0s
+  Saved high-quality screenshot: spectate_executed.png
+  [timing] final_screenshot: 0.3s
+    Captured 4 video frames
