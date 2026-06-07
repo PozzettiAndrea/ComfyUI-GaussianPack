@@ -1,8 +1,9 @@
-  [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
 Capturing execution frames: merge_splats.json
+  [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
   Frame 1 saved (frame_000.jpg, t=0.0s)
   Validating workflow...
+  Queuing workflow for execution...
   [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
   [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
   [ComfyUI] [32m[INFO][0m Prompt has 3 nodes
@@ -12,10 +13,9 @@ Capturing execution frames: merge_splats.json
   [ComfyUI] [32m[INFO][0m     Inputs: {"target_count": 100000, "output_filename": "applemerged", "opacity_threshold": 0.1, "k": 16, "backend": "nanogs_cpu", "ply_path": ["1", 0]}
   [ComfyUI] [32m[INFO][0m   Node 14: PreviewGaussianDual
   [ComfyUI] [32m[INFO][0m     Inputs: {"layout": "slider", "camera_mode": "orbit", "fov_degrees": 70, "renderer": "playcanvas", "transport_format": "ply", "ply_path_1": ["1", 0], "ply_path_2": ["12", 0]}
-  [ComfyUI] [32m[INFO][0m Generated prompt_id: ab2ecc4f-5bbb-4b56-a217-2b6af814dd59
+  [ComfyUI] [32m[INFO][0m Generated prompt_id: 6169be34-e4a6-45cf-86f6-a979531756c8
   [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
   [ComfyUI] [32m[INFO][0m Validation result: valid=True
-  Queuing workflow for execution...
   [ComfyUI] [32m[INFO][0m === Validation PASSED ===
   [ComfyUI] [32m[INFO][0m got prompt
   [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'apple.ply'
@@ -40,7 +40,7 @@ Capturing execution frames: merge_splats.json
   [ComfyUI] [SubprocessWorker] created 0 shm blocks
   [ComfyUI] [SubprocessWorker] sending request via socket...
   [ComfyUI] [SubprocessWorker] call_id=6 sending call_method
-  [ComfyUI] [worker:ComfyUI-GaussianPack] Loading PLY: /Users/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1247/ComfyUI/input/apple.ply
+  [ComfyUI] [worker:ComfyUI-GaussianPack] Loading PLY: /Users/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1359/ComfyUI/input/apple.ply
   [ComfyUI] [worker:ComfyUI-GaussianPack] Initial splats: 200000
   [ComfyUI] [worker:ComfyUI-GaussianPack] Pruned splats: 200000, target: 100000
   [ComfyUI] [worker:ComfyUI-GaussianPack] Opacity Mean: 0.53443545 Median: 0.4836207
@@ -48,55 +48,53 @@ Capturing execution frames: merge_splats.json
   [ComfyUI] [worker:ComfyUI-GaussianPack] Original count: 200000, after opacity pruning: 200000
   [ComfyUI] [worker:ComfyUI-GaussianPack] After opacity pruning, 200000 splats remain.
   [ComfyUI] [worker:ComfyUI-GaussianPack] Pass 1: 200000 splats
-  Frame 2 saved (frame_001.jpg, t=2.1s)
-  [capture-periodic] freeze=1ms shot=65ms unfreeze=2ms saved=True
+  Frame 2 saved (frame_001.jpg, t=2.2s)
+  [capture-periodic] freeze=2ms shot=101ms unfreeze=1ms saved=True
   [ComfyUI] 
   [ComfyUI] Edge costs:   0%|          | 0/19 [00:00<?, ?it/s]
-  [ComfyUI] Edge costs:   5%|▌         | 1/19 [00:00<00:02,  8.47it/s]
-  [ComfyUI] Edge costs:  11%|█         | 2/19 [00:00<00:01,  9.11it/s]
-  [ComfyUI] Edge costs:  16%|█▌        | 3/19 [00:00<00:01,  9.20it/s]
-  [ComfyUI] Edge costs:  21%|██        | 4/19 [00:00<00:01,  9.45it/s]
-  [ComfyUI] Edge costs:  26%|██▋       | 5/19 [00:00<00:01,  9.53it/s]
-  [ComfyUI] Edge costs:  32%|███▏      | 6/19 [00:00<00:01,  9.68it/s]
-  [ComfyUI] Edge costs:  37%|███▋      | 7/19 [00:00<00:01,  9.67it/s]
-  Frame 3 saved (frame_002.jpg, t=4.3s)
-  [capture-periodic] freeze=2ms shot=61ms unfreeze=2ms saved=True
-  [ComfyUI] Edge costs:  42%|████▏     | 8/19 [00:00<00:01,  9.65it/s]
-  [ComfyUI] Edge costs:  47%|████▋     | 9/19 [00:00<00:01,  9.44it/s]
-  [ComfyUI] Edge costs:  53%|█████▎    | 10/19 [00:01<00:00,  9.49it/s]
-  [ComfyUI] Edge costs:  58%|█████▊    | 11/19 [00:01<00:00,  9.60it/s]
-  [ComfyUI] Edge costs:  63%|██████▎   | 12/19 [00:01<00:00,  9.68it/s]
-  [ComfyUI] Edge costs:  68%|██████▊   | 13/19 [00:01<00:00,  9.71it/s]
-  [ComfyUI] Edge costs:  74%|███████▎  | 14/19 [00:01<00:00,  9.31it/s]
-  [ComfyUI] Edge costs:  79%|███████▉  | 15/19 [00:01<00:00,  9.37it/s]
-  [ComfyUI] Edge costs:  84%|████████▍ | 16/19 [00:01<00:00,  9.50it/s]
-  [ComfyUI] Edge costs:  89%|████████▉ | 17/19 [00:01<00:00,  9.59it/s]
-  [ComfyUI] Edge costs:  95%|█████████▍| 18/19 [00:01<00:00,  9.70it/s]
-  [ComfyUI] Edge costs: 100%|██████████| 19/19 [00:01<00:00,  9.78it/s]
-  [capture-loop] iter=50 t=5.5s state={'complete': False, 'error': None, 'executedCount': 0, 'wsState': 1} eval_ms=2 ram=3.8/7.0GB (60%) swap=0.0/0.0GB (0%) cpu=52% browser_rss=0.66GB
+  [ComfyUI] Edge costs:   5%|▌         | 1/19 [00:00<00:02,  8.26it/s]
+  [ComfyUI] Edge costs:  11%|█         | 2/19 [00:00<00:01,  9.14it/s]
+  [ComfyUI] Edge costs:  16%|█▌        | 3/19 [00:00<00:01,  8.81it/s]
+  [ComfyUI] Edge costs:  21%|██        | 4/19 [00:00<00:01,  8.89it/s]
+  [ComfyUI] Edge costs:  26%|██▋       | 5/19 [00:00<00:01,  9.16it/s]
+  Frame 3 saved (frame_002.jpg, t=4.4s)
+  [capture-periodic] freeze=1ms shot=73ms unfreeze=1ms saved=True
+  [ComfyUI] Edge costs:  32%|███▏      | 6/19 [00:00<00:01,  9.33it/s]
+  [ComfyUI] Edge costs:  42%|████▏     | 8/19 [00:00<00:01,  9.16it/s]
+  [ComfyUI] Edge costs:  47%|████▋     | 9/19 [00:00<00:01,  9.36it/s]
+  [ComfyUI] Edge costs:  53%|█████▎    | 10/19 [00:01<00:00,  9.31it/s]
+  [ComfyUI] Edge costs:  58%|█████▊    | 11/19 [00:01<00:00,  9.46it/s]
+  [ComfyUI] Edge costs:  63%|██████▎   | 12/19 [00:01<00:00,  8.34it/s]
+  [ComfyUI] Edge costs:  68%|██████▊   | 13/19 [00:01<00:00,  8.61it/s]
+  [ComfyUI] Edge costs:  74%|███████▎  | 14/19 [00:01<00:00,  8.92it/s]
+  [ComfyUI] Edge costs:  79%|███████▉  | 15/19 [00:01<00:00,  9.16it/s]
+  [ComfyUI] Edge costs:  89%|████████▉ | 17/19 [00:01<00:00,  9.62it/s]
+  [ComfyUI] Edge costs: 100%|██████████| 19/19 [00:02<00:00, 10.58it/s]
+  [ComfyUI] Edge costs: 100%|██████████| 19/19 [00:02<00:00,  9.43it/s]
+  [capture-loop] iter=50 t=5.7s state={'complete': False, 'error': None, 'executedCount': 0, 'wsState': 1} eval_ms=1 ram=3.8/7.0GB (60%) swap=0.0/0.0GB (0%) cpu=56% browser_rss=0.70GB
   [ComfyUI] [worker:ComfyUI-GaussianPack]   edges: 1848776, pairs: 96906 (need 100000)
   [ComfyUI] [worker:ComfyUI-GaussianPack]   Merging 96906 pairs
   [ComfyUI] [worker:ComfyUI-GaussianPack] Pass 2: 103094 splats
-  Frame 4 saved (frame_003.jpg, t=6.5s)
-  [capture-periodic] freeze=2ms shot=66ms unfreeze=2ms saved=True
   [ComfyUI] 
   [ComfyUI] Edge costs:   0%|          | 0/10 [00:00<?, ?it/s]
-  [ComfyUI] Edge costs:  10%|█         | 1/10 [00:00<00:00,  9.83it/s]
-  [ComfyUI] Edge costs:  20%|██        | 2/10 [00:00<00:00,  9.85it/s]
-  [ComfyUI] Edge costs:  30%|███       | 3/10 [00:00<00:00,  9.65it/s]
-  [ComfyUI] Edge costs:  40%|████      | 4/10 [00:00<00:00,  9.72it/s]
-  [ComfyUI] Edge costs:  50%|█████     | 5/10 [00:00<00:00,  9.67it/s]
-  [ComfyUI] Edge costs:  60%|██████    | 6/10 [00:00<00:00,  9.73it/s]
-  [ComfyUI] Edge costs:  70%|███████   | 7/10 [00:00<00:00,  9.72it/s]
-  [ComfyUI] Edge costs:  80%|████████  | 8/10 [00:00<00:00,  9.77it/s]
-  [ComfyUI] Edge costs:  90%|█████████ | 9/10 [00:00<00:00,  9.50it/s]
-  [ComfyUI] Edge costs: 100%|██████████| 10/10 [00:00<00:00, 10.49it/s]
+  [ComfyUI] Edge costs:  10%|█         | 1/10 [00:00<00:00,  9.81it/s]
+  [ComfyUI] Edge costs:  20%|██        | 2/10 [00:00<00:00,  8.80it/s]
+  [ComfyUI] Edge costs:  30%|███       | 3/10 [00:00<00:00,  9.22it/s]
+  [ComfyUI] Edge costs:  40%|████      | 4/10 [00:00<00:00,  9.36it/s]
+  Frame 4 saved (frame_003.jpg, t=8.7s)
+  [capture-periodic] freeze=2ms shot=82ms unfreeze=2ms saved=True
+  [ComfyUI] Edge costs:  50%|█████     | 5/10 [00:00<00:00,  8.60it/s]
+  [ComfyUI] Edge costs:  60%|██████    | 6/10 [00:00<00:00,  8.71it/s]
+  [ComfyUI] Edge costs:  70%|███████   | 7/10 [00:00<00:00,  9.00it/s]
+  [ComfyUI] Edge costs:  80%|████████  | 8/10 [00:00<00:00,  9.24it/s]
+  [ComfyUI] Edge costs:  90%|█████████ | 9/10 [00:00<00:00,  9.46it/s]
+  [ComfyUI] Edge costs: 100%|██████████| 10/10 [00:01<00:00,  9.97it/s]
   [ComfyUI] [worker:ComfyUI-GaussianPack]   edges: 919857, pairs: 3094 (need 3094)
   [ComfyUI] [worker:ComfyUI-GaussianPack]   Merging 3094 pairs
   [ComfyUI] [worker:ComfyUI-GaussianPack] Final splats: 100000
-  [capture-loop] iter=100 t=10.9s state={'complete': False, 'error': None, 'executedCount': 0, 'wsState': 1} eval_ms=2 ram=3.7/7.0GB (59%) swap=0.0/0.0GB (0%) cpu=74% browser_rss=0.65GB
+  [capture-loop] iter=100 t=11.2s state={'complete': False, 'error': None, 'executedCount': 0, 'wsState': 1} eval_ms=2 ram=3.7/7.0GB (59%) swap=0.0/0.0GB (0%) cpu=77% browser_rss=0.70GB
   [ComfyUI] [SubprocessWorker] got response: ok
-  [ComfyUI] [comfy-env] GaussianMerge done (11.47s): result: dict
+  [ComfyUI] [comfy-env] GaussianMerge done (11.39s): result: dict
   [ComfyUI] [comfy-env] Running PreviewGaussianDual: layout: 'slider', camera_mode: 'orbit', fov_degrees: 70.0, renderer: 'playcanvas', transport_format: 'ply', ply_path_1: '/Users/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_worksp..., ply_path_2: '/Users/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_worksp...
   [ComfyUI] [SubprocessWorker] call_method: nodes.preview_gaussian_dual.PreviewGaussianDual.preview
   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
@@ -109,11 +107,11 @@ Capturing execution frames: merge_splats.json
   [ComfyUI] [SubprocessWorker] call_id=7 sending call_method
   [ComfyUI] [SubprocessWorker] got response: ok
   [ComfyUI] [comfy-env] PreviewGaussianDual done (0.00s): result: dict
-  [ComfyUI] [32m[INFO][0m [32mPrompt executed in 11.47 seconds[0m
+  [ComfyUI] [32m[INFO][0m [32mPrompt executed in 11.39 seconds[0m
   Node executed (2 total), capturing...
-  Frame 5 saved (frame_004.jpg, t=11.7s)
-  [capture-node] freeze=2ms shot=942ms unfreeze=0ms saved=True
-  Execution complete (t=11.7s)
+  Frame 5 saved (frame_004.jpg, t=11.8s)
+  [capture-node] freeze=78ms shot=554ms unfreeze=0ms saved=True
+  Execution complete (t=11.8s)
   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
   [3d-wait] Phase 1 done in 0.0s
   [3d-wait] Phase 2: iframes=1
@@ -124,9 +122,9 @@ Capturing execution frames: merge_splats.json
 waiting for event "console"
 ============================================================
   [3d-wait] Total 3D wait: 60.0s
-  Captured 5 unique frames over 72.73s
+  Captured 5 unique frames over 72.51s
   [debug] iframes: 1
-  [debug]   iframe[0]: src=http://127.0.0.1:41894/extensions/ComfyUI-GaussianPack/viewer_gaussian_dual.html, canvas=486x240, rafFrozen=True
+  [debug]   iframe[0]: src=http://127.0.0.1:41886/extensions/ComfyUI-GaussianPack/viewer_gaussian_dual.html, canvas=486x240, rafFrozen=True
   [timing] trigger_3d_previews: 0.0s
   Saved high-quality screenshot: merge_splats_executed.png
   [timing] final_screenshot: 0.1s
