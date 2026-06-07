@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-06-07T12:51:42.302167+00:00",
+  "timestamp": "2026-06-07T14:04:13.127013+00:00",
   "platform": "linux",
   "hardware": {
     "os": "Linux-6.17.0-1015-azure-x86_64-with-glibc2.39",
     "cpu": "AMD EPYC 9V74 80-Core Processor"
   },
-  "commit_hash": "03612bca162c9c720e64d52305f8891d1770a0e3",
-  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/27092989826",
+  "commit_hash": "ca04634aaa050a5180a6a7d26546b7b845579976",
+  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/27094635757",
   "success": true,
   "summary": {
     "total": 4,
@@ -17,7 +17,7 @@
     {
       "name": "gaussian_analysis",
       "status": "pass",
-      "duration_seconds": 10.95,
+      "duration_seconds": 10.44,
       "error": null,
       "hardware": {
         "os": "Linux-6.17.0-1015-azure-x86_64-with-glibc2.39",
@@ -35,7 +35,7 @@
     {
       "name": "merge_splats",
       "status": "pass",
-      "duration_seconds": 84.33,
+      "duration_seconds": 86.44,
       "error": null,
       "hardware": {
         "os": "Linux-6.17.0-1015-azure-x86_64-with-glibc2.39",
@@ -44,16 +44,16 @@
       "resources": {
         "ram": {
           "peak": 1.06,
-          "avg": 0.93
+          "avg": 1.0
         },
         "total_ram_gb": 15.6,
-        "samples": 84
+        "samples": 86
       }
     },
     {
       "name": "rotate_splats",
       "status": "pass",
-      "duration_seconds": 70.84,
+      "duration_seconds": 70.52,
       "error": null,
       "hardware": {
         "os": "Linux-6.17.0-1015-azure-x86_64-with-glibc2.39",
@@ -61,7 +61,7 @@
       },
       "resources": {
         "ram": {
-          "peak": 0.92,
+          "peak": 1.01,
           "avg": 0.85
         },
         "total_ram_gb": 15.6,
@@ -71,7 +71,7 @@
     {
       "name": "spectate",
       "status": "pass",
-      "duration_seconds": 17.23,
+      "duration_seconds": 17.12,
       "error": null,
       "hardware": {
         "os": "Linux-6.17.0-1015-azure-x86_64-with-glibc2.39",
@@ -80,7 +80,7 @@
       "resources": {
         "ram": {
           "peak": 0.85,
-          "avg": 0.83
+          "avg": 0.84
         },
         "total_ram_gb": 15.6,
         "samples": 18
