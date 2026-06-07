@@ -8,13 +8,13 @@
 [Console-error] Failed to load resource: the server responded with a status of 404 (Not Found)
 [Console-error] Failed to load resource: the server responded with a status of 404 (Not Found)
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
-[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
 [Console-warning] THREE.WARNING: Multiple instances of Three.js being imported.
+[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
-[Console-log] [GaussianPack] Loading extension...
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
+[Console-log] [GaussianPack] Loading extension...
 [Console-warning] [MaskEditor] ComfyApp.open_maskeditor is deprecated. Plugins should migrate to using the command system or direct node context menu integration.
 [Console-log] [GaussianPack] Registering Preview Gaussians node
 [Console-log] [GaussianPack] Registering Preview Gaussian Dual node
@@ -25,5 +25,7 @@
 [Console-warning] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
 [Console-warning] [GaussianDualViewer] PlayCanvas can't render two gsplat views in one page; using Spark for the dual view.
 [Console-warning] THREE.Clock: This module has been deprecated. Please use THREE.Timer instead.
-[Console-warning] [.WebGL-0x36940a01b600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
-[Console-warning] [.WebGL-0x3694001bca00]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[Console-warning] [.WebGL-0x234c001b9600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[Console-warning] [.WebGL-0x234c001b6600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[Console-warning] [.WebGL-0x234c001b9600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels
+[Console-warning] [.WebGL-0x234c001b6600]GL Driver Message (OpenGL, Performance, GL_CLOSE_PATH_NV, High): GPU stall due to ReadPixels (this message will no longer repeat)
