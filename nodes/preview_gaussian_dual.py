@@ -30,8 +30,16 @@ class PreviewGaussianDual:
                         "slider — overlaid with a draggable divider."
                     ),
                 }),
+                "camera_mode": (["orbit", "spectate"], {
+                    "default": "orbit",
+                    "tooltip": (
+                        "orbit — trackball turntable camera. "
+                        "\n"
+                        "spectate — WASD fly-cam."
+                    ),
+                }),
                 "fov_degrees": ("FLOAT", {
-                    "default": 50.0, "min": 5.0, "max": 170.0, "step": 1.0,
+                    "default": 70.0, "min": 5.0, "max": 170.0, "step": 1.0,
                 }),
                 "renderer": (["playcanvas", "spark"], {
                     "default": "playcanvas",
@@ -55,8 +63,8 @@ class PreviewGaussianDual:
     FUNCTION = "preview"
     CATEGORY = "viewer"
 
-    def preview(self, ply_path_1, ply_path_2, layout, fov_degrees,
-                renderer, transport_format="ply"):
+    def preview(self, ply_path_1, ply_path_2, layout, camera_mode,
+                fov_degrees, renderer, transport_format="ply"):
         for i, p in enumerate([ply_path_1, ply_path_2], 1):
             if not p:
                 return {"ui": {"error": [f"No PLY path provided for input {i}"]}}
@@ -66,7 +74,7 @@ class PreviewGaussianDual:
         fn1, sub1, kind1 = _resolve_for_view(ply_path_1)
         fn2, sub2, kind2 = _resolve_for_view(ply_path_2)
 
-        return {"ui": {
+        ui = {
             "ply_file_1": [fn1],
             "ply_type_1": [kind1],
             "ply_subfolder_1": [sub1],
@@ -78,7 +86,11 @@ class PreviewGaussianDual:
             "file_size_mb_2": [round(os.path.getsize(ply_path_2) / (1024 * 1024), 2)],
             "num_gaussians_2": [_count_gaussians(ply_path_2)],
             "layout": [layout],
+            "camera_mode": [camera_mode],
             "fov_degrees": [fov_degrees],
             "renderer": [renderer],
             "transport_format": [transport_format],
-        }}
+        }
+        if camera_mode == "spectate":
+            ui["mode"] = ["spectate"]
+        return {"ui": ui}

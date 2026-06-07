@@ -53,7 +53,11 @@ def _count_gaussians(path: str) -> int:
 
 
 class PreviewGaussians:
-    """Interactive Gaussian-splat turntable viewer (gsplat.js)."""
+    """Interactive Gaussian-splat viewer (gsplat.js).
+
+    Supports both orbit (trackball turntable) and spectate (WASD fly-cam)
+    camera modes via the ``camera_mode`` dropdown.
+    """
 
     @classmethod
     def INPUT_TYPES(cls):
@@ -63,8 +67,16 @@ class PreviewGaussians:
                     "forceInput": True,
                     "tooltip": "Path to a Gaussian Splatting PLY file",
                 }),
+                "camera_mode": (["orbit", "spectate"], {
+                    "default": "orbit",
+                    "tooltip": (
+                        "orbit — trackball turntable camera. "
+                        "\n"
+                        "spectate — WASD fly-cam."
+                    ),
+                }),
                 "fov_degrees": ("FLOAT", {
-                    "default": 50.0, "min": 5.0, "max": 170.0, "step": 1.0,
+                    "default": 70.0, "min": 5.0, "max": 170.0, "step": 1.0,
                     "tooltip": "Vertical field of view in degrees",
                 }),
                 "renderer": (["playcanvas", "spark"], {
@@ -101,7 +113,8 @@ class PreviewGaussians:
     FUNCTION = "preview"
     CATEGORY = "viewer"
 
-    def preview(self, ply_path, fov_degrees, renderer, transport_format="ply"):
+    def preview(self, ply_path, camera_mode, fov_degrees, renderer,
+                transport_format="ply"):
         if not ply_path:
             return {"ui": {"error": ["No PLY path provided"]}}
         if not os.path.exists(ply_path):
@@ -113,7 +126,7 @@ class PreviewGaussians:
         num_gaussians = _count_gaussians(ply_path)
         extrinsics = get_default_extrinsics()
 
-        return {"ui": {
+        ui = {
             "ply_file": [filename],
             "filename": [filename],
             "ply_type": [folder_kind],
@@ -125,4 +138,8 @@ class PreviewGaussians:
             "fov_degrees": [fov_degrees],
             "renderer": [renderer],
             "transport_format": [transport_format],
-        }}
+            "camera_mode": [camera_mode],
+        }
+        if camera_mode == "spectate":
+            ui["mode"] = ["spectate"]
+        return {"ui": ui}

@@ -213,7 +213,7 @@
         <!-- spectate-mode UI; shown only when ?mode=spectate -->
         <span id="spectateBar" style="display:none; margin-left: 10px; align-items: center; gap: 6px;">
             <label for="spectateSpeed" style="color:#aaa; font: 10px monospace;">Speed</label>
-            <input type="range" id="spectateSpeed" min="0.05" max="50" step="0.05" value="2.0" style="width: 120px;">
+            <input type="range" id="spectateSpeed" min="0" max="1" step="0.001" value="0.5" style="width: 120px;">
             <span id="spectateSpeedLabel" style="color:#cfc; font: 10px monospace; min-width: 3em;">2.00</span>
         </span>
     </div>
@@ -274,23 +274,18 @@
             this._isDragging = false;
             this._lastX = 0;
             this._lastY = 0;
-            this._yaw = 0;
-            this._pitch = 0;
             this._lastTime = performance.now();
 
-            // TrackballControls API compat — target is unused but read by
-            // some scene framers; expose it so they don't crash.
             this.target = new THREE.Vector3(0, 0, 0);
 
-            // Reusable scratch vectors (avoid alloc in hot path)
-            this._scratchEuler = new THREE.Euler();
             this._scratchQ = new THREE.Quaternion();
+            this._axisX = new THREE.Vector3(1, 0, 0);
+            this._axisY = new THREE.Vector3(0, 1, 0);
+            this._axisZ = new THREE.Vector3(0, 0, 1);
             this._scratchFwd = new THREE.Vector3();
             this._scratchRight = new THREE.Vector3();
             this._scratchUp = new THREE.Vector3(0, 1, 0);
             this._scratchMove = new THREE.Vector3();
-
-            this._syncFromCamera();
 
             this._onKeyDown = this._onKeyDown.bind(this);
             this._onKeyUp = this._onKeyUp.bind(this);
@@ -301,7 +296,6 @@
             this._onWheel = this._onWheel.bind(this);
             this._onBlur = () => this._keys.clear();
 
-            // window-level keydown so focus state doesn't eat input
             window.addEventListener("keydown", this._onKeyDown);
             window.addEventListener("keyup", this._onKeyUp);
             window.addEventListener("blur", this._onBlur);
@@ -312,16 +306,8 @@
             this.dom.addEventListener("wheel", this._onWheel, { passive: false });
         }
 
-        _syncFromCamera() {
-            // Read current orientation into yaw/pitch so we start without a jump.
-            this._scratchEuler.setFromQuaternion(this.camera.quaternion, "YXZ");
-            this._yaw = this._scratchEuler.y;
-            this._pitch = this._scratchEuler.x;
-        }
-
         _onKeyDown(e) {
             this._keys.add(e.code);
-            // suppress browser scroll on movement keys
             if (["Space", "KeyW", "KeyA", "KeyS", "KeyD", "KeyC",
                  "ArrowUp", "ArrowDown", "ArrowLeft", "ArrowRight"].includes(e.code)) {
                 e.preventDefault();
@@ -330,7 +316,7 @@
         _onKeyUp(e) { this._keys.delete(e.code); }
 
         _onMouseDown(e) {
-            if (e.button !== 0) return;  // left button only
+            if (e.button !== 0) return;
             this._isDragging = true;
             this._lastX = e.clientX;
             this._lastY = e.clientY;
@@ -342,10 +328,10 @@
             const dy = e.clientY - this._lastY;
             this._lastX = e.clientX;
             this._lastY = e.clientY;
-            this._yaw   -= dx * this.lookSensitivity;
-            this._pitch -= dy * this.lookSensitivity;
-            const halfPi = Math.PI * 0.5 - 1e-4;
-            this._pitch = Math.max(-halfPi, Math.min(halfPi, this._pitch));
+            this._scratchQ.setFromAxisAngle(this._axisY, -dx * this.lookSensitivity);
+            this.camera.quaternion.multiply(this._scratchQ);
+            this._scratchQ.setFromAxisAngle(this._axisX, -dy * this.lookSensitivity);
+            this.camera.quaternion.multiply(this._scratchQ);
         }
         _onMouseUp() {
             this._isDragging = false;
@@ -362,22 +348,39 @@
             const dt = Math.min(0.1, (now - this._lastTime) / 1000);
             this._lastTime = now;
 
-            // Arrow keys: turn camera (yaw/pitch)
-            const turnSpeed = Math.PI / 2; // radians per second (~90°/s)
-            if (this._keys.has("ArrowLeft"))  this._yaw   += turnSpeed * dt;
-            if (this._keys.has("ArrowRight")) this._yaw   -= turnSpeed * dt;
-            if (this._keys.has("ArrowUp"))    this._pitch  = Math.min(Math.PI * 0.5 - 1e-4, this._pitch + turnSpeed * dt);
-            if (this._keys.has("ArrowDown"))  this._pitch  = Math.max(-Math.PI * 0.5 + 1e-4, this._pitch - turnSpeed * dt);
+            const turn = Math.PI / 2 * dt;
+            const shift = this._keys.has("ShiftLeft") || this._keys.has("ShiftRight");
 
-            // apply yaw/pitch to camera
-            this._scratchQ.setFromEuler(
-                this._scratchEuler.set(this._pitch, this._yaw, 0, "YXZ"),
-            );
-            this.camera.quaternion.copy(this._scratchQ);
+            if (shift) {
+                if (this._keys.has("ArrowLeft")) {
+                    this._scratchQ.setFromAxisAngle(this._axisZ, turn);
+                    this.camera.quaternion.multiply(this._scratchQ);
+                }
+                if (this._keys.has("ArrowRight")) {
+                    this._scratchQ.setFromAxisAngle(this._axisZ, -turn);
+                    this.camera.quaternion.multiply(this._scratchQ);
+                }
+            } else {
+                if (this._keys.has("ArrowLeft")) {
+                    this._scratchQ.setFromAxisAngle(this._axisY, turn);
+                    this.camera.quaternion.multiply(this._scratchQ);
+                }
+                if (this._keys.has("ArrowRight")) {
+                    this._scratchQ.setFromAxisAngle(this._axisY, -turn);
+                    this.camera.quaternion.multiply(this._scratchQ);
+                }
+            }
+            if (this._keys.has("ArrowUp")) {
+                this._scratchQ.setFromAxisAngle(this._axisX, turn);
+                this.camera.quaternion.multiply(this._scratchQ);
+            }
+            if (this._keys.has("ArrowDown")) {
+                this._scratchQ.setFromAxisAngle(this._axisX, -turn);
+                this.camera.quaternion.multiply(this._scratchQ);
+            }
 
-            // camera-local basis vectors
-            this._scratchFwd.set(0, 0, -1).applyQuaternion(this._scratchQ);
-            this._scratchRight.set(1, 0, 0).applyQuaternion(this._scratchQ);
+            this._scratchFwd.set(0, 0, -1).applyQuaternion(this.camera.quaternion);
+            this._scratchRight.set(1, 0, 0).applyQuaternion(this.camera.quaternion);
 
             this._scratchMove.set(0, 0, 0);
             if (this._keys.has("KeyW")) this._scratchMove.add(this._scratchFwd);
@@ -388,8 +391,7 @@
             if (this._keys.has("KeyC"))  this._scratchMove.sub(this._scratchUp);
 
             if (this._scratchMove.lengthSq() > 0) {
-                const boost = (this._keys.has("ShiftLeft") || this._keys.has("ShiftRight"))
-                    ? this.boostMultiplier : 1;
+                const boost = shift ? this.boostMultiplier : 1;
                 this._scratchMove.normalize().multiplyScalar(this.moveSpeed * boost * dt);
                 this.camera.position.add(this._scratchMove);
             }
@@ -397,14 +399,13 @@
 
         setSpeed(s) {
             this.moveSpeed = Math.max(0.05, Math.min(50, s));
-            // notify external UI (the slider in #spectateBar) so it stays in sync
             try {
                 this.dom.dispatchEvent(new CustomEvent("spectatespeedchange",
                     { detail: { speed: this.moveSpeed }}));
             } catch (_) {}
         }
 
-        handleResize() { /* no cached screen rect; nothing to do */ }
+        handleResize() {}
         dispose() {
             window.removeEventListener("keydown", this._onKeyDown);
             window.removeEventListener("keyup", this._onKeyUp);
@@ -578,14 +579,24 @@
             const p = this.camera.position;
             return { x: p.x, y: p.y, z: p.z };
         }
-        setCameraPosition(x, y, z) { this.camera.position.set(x, y, z); }
+        setCameraPosition(x, y, z) {
+            this.camera.position.set(x, y, z);
+            if (VIEWER_MODE === "spectate") {
+                const t = this.controls.target;
+                this.camera.lookAt(t.x, t.y, t.z);
+            }
+        }
         getCameraTarget() {
             const t = this.controls.target;
             return { x: t.x, y: t.y, z: t.z };
         }
         setCameraTarget(x, y, z) {
             this.controls.target.set(x, y, z);
-            this.controls.update();
+            if (VIEWER_MODE === "spectate") {
+                this.camera.lookAt(x, y, z);
+            } else {
+                this.controls.update();
+            }
         }
         setFov(deg) {
             this.camera.fov = deg;
@@ -693,7 +704,7 @@
             this._orbitDist = 3;
             this._yaw = 0;
             this._pitch = 0;
-            // Spectate (fly-cam) state
+            this._camQuat = null; // initialized in init() after pc is loaded
             this._keys = new Set();
             this._moveSpeed = SPECTATE_INITIAL_SPEED;
             this._lastTime = performance.now();
@@ -749,7 +760,8 @@
             });
             if (this._isSpectate) {
                 cam.setPosition(0, 0, 0);
-                cam.setEulerAngles(0, 0, 0);
+                this._camQuat = new pc.Quat();
+                cam.setRotation(this._camQuat);
             } else {
                 cam.setPosition(0, 0, -3);
                 cam.lookAt(0, 0, 0);
@@ -786,9 +798,13 @@
                 this._lastMouse = { x: e.clientX, y: e.clientY };
 
                 if (this._isSpectate) {
-                    // Spectate: mouse-look (yaw + pitch)
-                    this._yaw -= dx * 0.15;
-                    this._pitch = Math.max(-89, Math.min(89, this._pitch - dy * 0.15));
+                    const sens = 0.15; // degrees per pixel
+                    const q = this._camQuat;
+                    const tmp = new pc.Quat();
+                    tmp.setFromAxisAngle(pc.Vec3.UP, -dx * sens);
+                    q.mul(tmp);
+                    tmp.setFromAxisAngle(pc.Vec3.RIGHT, -dy * sens);
+                    q.mul(tmp);
                 } else if (e.buttons === 1) {
                     // Orbit: left drag
                     this._yaw -= dx * 0.3;
@@ -870,23 +886,48 @@
             const dt = Math.min(0.1, (now - this._lastTime) / 1000);
             this._lastTime = now;
 
-            // Arrow keys: turn camera (yaw/pitch)
-            const turnSpeed = 90; // degrees per second
-            if (this._keys.has("ArrowLeft"))  this._yaw += turnSpeed * dt;
-            if (this._keys.has("ArrowRight")) this._yaw -= turnSpeed * dt;
-            if (this._keys.has("ArrowUp"))    this._pitch = Math.min(89, this._pitch + turnSpeed * dt);
-            if (this._keys.has("ArrowDown"))  this._pitch = Math.max(-89, this._pitch - turnSpeed * dt);
-
-            // Apply yaw/pitch as Euler rotation
+            const pc = window.pc;
             const cam = this._cameraEntity;
-            cam.setEulerAngles(this._pitch, this._yaw, 0);
+            const q = this._camQuat;
+            const turn = 90 * dt; // degrees this frame
+            const shift = this._keys.has("ShiftLeft") || this._keys.has("ShiftRight");
+            const tmp = new pc.Quat();
 
-            // Camera-local basis vectors from the transform
-            const fwd = new window.pc.Vec3();
-            const right = new window.pc.Vec3();
-            cam.getWorldTransform().getZ(fwd);   // PlayCanvas camera looks down -Z, getZ = forward
+            if (shift) {
+                if (this._keys.has("ArrowLeft")) {
+                    tmp.setFromAxisAngle(pc.Vec3.BACK, turn);
+                    q.mul(tmp);
+                }
+                if (this._keys.has("ArrowRight")) {
+                    tmp.setFromAxisAngle(pc.Vec3.BACK, -turn);
+                    q.mul(tmp);
+                }
+            } else {
+                if (this._keys.has("ArrowLeft")) {
+                    tmp.setFromAxisAngle(pc.Vec3.UP, turn);
+                    q.mul(tmp);
+                }
+                if (this._keys.has("ArrowRight")) {
+                    tmp.setFromAxisAngle(pc.Vec3.UP, -turn);
+                    q.mul(tmp);
+                }
+            }
+            if (this._keys.has("ArrowUp")) {
+                tmp.setFromAxisAngle(pc.Vec3.RIGHT, turn);
+                q.mul(tmp);
+            }
+            if (this._keys.has("ArrowDown")) {
+                tmp.setFromAxisAngle(pc.Vec3.RIGHT, -turn);
+                q.mul(tmp);
+            }
+
+            cam.setRotation(q);
+
+            const fwd = new pc.Vec3();
+            const right = new pc.Vec3();
+            cam.getWorldTransform().getZ(fwd);
             cam.getWorldTransform().getX(right);
-            fwd.mulScalar(-1); // getZ points backward in PC convention
+            fwd.mulScalar(-1);
 
             // WASD: move camera
             let mx = 0, my = 0, mz = 0;
@@ -996,7 +1037,12 @@
             return { x: p.x, y: p.y, z: p.z };
         }
         setCameraPosition(x, y, z) {
-            // Reverse-engineer orbit params from position + target
+            if (this._isSpectate && this._camQuat) {
+                this._cameraEntity.setPosition(x, y, z);
+                this._cameraEntity.lookAt(this._target.x, this._target.y, this._target.z);
+                this._camQuat.copy(this._cameraEntity.getRotation());
+                return;
+            }
             const dx = x - this._target.x;
             const dy = y - this._target.y;
             const dz = z - this._target.z;
@@ -1012,6 +1058,11 @@
             this._target.x = x;
             this._target.y = y;
             this._target.z = z;
+            if (this._isSpectate && this._camQuat) {
+                this._cameraEntity.lookAt(x, y, z);
+                this._camQuat.copy(this._cameraEntity.getRotation());
+                return;
+            }
             this._updateOrbitCamera();
         }
         setFov(deg) {
@@ -1293,22 +1344,29 @@
     const spectateBar = document.getElementById('spectateBar');
     const spectateSlider = document.getElementById('spectateSpeed');
     const spectateSpeedLabel = document.getElementById('spectateSpeedLabel');
+    const SPEED_MIN = 0.05, SPEED_MAX = 50;
+    const LOG_MIN = Math.log(SPEED_MIN), LOG_MAX = Math.log(SPEED_MAX);
+    function speedToSlider(speed) {
+        return (Math.log(Math.max(SPEED_MIN, Math.min(SPEED_MAX, speed))) - LOG_MIN) / (LOG_MAX - LOG_MIN);
+    }
+    function sliderToSpeed(t) {
+        return Math.exp(LOG_MIN + t * (LOG_MAX - LOG_MIN));
+    }
     function setSpectateSpeedUI(v) {
-        const clamped = Math.max(0.05, Math.min(50, v));
-        spectateSlider.value = clamped;
+        const clamped = Math.max(SPEED_MIN, Math.min(SPEED_MAX, v));
+        spectateSlider.value = speedToSlider(clamped);
         spectateSpeedLabel.textContent = clamped.toFixed(2);
     }
     if (VIEWER_MODE === "spectate") {
         spectateBar.style.display = "inline-flex";
         setSpectateSpeedUI(SPECTATE_INITIAL_SPEED);
         spectateSlider.addEventListener('input', (e) => {
-            const v = parseFloat(e.target.value);
+            const v = sliderToSpeed(parseFloat(e.target.value));
             spectateSpeedLabel.textContent = v.toFixed(2);
             if (adapter && adapter.controls && adapter.controls.setSpeed) {
                 adapter.controls.setSpeed(v);
             }
         });
-        // SpectateControls dispatches this on wheel-scroll speed changes
         canvas.addEventListener('spectatespeedchange', (e) => {
             setSpectateSpeedUI(e.detail.speed);
         });
