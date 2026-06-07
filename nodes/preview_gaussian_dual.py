@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""PreviewGaussianDual — side-by-side or slider comparison of two gaussian splats."""
+"""PreviewGaussianDual - side-by-side or slider comparison of two gaussian splats."""
 
 import os
 
@@ -26,16 +26,16 @@ class PreviewGaussianDual:
                 "layout": (["side_by_side", "slider"], {
                     "default": "side_by_side",
                     "tooltip": (
-                        "side_by_side — two synchronized viewports. "
-                        "slider — overlaid with a draggable divider."
+                        "side_by_side - two synchronized viewports. "
+                        "slider - overlaid with a draggable divider."
                     ),
                 }),
                 "camera_mode": (["orbit", "spectate"], {
                     "default": "orbit",
                     "tooltip": (
-                        "orbit — trackball turntable camera. "
+                        "orbit - trackball turntable camera. "
                         "\n"
-                        "spectate — WASD fly-cam."
+                        "spectate - WASD fly-cam."
                     ),
                 }),
                 "fov_degrees": ("FLOAT", {
@@ -44,15 +44,15 @@ class PreviewGaussianDual:
                 "renderer": (["playcanvas", "spark"], {
                     "default": "playcanvas",
                     "tooltip": (
-                        "playcanvas — PlayCanvas Engine v2.19 GSplat. "
-                        "spark — Three.js + WebGL2, all formats."
+                        "playcanvas - PlayCanvas Engine v2.19 GSplat. "
+                        "spark - Three.js + WebGL2, all formats."
                     ),
                 }),
                 "transport_format": (["ply", "spz"], {
                     "default": "ply",
                     "tooltip": (
-                        "ply — lossless, larger. "
-                        "spz — server transcodes to SPZ v2, ~9x smaller."
+                        "ply - lossless, larger. "
+                        "spz - server transcodes to SPZ v2, ~9x smaller."
                     ),
                 }),
             },

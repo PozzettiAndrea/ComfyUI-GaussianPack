@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""TransformGaussian — rotate a 3DGS PLY around X/Y/Z axes.
+"""TransformGaussian - rotate a 3DGS PLY around X/Y/Z axes.
 
 A gaussian splat has positions AND per-splat orientations (quaternions)
 AND view-dependent spherical-harmonic coefficients, so rotating the
@@ -40,7 +40,7 @@ def _output_dir() -> Path:
 
 
 def _rotation_matrix_xyz(rx_deg: float, ry_deg: float, rz_deg: float) -> np.ndarray:
-    """Right-handed XYZ Euler rotation, applied in the order X → Y → Z.
+    """Right-handed XYZ Euler rotation, applied in the order X -> Y -> Z.
 
     Matches geompack's TransformMesh._rotate so users get the same
     visual result for the same angle inputs across mesh/gaussian.
@@ -204,7 +204,7 @@ class TransformGaussian:
             ], axis=1).astype(np.float32)
             # 3DGS PLYs store UNNORMALIZED quats (the renderer normalizes
             # at use-time). Composition still works on un-normalized
-            # inputs — Hamilton product is bilinear, so the result
+            # inputs - Hamilton product is bilinear, so the result
             # encodes the same rotation; renderer normalizes later.
             q_new = _quat_mul_wxyz(q_global_wxyz, q_per)
             new_data["rot_0"] = q_new[:, 0]
@@ -212,7 +212,7 @@ class TransformGaussian:
             new_data["rot_2"] = q_new[:, 2]
             new_data["rot_3"] = q_new[:, 3]
 
-        # 3) Normals (if present — many 3DGS PLYs ship zeroed normals).
+        # 3) Normals (if present - many 3DGS PLYs ship zeroed normals).
         if all(k in data.dtype.names for k in ("nx", "ny", "nz")):
             n = np.stack([data["nx"], data["ny"], data["nz"]], axis=1).astype(np.float32)
             n_rot = n @ R.T
@@ -258,7 +258,7 @@ class TransformGaussian:
                         new_data[name] = flat[:, i]
                     log.info(
                         "TransformGaussian: rotated SH AC (sh_degree=%d, "
-                        "%d coeffs/channel × 3 channels) via Wigner-D",
+                        "%d coeffs/channel x 3 channels) via Wigner-D",
                         sh_deg, K_AC,
                     )
 

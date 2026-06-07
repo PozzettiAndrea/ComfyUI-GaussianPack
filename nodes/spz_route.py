@@ -5,7 +5,7 @@ source PLY shells out to the vendored `spz-js` (via Node) to produce a
 `<basename>.spz` sibling file; later requests stream the cached file.
 
 We don't use PyPI `spz` (writes v3/v4 which neither Spark nor PlayCanvas
-decode in their current shipped builds) — `spz-js` writes v2/gzipped
+decode in their current shipped builds) - `spz-js` writes v2/gzipped
 which both renderers can read.
 
 Query:
@@ -31,7 +31,7 @@ import folder_paths
 
 log = logging.getLogger("comfyui-gaussianpack")
 
-# Per-path lock — concurrent requests for the same PLY share the cost.
+# Per-path lock - concurrent requests for the same PLY share the cost.
 _locks: dict[str, threading.Lock] = {}
 _locks_lock = threading.Lock()
 

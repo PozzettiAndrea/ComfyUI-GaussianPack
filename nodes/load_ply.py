@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""LoadPLY — file picker for 3D Gaussian Splatting PLY files.
+"""LoadPLY - file picker for 3D Gaussian Splatting PLY files.
 
 Mirrors ComfyUI's LoadImage idiom: lists bare filenames from
 `input/`, resolves via `folder_paths.get_annotated_filepath()` (which
@@ -8,7 +8,7 @@ handles `[input]/...` and `[temp]/...` annotations transparently),
 and validates with `exists_annotated_filepath`.
 
 For PLYs produced UPSTREAM in a workflow (e.g. `GaussianMerge` ->
-`PreviewGaussians`), wire the path directly — don't go through this
+`PreviewGaussians`), wire the path directly - don't go through this
 node.
 """
 

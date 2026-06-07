@@ -1,13 +1,13 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""GaussianMerge — decimate a 3DGS PLY to a target splat count via
+"""GaussianMerge - decimate a 3DGS PLY to a target splat count via
 NanoGS pairwise merging (MPMM). Output is cached next to ComfyUI's
 output directory; re-running with the same (input mtime, target_count,
 opacity_threshold, k) hits the cache.
 
 Algorithm: kNN graph over splat centers, mass-preserving moment matching
-on each candidate pair, greedy edge selection by merge cost. CPU only —
-the upstream NanoGS paper notes a GPU port as future work. ~10–30s for
+on each candidate pair, greedy edge selection by merge cost. CPU only -
+the upstream NanoGS paper notes a GPU port as future work. ~10-30s for
 1M -> 200K splats on a modern CPU. Same algorithm
 `@playcanvas/splat-transform --decimate` uses, just in pure Python.
 """
@@ -56,7 +56,7 @@ class GaussianMerge:
                     "default": 200_000, "min": 1_000, "max": 10_000_000, "step": 1_000,
                     "tooltip": (
                         "Approximate output Gaussian count. NanoGS works "
-                        "in ratio terms — target / input_count is passed "
+                        "in ratio terms - target / input_count is passed "
                         "as `--ratio`. If target >= input count, the input "
                         "is passed through unchanged."
                     ),
@@ -87,10 +87,10 @@ class GaussianMerge:
                 "backend": (["torch_gpu", "nanogs_cpu"], {
                     "default": "torch_gpu",
                     "tooltip": (
-                        "torch_gpu — MPMM on GPU via PyTorch "
+                        "torch_gpu - MPMM on GPU via PyTorch "
                         "(CUDA / ROCm / MPS, falls back to CPU torch). "
                         "~5-10x faster than nanogs_cpu.\n"
-                        "nanogs_cpu — original NanoGS NumPy/SciPy backend."
+                        "nanogs_cpu - original NanoGS NumPy/SciPy backend."
                     ),
                 }),
             },
@@ -100,7 +100,7 @@ class GaussianMerge:
     RETURN_NAMES = ("ply_path",)
     FUNCTION = "merge"
     CATEGORY = "viewer"
-    # Output node so the graph can terminate here — lets the merge run
+    # Output node so the graph can terminate here - lets the merge run
     # standalone (nothing wired to its output) and surfaces the resulting
     # path in the node UI. Still returns the STRING for chaining.
     OUTPUT_NODE = True

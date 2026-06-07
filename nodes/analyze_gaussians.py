@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""GaussianAnalysis — inspect a 3DGS PLY's header and report what's inside.
+"""GaussianAnalysis - inspect a 3DGS PLY's header and report what's inside.
 
 Parses just the header (no full file read) so it's instant even for
 hundreds-of-MB scenes. Detects:
@@ -100,7 +100,7 @@ def _classify(props: list[tuple[str, str]]) -> dict:
 
     sh_degree = _SH_BY_RESTS.get(n_rest)
     if sh_degree is None:
-        # Non-canonical count — report raw rest count
+        # Non-canonical count - report raw rest count
         sh_degree_str = f"non-standard ({n_rest} f_rest_* properties)"
     else:
         sh_degree_str = str(sh_degree)

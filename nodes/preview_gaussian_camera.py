@@ -1,10 +1,10 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""PreviewGaussianCamera — render a 3DGS PLY from given camera poses to IMAGE.
+"""PreviewGaussianCamera - render a 3DGS PLY from given camera poses to IMAGE.
 
 Tiered renderer:
   1. Try `gsplat.rasterization` (reference CUDA path). ~10-50 ms / frame
-     at 1M gaussians, 1024² output, on a 3090. Declared as an OPTIONAL
+     at 1M gaussians, 1024^2 output, on a 3090. Declared as an OPTIONAL
      [cuda] dep in `nodes/comfy-env.toml`; cuda-wheels' gsplat recipe
      handles NVIDIA installs. Non-NVIDIA installs (AMD ROCm, Apple
      Silicon Metal, CPU-only) get a no-op skip at install time.
@@ -13,20 +13,20 @@ Tiered renderer:
      on gaussian count + resolution) but correct.
 
 Inputs (ComfyUI workflow sockets):
-  ply_path    STRING (forceInput)  — path to a 3DGS PLY (e.g. from
+  ply_path    STRING (forceInput)  - path to a 3DGS PLY (e.g. from
                                      HYWM2GaussianTrain.ply_path,
                                      SharpPredictGaussiansFromMetricDepth,
                                      MergeGaussians, or any external
                                      3DGS tool).
-  extrinsics  EXTRINSICS           — [N, 4, 4] world-to-camera (CameraPack
+  extrinsics  EXTRINSICS           - [N, 4, 4] world-to-camera (CameraPack
                                      convention). Renders N frames.
-  intrinsics  INTRINSICS           — [N, 3, 3] pixel-K, or normalized-K
+  intrinsics  INTRINSICS           - [N, 3, 3] pixel-K, or normalized-K
                                      ([0,1] coords, auto-detected and
                                      rescaled). Single [3, 3] is
                                      broadcast to all N views.
 
 Output:
-  image       IMAGE [N, H, W, 3]   — per-view rendered image in [0, 1].
+  image       IMAGE [N, H, W, 3]   - per-view rendered image in [0, 1].
 
 Workflow position: drop after any node that produces a 3DGS PLY +
 camera matrices to visually verify what the splat looks like from those
@@ -46,7 +46,7 @@ import torch
 log = logging.getLogger("comfyui-gaussianpack")
 
 # SH band-0 to RGB conversion factor (3DGS convention).
-#   rgb = sh0 · C0 + 0.5  in [0, 1]    where C0 = 1 / (2·√π) ≈ 0.282
+#   rgb = sh0 * C0 + 0.5  in [0, 1]    where C0 = 1 / (2*sqrtpi) ~= 0.282
 _C0 = 1.0 / (2.0 * math.sqrt(math.pi))
 
 
@@ -58,7 +58,7 @@ def _p(msg: str) -> None:
 def _request_vram_eviction(needed_bytes: int) -> None:
     """Ask comfy-env's parent ComfyUI process to evict cross-worker models so
     this transient-tensor node has VRAM headroom. Mirrors the helpers in
-    PanoramaDepthMerge / HYWM2GaussianTrain — see depth_merge.py:
+    PanoramaDepthMerge / HYWM2GaussianTrain - see depth_merge.py:
     _request_vram_eviction for the full rationale.
 
     Three-step:
@@ -144,7 +144,7 @@ def _load_3dgs_ply(path: str) -> dict:
         quats = np.stack([v["rot_0"], v["rot_1"], v["rot_2"], v["rot_3"]],
                          axis=1).astype(np.float32)
     else:
-        # Identity quat fallback — interprets the splat as axis-aligned.
+        # Identity quat fallback - interprets the splat as axis-aligned.
         quats = np.zeros((N, 4), dtype=np.float32)
         quats[:, 0] = 1.0
 
@@ -167,11 +167,11 @@ def _load_3dgs_ply(path: str) -> dict:
         sh0 = np.stack([v["f_dc_0"], v["f_dc_1"], v["f_dc_2"]],
                        axis=1).astype(np.float32)[:, None, :]   # [N, 1, 3]
     else:
-        sh0 = np.full((N, 1, 3), 0.5 / _C0, dtype=np.float32)   # rgb ≈ 1.0
+        sh0 = np.full((N, 1, 3), 0.5 / _C0, dtype=np.float32)   # rgb ~= 1.0
 
     # Higher SH bands (f_rest_*). Layout per the 3DGS convention:
     #   first K_AC entries = channel R, next K_AC = G, next K_AC = B
-    # where K_AC = (sh_degree + 1)² - 1. Often absent (sh_degree = 0).
+    # where K_AC = (sh_degree + 1)^2 - 1. Often absent (sh_degree = 0).
     rest_keys = sorted(
         (n for n in names if n.startswith("f_rest_")),
         key=lambda s: int(s.split("_")[-1]),
@@ -222,7 +222,7 @@ def _normalize_K_to_pixel(intr: torch.Tensor, W: int, H: int) -> torch.Tensor:
             intr[1, :] *= float(H)
         sample_fx_after = float(intr[0, 0, 0] if intr.dim() == 3 else intr[0, 0])
         _p(f"detected normalized intrinsics (fx<2); rescaled to pixel-K "
-           f"for {W}×{H}: fx={sample_fx_after:.1f}")
+           f"for {W}x{H}: fx={sample_fx_after:.1f}")
     return intr
 
 
@@ -245,10 +245,10 @@ def _render_gsplat(
 
     Why per-view: gsplat's multi-camera fused path allocates an
     `image_ids = batch_ids * C + camera_ids` index tensor at line 442
-    of gsplat/rendering.py, sized by N_gauss × V × avg_tiles_per_gauss.
-    At V=12, N=5.5M, 1024² with deep tile overlap, that's >24 GB and
+    of gsplat/rendering.py, sized by N_gauss x V x avg_tiles_per_gauss.
+    At V=12, N=5.5M, 1024^2 with deep tile overlap, that's >24 GB and
     OOMs on a 3090. Per-view, the workspace shrinks by a factor of V
-    (here 12×) and fits comfortably. We lose the batched-fusion
+    (here 12x) and fits comfortably. We lose the batched-fusion
     marginal speedup but the cost is dwarfed by the cuda-kernel
     runtime which already dominates.
 
@@ -263,7 +263,7 @@ def _render_gsplat(
     opacities = splat["opacities"].to(device, torch.float32).sigmoid()
     sh0 = splat["sh0"].to(device, torch.float32)
     shN = splat["shN"].to(device, torch.float32)
-    # gsplat expects [N, K_total, 3] for SH, where K_total = (sh_deg+1)²
+    # gsplat expects [N, K_total, 3] for SH, where K_total = (sh_deg+1)^2
     if shN.shape[1] > 0:
         colors = torch.cat([sh0, shN], dim=1)
     else:
@@ -289,11 +289,11 @@ def _render_gsplat(
        f"scales={tuple(scales.shape)} opacities={tuple(opacities.shape)} "
        f"colors={tuple(colors.shape)} sh_degree={sh_degree} bg={tuple(bg.shape)}")
     _p(f"  gsplat: viewmats={tuple(viewmats.shape)} Ks={tuple(Ks.shape)} "
-       f"H×W={H}×{W} near={near} V={V}")
+       f"HxW={H}x{W} near={near} V={V}")
 
     out_frames = []
     for v in range(V):
-        # Slice ONE view at a time. Per-view workspace ≈ 1×V smaller than
+        # Slice ONE view at a time. Per-view workspace ~= 1xV smaller than
         # the batched path, and the per-call overhead is negligible vs
         # the cuda-kernel cost.
         rc, _alphas, _info = rasterization(
@@ -361,14 +361,14 @@ def _render_torch(
     Algorithm per the 3DGS paper:
       1. Project gaussian means to camera space via w2c.
       2. Compute 2D image-plane covariance via the projection Jacobian:
-           Σ_2d = J · R_cam · Σ_3d · R_camᵀ · Jᵀ
+           Sigma_2d = J * R_cam * Sigma_3d * R_cam^T * J^T
       3. Z-sort gaussians near-to-far.
       4. For each pixel, evaluate every overlapping gaussian's 2D
-         Mahalanobis distance, compute α = opacity · exp(-0.5·d²), and
+         Mahalanobis distance, compute alpha = opacity * exp(-0.5*d^2), and
          alpha-composite via front-to-back accumulation.
 
     We process gaussians in chunks across the chunk dim (not pixels) to
-    fit memory. Per chunk we evaluate against ALL H·W pixels at once via
+    fit memory. Per chunk we evaluate against ALL H*W pixels at once via
     a single broadcasted op.
 
     Runs anywhere torch runs (CUDA, ROCm, MPS, CPU). Slower than gsplat
@@ -382,7 +382,7 @@ def _render_torch(
     sh0 = splat["sh0"].to(device, torch.float32)[:, 0]                    # [N, 3]
     rgbs = (sh0 * _C0 + 0.5).clamp(0.0, 1.0)                              # [N, 3]
 
-    # 3D cov in WORLD: Σ_3d = R · diag(s²) · Rᵀ
+    # 3D cov in WORLD: Sigma_3d = R * diag(s^2) * R^T
     R_g = _quat_to_rotmat(quats)                                          # [N, 3, 3]
     cov_3d_world = R_g @ torch.diag_embed(scales * scales) @ R_g.transpose(-1, -2)
 
@@ -394,7 +394,7 @@ def _render_torch(
         ).contiguous()
     V = int(extrinsics.shape[0])
 
-    _p(f"  torch fallback: V={V} N={means_w.shape[0]} H×W={H}×{W} near={near}")
+    _p(f"  torch fallback: V={V} N={means_w.shape[0]} HxW={H}x{W} near={near}")
 
     out_images = []
     for v in range(V):
@@ -421,12 +421,12 @@ def _render_torch(
         rgbs_v = rgbs[keep]
         opa_v = opacities[keep]
 
-        # Cov in camera frame: Σ_cam = R · Σ_world · Rᵀ
+        # Cov in camera frame: Sigma_cam = R * Sigma_world * R^T
         cov_3d_cam = R @ cov_3d_local @ R.T
 
         # 2D projection Jacobian at the gaussian's camera-space center.
-        #   u = fx · X/Z + cx,  v = fy · Y/Z + cy
-        # J = [[fx/Z, 0, -fx·X/Z²], [0, fy/Z, -fy·Y/Z²]]
+        #   u = fx * X/Z + cx,  v = fy * Y/Z + cy
+        # J = [[fx/Z, 0, -fx*X/Z^2], [0, fy/Z, -fy*Y/Z^2]]
         fx, fy = K[0, 0], K[1, 1]
         cx, cy = K[0, 2], K[1, 2]
         X = means_cam[:, 0]
@@ -447,7 +447,7 @@ def _render_torch(
         # Pixel centers of the projected gaussians.
         uv_pixel = torch.stack([fx * X / Z + cx, fy * Y / Z + cy], dim=-1)
 
-        # Conic = inverse of cov_2d (for exp(-½ Δᵀ Σ⁻¹ Δ)).
+        # Conic = inverse of cov_2d (for exp(-1/2 Delta^T Sigma^-1 Delta)).
         det = cov_2d[:, 0, 0] * cov_2d[:, 1, 1] - cov_2d[:, 0, 1] * cov_2d[:, 1, 0]
         det = det.clamp_min(1e-10)
         conic = torch.stack([
@@ -456,15 +456,15 @@ def _render_torch(
              cov_2d[:, 0, 0] / det,
         ], dim=-1)                                                        # [N, 3] = (a, b, c)
 
-        # Bound: 3σ radius from λ_max of cov_2d. Used to cull pixels.
+        # Bound: 3sigma radius from lambda_max of cov_2d. Used to cull pixels.
         trace = cov_2d[:, 0, 0] + cov_2d[:, 1, 1]
         lambda_max = 0.5 * (trace + torch.sqrt((trace * trace - 4 * det).clamp_min(0)))
         radius = 3.0 * torch.sqrt(lambda_max.clamp_min(1e-6))
 
-        # X/Y frustum cull: drop gaussians whose 3σ ellipse lies entirely
+        # X/Y frustum cull: drop gaussians whose 3sigma ellipse lies entirely
         # outside the image bounds. gsplat does this internally; the torch
         # fallback has to as well or it wastes per-pixel evaluation on
-        # off-screen splats (a 12-view panorama renders ~12× more gaussians
+        # off-screen splats (a 12-view panorama renders ~12x more gaussians
         # than any one view actually sees).
         orig_N = uv_pixel.shape[0]
         in_bounds = (
@@ -478,7 +478,7 @@ def _render_torch(
             rgbs_v = rgbs_v[in_bounds]
             opa_v = opa_v[in_bounds]
             Z = Z[in_bounds]
-            _p(f"  view {v}: {orig_N} → {uv_pixel.shape[0]} in-frustum gaussians "
+            _p(f"  view {v}: {orig_N} -> {uv_pixel.shape[0]} in-frustum gaussians "
                f"({100 * uv_pixel.shape[0] / max(orig_N, 1):.0f}%)")
             if uv_pixel.shape[0] == 0:
                 out_images.append(background.expand(H, W, 3).clone())
@@ -503,8 +503,8 @@ def _render_torch(
         accum = torch.zeros(H, W, 3, device=device, dtype=torch.float32)
 
         # Process in chunks across the gaussian dim. Per-chunk peak memory
-        # is `chunk_size · H · W · 4 B` for the alpha map; at chunk=16k, H=W=1024
-        # that's ~67 GB — too big. So further chunk to bounded slabs and accumulate.
+        # is `chunk_size * H * W * 4 B` for the alpha map; at chunk=16k, H=W=1024
+        # that's ~67 GB - too big. So further chunk to bounded slabs and accumulate.
         max_pixel_buf_gb = 1.5
         max_chunk = max(1, int(max_pixel_buf_gb * 1024**3 / (H * W * 4)))
         eff_chunk = min(chunk_size, max_chunk)
@@ -516,12 +516,12 @@ def _render_torch(
             rgb_c = rgbs_v[start:end]                                     # [C, 3]
             opa_c = opa_v[start:end]                                      # [C]
 
-            # Compute α[c, y, x] for every gaussian × every pixel in chunk.
-            # Δ = pixel - center.
+            # Compute alpha[c, y, x] for every gaussian x every pixel in chunk.
+            # Delta = pixel - center.
             dx = gx.unsqueeze(0) - uv_c[:, 0].view(-1, 1, 1)               # [C, H, W]
             dy = gy.unsqueeze(0) - uv_c[:, 1].view(-1, 1, 1)               # [C, H, W]
-            # Mahalanobis (with conic = Σ⁻¹):
-            #   d² = a·dx² + 2·b·dx·dy + c·dy²
+            # Mahalanobis (with conic = Sigma^-1):
+            #   d^2 = a*dx^2 + 2*b*dx*dy + c*dy^2
             a = cn_c[:, 0].view(-1, 1, 1)
             b = cn_c[:, 1].view(-1, 1, 1)
             c = cn_c[:, 2].view(-1, 1, 1)
@@ -699,16 +699,16 @@ class PreviewGaussianCamera:
         bg_color = bg_color.to(device)
 
         _p(
-            f"rendering {V} view(s) @ {image_width}×{image_height} "
+            f"rendering {V} view(s) @ {image_width}x{image_height} "
             f"({N_gauss} gaussians)"
         )
 
         # Ask comfy to evict sibling-worker patchers so we have VRAM
-        # headroom for the rasterizer. Estimate: roughly N_gauss × H × W
-        # × 1e-3 bytes — empirically covers the gsplat per-view
+        # headroom for the rasterizer. Estimate: roughly N_gauss x H x W
+        # x 1e-3 bytes - empirically covers the gsplat per-view
         # workspace (tile-intersection buffers + per-pixel accumulators)
         # plus our own splat tensors with a comfortable margin. For 5.5M
-        # gauss @ 1024² this is ~5.8 GB. Helper handles the cross-worker
+        # gauss @ 1024^2 this is ~5.8 GB. Helper handles the cross-worker
         # IPC + local mm.free_memory + empty_cache.
         peak_bytes = int(N_gauss * int(image_height) * int(image_width) * 1e-3)
         _p(f"  -> requesting {peak_bytes / 1e9:.2f} GB VRAM headroom")

@@ -44,11 +44,11 @@ def _best_device() -> torch.device:
 
 
 # ---------------------------------------------------------------------------
-# Quaternion → rotation matrix  (batched, torch)
+# Quaternion -> rotation matrix  (batched, torch)
 # ---------------------------------------------------------------------------
 
 def _quat_to_rotmat(q: torch.Tensor) -> torch.Tensor:
-    """(B,4) wxyz → (B,3,3) rotation matrices."""
+    """(B,4) wxyz -> (B,3,3) rotation matrices."""
     w, x, y, z = q[:, 0], q[:, 1], q[:, 2], q[:, 3]
     ww, xx, yy, zz = w*w, x*x, y*y, z*z
     wx, wy, wz = w*x, w*y, w*z
@@ -62,7 +62,7 @@ def _quat_to_rotmat(q: torch.Tensor) -> torch.Tensor:
 
 
 def _rotmat_to_quat(R: torch.Tensor) -> torch.Tensor:
-    """(B,3,3) → (B,4) wxyz quaternion (Shepperd method)."""
+    """(B,3,3) -> (B,4) wxyz quaternion (Shepperd method)."""
     B = R.shape[0]
     q = torch.empty(B, 4, device=R.device, dtype=R.dtype)
     m00, m11, m22 = R[:, 0, 0], R[:, 1, 1], R[:, 2, 2]
@@ -103,11 +103,11 @@ def _rotmat_to_quat(R: torch.Tensor) -> torch.Tensor:
 
 
 # ---------------------------------------------------------------------------
-# kNN — scipy cKDTree (O(N log N), always fastest for 3D)
+# kNN - scipy cKDTree (O(N log N), always fastest for 3D)
 # ---------------------------------------------------------------------------
 
 def _knn_scipy(points_np: np.ndarray, k: int) -> np.ndarray:
-    """(N, 3) float32 → (N, k) int32 neighbor indices via cKDTree."""
+    """(N, 3) float32 -> (N, k) int32 neighbor indices via cKDTree."""
     from scipy.spatial import cKDTree
     tree = cKDTree(points_np)
     _, idx = tree.query(points_np, k=k + 1, workers=-1)
@@ -248,7 +248,7 @@ def _edge_costs(
 # ---------------------------------------------------------------------------
 
 def _knn_to_edges(nbr: np.ndarray) -> np.ndarray:
-    """(N, k) int32 → (M, 2) int32 undirected unique edges."""
+    """(N, k) int32 -> (M, 2) int32 undirected unique edges."""
     N, k = nbr.shape
     ii = np.repeat(np.arange(N, dtype=np.int64), k)
     jj = nbr.reshape(-1).astype(np.int64)
@@ -264,7 +264,7 @@ def _knn_to_edges(nbr: np.ndarray) -> np.ndarray:
 
 
 # ---------------------------------------------------------------------------
-# Greedy pair selection (CPU — inherently sequential)
+# Greedy pair selection (CPU - inherently sequential)
 # ---------------------------------------------------------------------------
 
 def _greedy_pairs(
@@ -297,11 +297,11 @@ def _greedy_pairs(
 
 
 # ---------------------------------------------------------------------------
-# Batched 3×3 symmetric eigendecomposition — avoids cuSOLVER entirely
+# Batched 3x3 symmetric eigendecomposition - avoids cuSOLVER entirely
 # ---------------------------------------------------------------------------
 
 def _batched_eigh(A: torch.Tensor) -> tuple[torch.Tensor, torch.Tensor]:
-    """Eigendecompose batched 3×3 SPD matrices on any device.
+    """Eigendecompose batched 3x3 SPD matrices on any device.
 
     Falls back to CPU numpy to avoid cuSOLVER batch-size issues.
     For typical merge counts (< 2M pairs) this takes < 1s.
@@ -373,7 +373,7 @@ def _moment_match(
 
 
 # ---------------------------------------------------------------------------
-# Merge pairs — select, merge, concatenate
+# Merge pairs - select, merge, concatenate
 # ---------------------------------------------------------------------------
 
 @torch.no_grad()
@@ -421,7 +421,7 @@ def _prune_by_opacity(
     log.info("Opacity mean=%.5f median=%.5f threshold=%.4f",
              op.mean().item(), median_op, threshold)
     keep = op >= threshold
-    log.info("After opacity pruning: %d → %d", mu.shape[0], keep.sum().item())
+    log.info("After opacity pruning: %d -> %d", mu.shape[0], keep.sum().item())
     mu, sc, q, op = mu[keep], sc[keep], q[keep], op[keep]
     sh = sh[keep] if sh.shape[1] > 0 else torch.empty(mu.shape[0], 0, device=mu.device)
     return mu, sc, q, op, sh

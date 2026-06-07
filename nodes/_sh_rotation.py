@@ -232,23 +232,23 @@ def _test():
         assert np.allclose(D, np.eye(2 * l + 1), atol=1e-10), \
             f"identity rotation failed at l={l}: D=\n{D}"
 
-    # --- 2. 180° around Z: D_2 should equal diag(1, -1, 1, -1, 1) ---
+    # --- 2. 180deg around Z: D_2 should equal diag(1, -1, 1, -1, 1) ---
     #
     # Real l=2 SH basis (in m=-2..+2 order):
-    #     m=-2: ∝ xy        — invariant under (x→-x, y→-y)
-    #     m=-1: ∝ yz        — flips sign
-    #     m= 0: ∝ 3z²-r²    — invariant
-    #     m=+1: ∝ xz        — flips sign
-    #     m=+2: ∝ x²-y²     — invariant
+    #     m=-2: prop xy        - invariant under (x->-x, y->-y)
+    #     m=-1: prop yz        - flips sign
+    #     m= 0: prop 3z^2-r^2    - invariant
+    #     m=+1: prop xz        - flips sign
+    #     m=+2: prop x^2-y^2     - invariant
     Ds = real_sh_rotation_matrices(rz(np.pi), 3)
     expected_D2 = np.diag([1.0, -1.0, 1.0, -1.0, 1.0])
     assert np.allclose(Ds[2], expected_D2, atol=1e-10), \
-        f"180°-Z D_2 mismatch:\n{Ds[2]}\nexpected:\n{expected_D2}"
+        f"180deg-Z D_2 mismatch:\n{Ds[2]}\nexpected:\n{expected_D2}"
 
-    # --- 3. D_1 for 180°-Z: x->-x, y->-y, z->z.
+    # --- 3. D_1 for 180deg-Z: x->-x, y->-y, z->z.
     # In SH (m=-1, 0, +1) <-> (y, z, x) basis: diag(-1, 1, -1).
     assert np.allclose(Ds[1], np.diag([-1, 1, -1]), atol=1e-10), \
-        f"180°-Z D_1 mismatch:\n{Ds[1]}"
+        f"180deg-Z D_1 mismatch:\n{Ds[1]}"
 
     # --- 4. Orthogonality: D_l must be orthogonal for any l ---
     for R in (rx(0.7), ry(1.3), rz(-0.4), rx(0.7) @ ry(1.3) @ rz(-0.4)):
@@ -276,7 +276,7 @@ def _test():
     err = np.abs(unrotated - f_rest).max()
     assert err < 1e-4, f"round-trip max err {err}"
 
-    print("real-SH rotation self-test: all 6 checks passed ✓")
+    print("real-SH rotation self-test: all 6 checks passed OK")
 
 
 if __name__ == "__main__":

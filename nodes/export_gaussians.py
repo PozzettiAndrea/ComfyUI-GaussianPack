@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""GaussianExport — re-export a 3DGS PLY in a chosen format.
+"""GaussianExport - re-export a 3DGS PLY in a chosen format.
 
 Supported targets:
   - `ply`         passthrough copy with a chosen output filename.
@@ -57,7 +57,7 @@ def _export_ply_no_sh(src: Path, dst: Path) -> Path:
         if not name.startswith("f_rest_")
     ]
     if len(keep_names) == len(vertex.data.dtype.names):
-        log.info("GaussianExport ply_no_sh: source had no f_rest_* — copy-through.")
+        log.info("GaussianExport ply_no_sh: source had no f_rest_* - copy-through.")
         return _export_passthrough(src, dst)
 
     new_dtype = np.dtype([(n, vertex.data.dtype.fields[n][0]) for n in keep_names])
@@ -128,11 +128,11 @@ class GaussianExport:
                 "format": (list(_FORMAT_EXTS.keys()), {
                     "default": "ply_no_sh",
                     "tooltip": (
-                        "ply        — passthrough copy.\n"
-                        "ply_no_sh  — drop view-dependent SH (f_rest_*); "
+                        "ply        - passthrough copy.\n"
+                        "ply_no_sh  - drop view-dependent SH (f_rest_*); "
                                      "keep base color (f_dc_*). ~3-5x smaller "
                                      "but loses specular highlights.\n"
-                        "spz        — SPZ v2 (gzipped). ~9x smaller; SH "
+                        "spz        - SPZ v2 (gzipped). ~9x smaller; SH "
                                      "coefficients quantize to 4 bits each. "
                                      "Requires Node.js on PATH."
                     ),

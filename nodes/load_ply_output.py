@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""LoadPLYOutput — file picker for .ply files in ComfyUI's output/ folder.
+"""LoadPLYOutput - file picker for .ply files in ComfyUI's output/ folder.
 
 Parallel to `LoadPLY` (which scans input/) and analogous to ComfyUI's
 native `LoadImageOutput`. Recursively walks the output directory so deep
@@ -10,7 +10,7 @@ training writes nested paths like
 show up in the dropdown without the user having to type a path.
 
 Sorted by mtime descending so the most recently written PLY is the
-default selection — typical use case is "load the splat I just trained."
+default selection - typical use case is "load the splat I just trained."
 """
 
 import logging
@@ -52,7 +52,7 @@ def _list_output_plys() -> list[str]:
 
 
 def register_routes() -> None:
-    """No-op kept for API compatibility — the dropdown driven by
+    """No-op kept for API compatibility - the dropdown driven by
     `_list_output_plys()` doesn't need a server route. ComfyUI's frontend
     only consumes remote-route options for image/video upload widgets
     (see `isMediaUploadComboInput` in the frontend bundle); generic
@@ -70,7 +70,7 @@ class LoadPLYOutput:
         # v1 list form. `(files_list, config_dict)` is the only form that
         # populates the dropdown options correctly for non-media-upload
         # widgets. The `remote` config in `config_dict` does NOT update
-        # the dropdown's options list for generic COMBOs — verified by
+        # the dropdown's options list for generic COMBOs - verified by
         # reading the frontend bundle. The only place `widget.options`
         # gets set is from `e[0]` (this list) for v1 specs, or from
         # `e[1].options` for v2 specs. The `remote` flow updates only
@@ -84,13 +84,13 @@ class LoadPLYOutput:
                 "ply_file": (files, {
                     "tooltip": (
                         "Pick a .ply file from ComfyUI's output/ folder. "
-                        "Scans recursively — training outputs deep in "
+                        "Scans recursively - training outputs deep in "
                         "subfolders (e.g. hywm2_train_*/gs_data/gs_result/"
                         "ply/point_cloud_99.ply) show up here. Sorted "
                         "newest-first by mtime.\n\n"
                         "Note: the dropdown list is captured at workflow "
                         "load time. After deleting/regenerating PLYs in "
-                        "output/, press Ctrl/Cmd+R to reload the page — "
+                        "output/, press Ctrl/Cmd+R to reload the page - "
                         "ComfyUI's frontend has no per-widget refresh "
                         "mechanism for generic COMBOs (only for image/"
                         "video upload widgets, which we deliberately "

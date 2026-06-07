@@ -30,7 +30,7 @@ def _resolve_for_view(abs_path: str) -> tuple[str, str, str]:
             subfolder, filename = os.path.split(rel)
             return filename, subfolder.replace(os.sep, "/"), kind
 
-    # Path lives outside any of Comfy's directories — `/view` will 404.
+    # Path lives outside any of Comfy's directories - `/view` will 404.
     # Return a bare basename + "output" so the caller still sees a
     # reasonable filename in the info panel.
     return os.path.basename(abs_path), "", "output"
@@ -70,9 +70,9 @@ class PreviewGaussians:
                 "camera_mode": (["orbit", "spectate"], {
                     "default": "orbit",
                     "tooltip": (
-                        "orbit — trackball turntable camera. "
+                        "orbit - trackball turntable camera. "
                         "\n"
-                        "spectate — WASD fly-cam."
+                        "spectate - WASD fly-cam."
                     ),
                 }),
                 "fov_degrees": ("FLOAT", {
@@ -82,11 +82,11 @@ class PreviewGaussians:
                 "renderer": (["playcanvas", "spark"], {
                     "default": "playcanvas",
                     "tooltip": (
-                        "playcanvas — PlayCanvas Engine v2.19 GSplat renderer. "
+                        "playcanvas - PlayCanvas Engine v2.19 GSplat renderer. "
                         "WebGPU when available, WebGL2 fallback. Good "
                         "performance on large scenes (5M+ splats). "
                         "\n"
-                        "spark — Three.js + WebGL2. Best SH3 fidelity, "
+                        "spark - Three.js + WebGL2. Best SH3 fidelity, "
                         "auto-detects all formats (PLY, compressed.ply, SPZ, "
                         "KSPLAT, SOG, SPLAT)."
                     ),
@@ -94,11 +94,11 @@ class PreviewGaussians:
                 "transport_format": (["ply", "spz"], {
                     "default": "ply",
                     "tooltip": (
-                        "ply — lossless float32, ~225 MB for a 1M-splat SH=3 "
+                        "ply - lossless float32, ~225 MB for a 1M-splat SH=3 "
                         "scene. Slow to download but every SH3 highlight is "
                         "preserved bit-perfect from training. "
                         "\n"
-                        "spz — server transcodes to SPZ v2 once and caches "
+                        "spz - server transcodes to SPZ v2 once and caches "
                         "next to the PLY. ~9x smaller (~25 MB), but SH2/SH3 "
                         "quantize to 4 bits each, which flattens specular "
                         "highlights. Use when bandwidth matters more than "

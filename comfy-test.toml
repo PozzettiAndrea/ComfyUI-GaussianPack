@@ -3,7 +3,7 @@ levels = ["syntax", "install", "registration", "instantiation", "execution"]
 publish = 'true'
 
 [test.workflows]
-cpu = ["merge_splats"]
+cpu = ["merge_splats", "gaussian_analysis", "rotate_splats", "spectate"]
 gpu = []
 
 [test.platforms]

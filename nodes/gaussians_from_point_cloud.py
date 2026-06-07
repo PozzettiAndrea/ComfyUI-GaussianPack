@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""GaussiansFromPointCloud — convert a plain point-cloud PLY into a proper
+"""GaussiansFromPointCloud - convert a plain point-cloud PLY into a proper
 3DGS PLY with sensible per-point initialization.
 
 Why this exists: many upstream pipelines (PanoramaBuildPointCloud + GeomPack
@@ -8,7 +8,7 @@ SaveMesh, raw colmap, depth-to-pcd, etc.) produce a points-only PLY with
 just `x/y/z` (+ optional `r/g/b`). The 3DGS trainers and viewers expect a
 PLY with `rot_*`, `scale_*`, `opacity`, `f_dc_*` fields too. Without those,
 loaders either reject the PLY or substitute degenerate defaults (e.g.
-`_load_3dgs_ply` writes `log(1e-3)` for scales → every gaussian is a
+`_load_3dgs_ply` writes `log(1e-3)` for scales -> every gaussian is a
 1 mm sphere regardless of local density). Training from that state takes
 forever to converge.
 
@@ -47,11 +47,11 @@ def _output_dir() -> Path:
 def _knn_derived_log_scales(
     pts: np.ndarray, k: int, init_scale: float
 ) -> np.ndarray:
-    """Per-point log-scale = log(mean_knn_distance × init_scale).
+    """Per-point log-scale = log(mean_knn_distance x init_scale).
 
     Uses sklearn's KDTree (already a runtime dep via torch's deps); for
     7M points it's ~3-10s, ~120 MB. Returns shape [N, 3] (same scale on
-    every axis — gaussians initialized as isotropic spheres; training
+    every axis - gaussians initialized as isotropic spheres; training
     can deform them).
     """
     from sklearn.neighbors import NearestNeighbors
@@ -64,7 +64,7 @@ def _knn_derived_log_scales(
 
     nn = NearestNeighbors(n_neighbors=k_query, algorithm="auto").fit(pts)
     dists, _ = nn.kneighbors(pts)               # [N, k_query], col 0 = self
-    # Squared-distance mean, then sqrt — matches upstream.
+    # Squared-distance mean, then sqrt - matches upstream.
     dist2_avg = (dists[:, 1:] ** 2).mean(axis=1)
     dist_avg = np.sqrt(np.maximum(dist2_avg, 1e-30))
     scales_log = np.log(dist_avg * float(init_scale) + 1e-30).astype(np.float32)
@@ -77,11 +77,11 @@ def _try_extract_rgb_sh0(ply_path: str, N_expected: int) -> np.ndarray | None:
     max value (uint8 typically has max > 1.5; float [0, 1] never does).
 
     Used to recover colors from trimesh-style PLYs (PanoramaBuildPointCloud
-    → GeomPackSaveMesh layout) since the shared `_load_3dgs_ply` parser
+    -> GeomPackSaveMesh layout) since the shared `_load_3dgs_ply` parser
     only understands the 3DGS `f_dc_*` color layout and otherwise falls
     back to a constant white default.
 
-    Formula: rgb_lin ∈ [0, 1] -> sh0 = (rgb - 0.5) / C0 (inverse of the
+    Formula: rgb_lin in [0, 1] -> sh0 = (rgb - 0.5) / C0 (inverse of the
     `rgb_to_sh` round-trip used everywhere else in the pipeline).
     """
     from plyfile import PlyData
@@ -155,7 +155,7 @@ def _write_3dgs_ply(
     # nx/ny/nz stay zero.
     arr["f_dc_0"], arr["f_dc_1"], arr["f_dc_2"] = sh0[:, 0, 0], sh0[:, 0, 1], sh0[:, 0, 2]
     if shN is not None and K_AC > 0:
-        # Reshape [N, K_AC, 3] → [N, 3, K_AC] → [N, 3*K_AC] (R-block, G-block, B-block).
+        # Reshape [N, K_AC, 3] -> [N, 3, K_AC] -> [N, 3*K_AC] (R-block, G-block, B-block).
         flat = shN.transpose(0, 2, 1).reshape(N, 3 * K_AC)
         for c in range(3 * K_AC):
             arr[f"f_rest_{c}"] = flat[:, c]
@@ -269,8 +269,8 @@ class GaussiansFromPointCloud:
         # ---- Override sh0 with `red/green/blue` colors if present. ----
         # `_load_3dgs_ply` only reads the 3DGS `f_dc_*` layout and falls
         # back to a constant white default. Trimesh-style PLYs (the kind
-        # produced by PanoramaBuildPointCloud → GeomPackSaveMesh) store
-        # color as `red/green/blue/alpha` uint8 — we recover that here.
+        # produced by PanoramaBuildPointCloud -> GeomPackSaveMesh) store
+        # color as `red/green/blue/alpha` uint8 - we recover that here.
         rgb_sh0 = _try_extract_rgb_sh0(ply_path, N_in)
         if rgb_sh0 is not None:
             splat["sh0"] = torch.from_numpy(rgb_sh0)

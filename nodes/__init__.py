@@ -1,6 +1,6 @@
 # SPDX-License-Identifier: GPL-3.0-or-later
 
-"""GaussianPack nodes — preview, merge, and load PLY-format 3D Gaussian splats.
+"""GaussianPack nodes - preview, merge, and load PLY-format 3D Gaussian splats.
 
 The root `__init__.py` re-exports `NODE_CLASS_MAPPINGS` /
 `NODE_DISPLAY_NAME_MAPPINGS` from this subpackage. `WEB_DIRECTORY` is

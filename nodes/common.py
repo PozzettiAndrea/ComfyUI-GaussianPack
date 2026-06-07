@@ -2,7 +2,7 @@
 
 import os
 
-# Optional ComfyUI helpers – avoid hard dependency for offline editing
+# Optional ComfyUI helpers - avoid hard dependency for offline editing
 try:
     import importlib
     folder_paths = importlib.import_module("folder_paths")  # type: ignore[import-not-found]
