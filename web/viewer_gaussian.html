@@ -10,6 +10,7 @@
             box-sizing: border-box;
         }
 
+        html { height: 100%; }
         body {
             background: #1a1a1a;
             overflow: hidden;
@@ -18,6 +19,14 @@
             flex-direction: column;
             height: 100vh;
         }
+        /* #viewerContainer is the fullscreen target. The UA stylesheet already
+           gives a non-:root fullscreen element position:fixed; inset:0;
+           width/height:100% !important, so we don't re-declare size — only the
+           backdrop colour (avoids a black flash, esp. WebKit). The canvas is a
+           100%/100% child, so it fills the container. */
+        #viewerContainer:fullscreen,
+        #viewerContainer:-webkit-full-screen { background: #1a1a1a; }
+        #viewerContainer::backdrop { background: #1a1a1a; }
 
         #viewerContainer {
             position: relative;
@@ -553,17 +562,23 @@
                 this.controls.update();
             }
 
-            const ro = new ResizeObserver(() => {
-                const w = this.canvas.clientWidth  || 1;
-                const h = this.canvas.clientHeight || 1;
-                renderer.setSize(w, h, false);
-                this.camera.aspect = w / Math.max(1, h);
-                this.camera.updateProjectionMatrix();
-                // TrackballControls maps mouse pixels to NDC against a cached
-                // screen rect — must be refreshed after each resize.
-                this.controls.handleResize();
-            });
-            ro.observe(this.canvas);
+            const ro = new ResizeObserver(() => this.resize());
+            // Observe the container: it's the box that changes on fullscreen
+            // (the canvas only follows). Falls back to the canvas if unattached.
+            ro.observe(this.canvas.parentElement || this.canvas);
+        }
+        resize() {
+            const w = this.canvas.clientWidth  || 1;
+            const h = this.canvas.clientHeight || 1;
+            // Re-apply DPR: fullscreening onto a different-density display would
+            // otherwise leave the canvas rendering soft.
+            this.renderer.setPixelRatio(window.devicePixelRatio || 1);
+            this.renderer.setSize(w, h, false);
+            this.camera.aspect = w / Math.max(1, h);
+            this.camera.updateProjectionMatrix();
+            // TrackballControls maps mouse pixels to NDC against a cached
+            // screen rect — must be refreshed after each resize.
+            this.controls?.handleResize?.();
         }
         _startRenderLoop(logTag) {
             const tick = () => {
@@ -771,18 +786,11 @@
 
             // Resize — sync canvas pixel size + PlayCanvas internal resolution
             // to match the CSS layout size (which tracks the ComfyUI node/iframe).
-            const ro = new ResizeObserver(() => {
-                const w = this.canvas.clientWidth || 1;
-                const h = this.canvas.clientHeight || 1;
-                const dpr = window.devicePixelRatio || 1;
-                this.canvas.width = Math.round(w * dpr);
-                this.canvas.height = Math.round(h * dpr);
-                app.resizeCanvas(w, h);
-                if (cam.camera) {
-                    cam.camera.aspectRatio = w / h;
-                }
-            });
-            ro.observe(this.canvas);
+            // Observe the CONTAINER, not the canvas: PlayCanvas pins the
+            // canvas to fixed px (FILLMODE_NONE), so the canvas box never
+            // changes on fullscreen and a canvas RO would never fire.
+            const ro = new ResizeObserver(() => this.resize());
+            ro.observe(this.canvas.parentElement || this.canvas);
 
             // --- Input handling (orbit OR spectate) ---
             this.canvas.addEventListener("pointerdown", (e) => {
@@ -806,9 +814,10 @@
                     tmp.setFromAxisAngle(pc.Vec3.RIGHT, -dy * sens);
                     q.mul(tmp);
                 } else if (e.buttons === 1) {
-                    // Orbit: left drag
+                    // Orbit: left drag. Pitch uses +dy so dragging down tilts the
+                    // view down (matches the Spark/Trackball viewer's direction).
                     this._yaw -= dx * 0.3;
-                    this._pitch = Math.max(-89, Math.min(89, this._pitch - dy * 0.3));
+                    this._pitch = Math.max(-89, Math.min(89, this._pitch + dy * 0.3));
                     this._updateOrbitCamera();
                 } else if (e.buttons === 2 || e.buttons === 4) {
                     // Orbit: right/middle drag -> pan
@@ -869,6 +878,20 @@
             console.log(`[PlayCanvas] adapter initialized (mode=${this._isSpectate ? "spectate" : "orbit"})`);
         }
 
+        resize() {
+            if (!this._app) return;
+            // Measure the container, not the canvas: PlayCanvas pins the canvas
+            // to fixed px, so reading canvas.clientWidth would just echo the
+            // stale size back. resizeCanvas() then re-pins the canvas to fill.
+            const host = this.canvas.parentElement || this.canvas;
+            const w = host.clientWidth || 1;
+            const h = host.clientHeight || 1;
+            const dpr = window.devicePixelRatio || 1;
+            this.canvas.width = Math.round(w * dpr);
+            this.canvas.height = Math.round(h * dpr);
+            this._app.resizeCanvas(w, h);
+            if (this._cameraEntity?.camera) this._cameraEntity.camera.aspectRatio = w / h;
+        }
         _updateOrbitCamera() {
             const yawRad = this._yaw * Math.PI / 180;
             const pitchRad = this._pitch * Math.PI / 180;
@@ -1313,13 +1336,38 @@
     });
 
     document.getElementById('resetCamera').addEventListener('click', resetCamera);
+    // Fullscreen <body> (not documentElement): with html as the fullscreen
+    // element the body/canvas stayed at the original node size; body fills.
+    // Fullscreen the canvas's direct parent (a non-:root element). The UA
+    // stylesheet stretches `*:not(:root):fullscreen` to position:fixed; inset:0;
+    // width/height:100% — but EXCLUDES :root, which is why fullscreening <html>
+    // resized the viewport yet never grew the canvas.
+    const fsTarget = document.getElementById('viewerContainer');
+    const fsReq = fsTarget.requestFullscreen || fsTarget.webkitRequestFullscreen;
+    const fsExit = document.exitFullscreen || document.webkitExitFullscreen;
+    function fsElement() { return document.fullscreenElement || document.webkitFullscreenElement; }
     document.getElementById('fullscreenBtn').addEventListener('click', () => {
-        if (!document.fullscreenElement) {
-            document.documentElement.requestFullscreen().catch(() => {});
-        } else {
-            document.exitFullscreen().catch(() => {});
+        try {
+            if (!fsElement()) {
+                const p = fsReq.call(fsTarget);
+                // WebKit (<16.4) returns undefined instead of a Promise.
+                if (p && p.then) p.catch((err) => console.warn('[FS] requestFullscreen rejected:', err && err.name, err && err.message));
+            } else {
+                fsExit.call(document);
+            }
+        } catch (err) {
+            console.warn('[FS] toggle threw:', err);
         }
     });
+    // The top-layer layout commits by the 2nd frame; one late timer covers
+    // Safari's late layout. ResizeObserver on the container is the real signal.
+    const kickResize = () => {
+        requestAnimationFrame(() => requestAnimationFrame(() => adapter?.resize?.()));
+        setTimeout(() => adapter?.resize?.(), 150);
+    };
+    document.addEventListener('fullscreenchange', kickResize);
+    document.addEventListener('webkitfullscreenchange', kickResize);
+    window.addEventListener('resize', () => adapter?.resize?.());
     document.getElementById('screenshot').addEventListener('click', () => {
         if (!adapterReady) return;
         try {

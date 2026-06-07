@@ -65,9 +65,12 @@ app.registerExtension({
             };
         }
 
-        if (nodeData.name === "PreviewGaussians" || nodeData.name === "PreviewGaussianSpectate") {
-            const _isSpectate = nodeData.name === "PreviewGaussianSpectate";
-            console.log("[GaussianPack] Registering " + (_isSpectate ? "Preview Gaussian Spectate" : "Preview Gaussians") + " node");
+        if (nodeData.name === "PreviewGaussians") {
+            // Spectate is now a camera_mode of PreviewGaussians; the dedicated
+            // PreviewGaussianSpectate node was removed. Kept as a const so the
+            // downstream "spectate" branches still read cleanly.
+            const _isSpectate = false;
+            console.log("[GaussianPack] Registering Preview Gaussians node");
 
             // After ComfyUI applies serialized widgets_values, defend
             // against stale workflow schemas. Two shapes have shipped
@@ -275,6 +278,9 @@ app.registerExtension({
                 iframe.style.minHeight = "0";
                 iframe.style.border = "none";
                 iframe.style.backgroundColor = "#1a1a1a";
+                // Allow the in-iframe Fullscreen button to fill the whole screen.
+                iframe.allowFullscreen = true;
+                iframe.setAttribute("allow", "fullscreen");
 
                 {
                     const cmW = (this.widgets || []).find(w => w.name === "camera_mode");
@@ -556,18 +562,22 @@ app.registerExtension({
                         // honest).
                         const qsType = encodeURIComponent(plyType);
                         const qsSub  = encodeURIComponent(plySubfolder);
+                        // Freshness token: changes whenever the upstream file is
+                        // rewritten under the same name, so a re-merged PLY isn't
+                        // served stale from the in-memory or browser HTTP cache.
+                        const tok = message.mtime?.[0] ?? 0;
                         let filepath, iframeFilename, loadLabel;
                         if (transportFormat === "spz") {
-                            filepath       = `/gaussianpack/spz?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
+                            filepath       = `/gaussianpack/spz?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}&_=${tok}`;
                             iframeFilename = filename.replace(/\.ply$/i, ".spz");
                             loadLabel      = "Transcoding + downloading SPZ...";
                         } else {
-                            filepath       = `/view?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
+                            filepath       = `/view?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}&_=${tok}`;
                             iframeFilename = filename;
                             loadLabel      = "Downloading PLY...";
                         }
 
-                        const cacheKey = `${filename}|${plyType}|${plySubfolder}|${transportFormat}`;
+                        const cacheKey = `${filename}|${plyType}|${plySubfolder}|${transportFormat}|${tok}`;
 
                         const sendToIframe = (arrayBuffer) => {
                             if (!iframe.contentWindow) return;
@@ -735,6 +745,8 @@ app.registerExtension({
 
                 const iframe = document.createElement("iframe");
                 iframe.style.cssText = "width:100%;flex:1 1 0;min-height:0;border:none;background:#1a1a1a;";
+                iframe.allowFullscreen = true;
+                iframe.setAttribute("allow", "fullscreen");
 
                 const infoPanel = document.createElement("div");
                 infoPanel.style.cssText = "background:#1a1a1a;border-top:1px solid #444;padding:6px 12px;font:10px monospace;color:#ccc;line-height:1.3;flex-shrink:0;overflow:hidden;";
@@ -812,18 +824,24 @@ app.registerExtension({
                     node.setSize(currentNodeSize);
                     node.setDirtyCanvas(true, true);
 
+                    // Freshness tokens: change whenever the upstream file is
+                    // rewritten under the same name, so a re-merged PLY isn't
+                    // served stale from the in-memory or browser HTTP cache.
+                    const tok1 = message.mtime_1?.[0] ?? 0;
+                    const tok2 = message.mtime_2?.[0] ?? 0;
+
                     // Build URLs for both PLYs
-                    function buildUrl(filename, type, subfolder) {
+                    function buildUrl(filename, type, subfolder, tok) {
                         const qsType = encodeURIComponent(type);
                         const qsSub = encodeURIComponent(subfolder);
                         if (transport === "spz") {
-                            return `/gaussianpack/spz?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
+                            return `/gaussianpack/spz?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}&_=${tok}`;
                         }
-                        return `/view?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
+                        return `/view?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}&_=${tok}`;
                     }
 
-                    const url1 = buildUrl(message.ply_file_1[0], message.ply_type_1?.[0] || "output", message.ply_subfolder_1?.[0] || "");
-                    const url2 = buildUrl(message.ply_file_2[0], message.ply_type_2?.[0] || "output", message.ply_subfolder_2?.[0] || "");
+                    const url1 = buildUrl(message.ply_file_1[0], message.ply_type_1?.[0] || "output", message.ply_subfolder_1?.[0] || "", tok1);
+                    const url2 = buildUrl(message.ply_file_2[0], message.ply_type_2?.[0] || "output", message.ply_subfolder_2?.[0] || "", tok2);
                     const fn1 = transport === "spz" ? message.ply_file_1[0].replace(/\.ply$/i, ".spz") : message.ply_file_1[0];
                     const fn2 = transport === "spz" ? message.ply_file_2[0].replace(/\.ply$/i, ".spz") : message.ply_file_2[0];
 
@@ -870,8 +888,8 @@ app.registerExtension({
                         return u8.buffer;
                     }
 
-                    const key1 = `${message.ply_file_1[0]}|${message.ply_type_1?.[0]||"output"}|${message.ply_subfolder_1?.[0]||""}|${transport}`;
-                    const key2 = `${message.ply_file_2[0]}|${message.ply_type_2?.[0]||"output"}|${message.ply_subfolder_2?.[0]||""}|${transport}`;
+                    const key1 = `${message.ply_file_1[0]}|${message.ply_type_1?.[0]||"output"}|${message.ply_subfolder_1?.[0]||""}|${transport}|${tok1}`;
+                    const key2 = `${message.ply_file_2[0]}|${message.ply_type_2?.[0]||"output"}|${message.ply_subfolder_2?.[0]||""}|${transport}|${tok2}`;
 
                     const fetchAndSendDual = async () => {
                         if (!iframe.contentWindow) { setTimeout(fetchAndSendDual, 300); return; }

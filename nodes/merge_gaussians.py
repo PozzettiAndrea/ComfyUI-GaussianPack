@@ -84,6 +84,15 @@ class GaussianMerge:
                         "pays off."
                     ),
                 }),
+                "backend": (["torch_gpu", "nanogs_cpu"], {
+                    "default": "torch_gpu",
+                    "tooltip": (
+                        "torch_gpu — MPMM on GPU via PyTorch "
+                        "(CUDA / ROCm / MPS, falls back to CPU torch). "
+                        "~5-10x faster than nanogs_cpu.\n"
+                        "nanogs_cpu — original NanoGS NumPy/SciPy backend."
+                    ),
+                }),
             },
         }
 
@@ -91,6 +100,17 @@ class GaussianMerge:
     RETURN_NAMES = ("ply_path",)
     FUNCTION = "merge"
     CATEGORY = "viewer"
+    # Output node so the graph can terminate here — lets the merge run
+    # standalone (nothing wired to its output) and surfaces the resulting
+    # path in the node UI. Still returns the STRING for chaining.
+    OUTPUT_NODE = True
+
+    @staticmethod
+    def _result(path: str, n_out: int):
+        return {
+            "ui": {"ply_path": [path], "num_gaussians": [n_out]},
+            "result": (path,),
+        }
 
     def merge(
         self,
@@ -99,6 +119,7 @@ class GaussianMerge:
         output_filename: str,
         opacity_threshold: float,
         k: int,
+        backend: str = "torch_gpu",
     ):
         if not ply_path or not os.path.exists(ply_path):
             raise FileNotFoundError(f"GaussianMerge: input PLY not found: {ply_path!r}")
@@ -111,20 +132,15 @@ class GaussianMerge:
         out_dir.mkdir(parents=True, exist_ok=True)
         out_path = out_dir / f"{output_filename}.ply"
 
-        # Pass-through if target >= input. NanoGS demands ratio in the
-        # OPEN interval (0, 1), so anything else has to short-circuit.
         if target_count >= n_in:
-            log.info(
-                "GaussianMerge: target %d >= input %d; passing through %s",
-                target_count, n_in, ply_path,
+            raise ValueError(
+                f"GaussianMerge: number of gaussians of input ({n_in}) lower "
+                f"than target ({target_count}); nothing to merge."
             )
-            return (ply_path,)
 
         ratio = max(1e-6, min(0.999999, target_count / n_in))
 
-        # mtime-keyed cache: skip the merge if the output already matches
-        # this (input mtime, target_count, opacity_threshold, k) tuple.
-        cache_tag = f"{int(os.path.getmtime(ply_path))}.{target_count}.{opacity_threshold:.4f}.{k}"
+        cache_tag = f"{int(os.path.getmtime(ply_path))}.{target_count}.{opacity_threshold:.4f}.{k}.{backend}"
         cache_sidecar = out_path.with_suffix(".ply.cachekey")
         if (
             out_path.is_file()
@@ -132,23 +148,30 @@ class GaussianMerge:
             and cache_sidecar.read_text().strip() == cache_tag
         ):
             log.info("GaussianMerge: cache hit (%s); skipping merge", cache_tag)
-            return (str(out_path),)
-
-        # Lazy imports — NanoGS pulls scipy.cKDTree on first call; we
-        # don't want to pay that on ComfyUI startup.
-        from nanogs.simplification import simplify
-        from nanogs.utils.params import RunParams, CostParams
+            return self._result(str(out_path), _count_gaussians(str(out_path)))
 
         log.info(
-            "GaussianMerge: %d -> %d splats (ratio=%.4f) via NanoGS MPMM on %s",
-            n_in, target_count, ratio, ply_path,
+            "GaussianMerge: %d -> %d splats (ratio=%.4f, backend=%s) on %s",
+            n_in, target_count, ratio, backend, ply_path,
         )
-        simplify(
-            ply_path,
-            str(out_path),
-            RunParams(ratio=ratio, merge_cap=0.5, k=k, opacity_threshold=opacity_threshold),
-            CostParams(lam_geo=1.0, lam_sh=1.0),
-        )
+
+        if backend == "torch_gpu":
+            from .merge_gaussians_torch import simplify_torch
+            simplify_torch(
+                ply_path, str(out_path),
+                ratio=ratio, k=k, merge_cap=0.5,
+                opacity_threshold=opacity_threshold,
+                lam_geo=1.0, lam_sh=1.0,
+            )
+        else:
+            from nanogs.simplification import simplify
+            from nanogs.utils.params import RunParams, CostParams
+            simplify(
+                ply_path,
+                str(out_path),
+                RunParams(ratio=ratio, merge_cap=0.5, k=k, opacity_threshold=opacity_threshold),
+                CostParams(lam_geo=1.0, lam_sh=1.0),
+            )
 
         cache_sidecar.write_text(cache_tag)
         n_out = _count_gaussians(str(out_path))
@@ -156,4 +179,4 @@ class GaussianMerge:
             "GaussianMerge: wrote %s (%d splats, %.1f MB)",
             out_path, n_out, out_path.stat().st_size / (1024 * 1024),
         )
-        return (str(out_path),)
+        return self._result(str(out_path), n_out)

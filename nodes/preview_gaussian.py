@@ -133,6 +133,9 @@ class PreviewGaussians:
             "ply_subfolder": [subfolder],
             "file_size_mb": [file_size_mb],
             "num_gaussians": [num_gaussians],
+            # Freshness token: changes whenever the file is rewritten, so the
+            # viewer's caches key on content identity, not just the filename.
+            "mtime": [int(os.path.getmtime(ply_path))],
             "extrinsics": [extrinsics],
             "intrinsics": [None],
             "fov_degrees": [fov_degrees],

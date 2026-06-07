@@ -80,11 +80,15 @@ class PreviewGaussianDual:
             "ply_subfolder_1": [sub1],
             "file_size_mb_1": [round(os.path.getsize(ply_path_1) / (1024 * 1024), 2)],
             "num_gaussians_1": [_count_gaussians(ply_path_1)],
+            # Freshness token: changes whenever the file is rewritten, so the
+            # viewer's caches key on content identity, not just the filename.
+            "mtime_1": [int(os.path.getmtime(ply_path_1))],
             "ply_file_2": [fn2],
             "ply_type_2": [kind2],
             "ply_subfolder_2": [sub2],
             "file_size_mb_2": [round(os.path.getsize(ply_path_2) / (1024 * 1024), 2)],
             "num_gaussians_2": [_count_gaussians(ply_path_2)],
+            "mtime_2": [int(os.path.getmtime(ply_path_2))],
             "layout": [layout],
             "camera_mode": [camera_mode],
             "fov_degrees": [fov_degrees],

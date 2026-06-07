@@ -8,7 +8,6 @@ set at the root, not here.
 """
 
 from .preview_gaussian import PreviewGaussians
-from .preview_gaussian_spectate import PreviewGaussianSpectate
 from .preview_gaussian_camera import PreviewGaussianCamera
 from .preview_gaussian_dual import PreviewGaussianDual
 from .merge_gaussians import GaussianMerge
@@ -26,7 +25,6 @@ _register_load_ply_output_route()
 
 NODE_CLASS_MAPPINGS = {
     "PreviewGaussians": PreviewGaussians,
-    "PreviewGaussianSpectate": PreviewGaussianSpectate,
     "PreviewGaussianCamera": PreviewGaussianCamera,
     "PreviewGaussianDual": PreviewGaussianDual,
     "GaussianMerge": GaussianMerge,
@@ -40,7 +38,6 @@ NODE_CLASS_MAPPINGS = {
 
 NODE_DISPLAY_NAME_MAPPINGS = {
     "PreviewGaussians": "Preview Gaussians",
-    "PreviewGaussianSpectate": "Preview Gaussian Spectate",
     "PreviewGaussianCamera": "Preview Gaussian Camera",
     "PreviewGaussianDual": "Preview Gaussian Dual",
     "GaussianMerge": "Gaussian Merge to Target",

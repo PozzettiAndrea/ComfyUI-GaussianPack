@@ -12,6 +12,10 @@
         }
         #viewerContainer { position: relative; flex: 1; min-height: 200px; display: flex; }
         #viewerContainer.slider-mode { display: block; }
+        /* Fullscreen target. The UA stylesheet stretches a non-:root fullscreen
+           element to fill the screen; we only set the backdrop colour. */
+        #viewerContainer:fullscreen, #viewerContainer:-webkit-full-screen { background: #1a1a1a; }
+        #viewerContainer::backdrop { background: #1a1a1a; }
         .viewport { flex: 1; position: relative; min-width: 0; }
         .viewport canvas { width: 100%; height: 100%; display: block; }
         .viewport-label {
@@ -94,6 +98,7 @@
         <button class="view-btn" data-axis="z" data-sign="-1">&minus;Z</button>
     </span>
     <button id="resetCamera">Reset View</button>
+    <button id="fullscreenBtn" title="Toggle fullscreen">Fullscreen</button>
 </div>
 
 <script type="module">
@@ -103,6 +108,8 @@ import { SparkRenderer, SplatMesh } from './js/spark.module.min.js';
 
 const params = new URLSearchParams(window.location.search);
 const LAYOUT = params.get("layout") || "side_by_side";
+const MODE = params.get("mode") === "spectate" ? "spectate" : "orbit";
+const SPECTATE_INITIAL_SPEED = parseFloat(params.get("speed") || "2.0");
 
 const container = document.getElementById('viewerContainer');
 const vp1       = document.getElementById('vp1');
@@ -177,6 +184,13 @@ class MiniSparkAdapter {
     setCamera(pos, target) {
         this.camera.position.set(pos.x, pos.y, pos.z);
         this.camera.lookAt(target.x, target.y, target.z);
+    }
+    // Mirror another THREE camera's full pose (incl. roll/up) onto this one,
+    // keeping our own projection (aspect/fov) intact.
+    syncCameraFrom(src) {
+        this.camera.position.copy(src.position);
+        this.camera.quaternion.copy(src.quaternion);
+        this.camera.up.copy(src.up);
     }
 }
 
@@ -267,10 +281,13 @@ let initialPose = null;
 let sliderPos = 0.5;
 
 async function createAdapter(canvas, renderer) {
+    // PlayCanvas can't drive two side-by-side gsplat views: its renderer keys
+    // off the single global `pc.app` (the last-created Application), so only one
+    // canvas ever draws its splat. The dual viewer therefore always uses Spark,
+    // which supports two independent THREE scenes/cameras and our shared-camera
+    // controls. (Single-view PlayCanvas is unaffected.)
     if (renderer === "playcanvas") {
-        const a = new MiniPlayCanvasAdapter(canvas);
-        await a.init();
-        return a;
+        console.warn("[GaussianDualViewer] PlayCanvas can't render two gsplat views in one page; using Spark for the dual view.");
     }
     return new MiniSparkAdapter(canvas);
 }
@@ -285,6 +302,9 @@ if (LAYOUT === "slider") {
     vp2.style.inset = '0';
     vp2.style.zIndex = '2';
     sliderOverlay.style.display = 'block';
+    // Let camera orbit happen anywhere on the canvas: the overlay itself is
+    // click-through, only the handle grabs the slider (it has pointer-events:auto).
+    sliderOverlay.style.pointerEvents = 'none';
 
     function updateSlider(pct) {
         sliderPos = Math.max(0, Math.min(1, pct));
@@ -294,24 +314,149 @@ if (LAYOUT === "slider") {
     }
     updateSlider(0.5);
 
+    // Drag only via the handle. Position is measured against the container so the
+    // slider tracks the pointer across the full width; stopPropagation keeps the
+    // drag from also orbiting the camera.
+    const sliderHandle = document.getElementById('sliderHandle');
     let dragging = false;
-    sliderOverlay.addEventListener('pointerdown', (e) => {
+    sliderHandle.addEventListener('pointerdown', (e) => {
         dragging = true;
-        sliderOverlay.setPointerCapture(e.pointerId);
-        updateSlider(e.offsetX / sliderOverlay.clientWidth);
+        sliderHandle.setPointerCapture(e.pointerId);
+        e.stopPropagation();
     });
-    sliderOverlay.addEventListener('pointermove', (e) => {
-        if (dragging) updateSlider(e.offsetX / sliderOverlay.clientWidth);
+    sliderHandle.addEventListener('pointermove', (e) => {
+        if (!dragging) return;
+        const rect = container.getBoundingClientRect();
+        updateSlider((e.clientX - rect.left) / rect.width);
+        e.stopPropagation();
     });
-    sliderOverlay.addEventListener('pointerup', (e) => {
+    sliderHandle.addEventListener('pointerup', (e) => {
         dragging = false;
-        sliderOverlay.releasePointerCapture(e.pointerId);
+        sliderHandle.releasePointerCapture(e.pointerId);
+        e.stopPropagation();
     });
 }
 
-// TrackballControls on canvas1 (works for both layouts)
+// SpectateControls — WASD fly-cam with a TrackballControls-compatible surface
+// (target / update() / handleResize() / dispose()), ported from the single
+// viewer so the dual tick loop and camera sync work unchanged. It drives
+// adapter1's THREE camera; syncCameras() mirrors the full pose to adapter2.
+class SpectateControls {
+    constructor(camera, domElement) {
+        this.camera = camera;
+        this.dom = domElement;
+        this.moveSpeed = SPECTATE_INITIAL_SPEED;
+        this.lookSensitivity = 0.0025;
+        this.boostMultiplier = 3.0;
+        this._keys = new Set();
+        this._isDragging = false;
+        this._lastX = 0; this._lastY = 0;
+        this._lastTime = performance.now();
+        this.target = new THREE.Vector3(0, 0, 0);
+        this._scratchQ = new THREE.Quaternion();
+        this._axisX = new THREE.Vector3(1, 0, 0);
+        this._axisY = new THREE.Vector3(0, 1, 0);
+        this._axisZ = new THREE.Vector3(0, 0, 1);
+        this._fwd = new THREE.Vector3();
+        this._right = new THREE.Vector3();
+        this._up = new THREE.Vector3(0, 1, 0);
+        this._move = new THREE.Vector3();
+
+        this._onKeyDown = (e) => {
+            this._keys.add(e.code);
+            if (["Space","KeyW","KeyA","KeyS","KeyD","KeyC",
+                 "ArrowUp","ArrowDown","ArrowLeft","ArrowRight"].includes(e.code)) e.preventDefault();
+        };
+        this._onKeyUp = (e) => this._keys.delete(e.code);
+        this._onMouseDown = (e) => {
+            if (e.button !== 0) return;
+            // Don't start a look-drag when grabbing the slider handle. The
+            // handle uses pointer events (stopPropagation), which doesn't stop
+            // these parallel mouse events, so guard explicitly.
+            if (e.target && e.target.closest && e.target.closest('#sliderHandle')) return;
+            this._isDragging = true; this._lastX = e.clientX; this._lastY = e.clientY;
+            this.dom.style.cursor = "grabbing";
+        };
+        this._onMouseMove = (e) => {
+            if (!this._isDragging) return;
+            const dx = e.clientX - this._lastX, dy = e.clientY - this._lastY;
+            this._lastX = e.clientX; this._lastY = e.clientY;
+            this._scratchQ.setFromAxisAngle(this._axisY, -dx * this.lookSensitivity);
+            this.camera.quaternion.multiply(this._scratchQ);
+            this._scratchQ.setFromAxisAngle(this._axisX, -dy * this.lookSensitivity);
+            this.camera.quaternion.multiply(this._scratchQ);
+        };
+        this._onMouseUp = () => { this._isDragging = false; this.dom.style.cursor = "grab"; };
+        this._onContextMenu = (e) => e.preventDefault();
+        this._onWheel = (e) => { e.preventDefault(); this.setSpeed(this.moveSpeed * (e.deltaY > 0 ? 0.9 : 1.111)); };
+        this._onBlur = () => this._keys.clear();
+
+        window.addEventListener("keydown", this._onKeyDown);
+        window.addEventListener("keyup", this._onKeyUp);
+        window.addEventListener("blur", this._onBlur);
+        this.dom.addEventListener("mousedown", this._onMouseDown);
+        window.addEventListener("mousemove", this._onMouseMove);
+        window.addEventListener("mouseup", this._onMouseUp);
+        this.dom.addEventListener("contextmenu", this._onContextMenu);
+        this.dom.addEventListener("wheel", this._onWheel, { passive: false });
+        this.dom.style.cursor = "grab";
+    }
+    update() {
+        const now = performance.now();
+        const dt = Math.min(0.1, (now - this._lastTime) / 1000);
+        this._lastTime = now;
+        const turn = Math.PI / 2 * dt;
+        const shift = this._keys.has("ShiftLeft") || this._keys.has("ShiftRight");
+        const roll = (k, sign) => {
+            if (this._keys.has(k)) { this._scratchQ.setFromAxisAngle(this._axisZ, sign * turn); this.camera.quaternion.multiply(this._scratchQ); }
+        };
+        const yaw = (k, sign) => {
+            if (this._keys.has(k)) { this._scratchQ.setFromAxisAngle(this._axisY, sign * turn); this.camera.quaternion.multiply(this._scratchQ); }
+        };
+        if (shift) { roll("ArrowLeft", 1); roll("ArrowRight", -1); }
+        else { yaw("ArrowLeft", 1); yaw("ArrowRight", -1); }
+        if (this._keys.has("ArrowUp"))   { this._scratchQ.setFromAxisAngle(this._axisX, turn);  this.camera.quaternion.multiply(this._scratchQ); }
+        if (this._keys.has("ArrowDown")) { this._scratchQ.setFromAxisAngle(this._axisX, -turn); this.camera.quaternion.multiply(this._scratchQ); }
+
+        this._fwd.set(0, 0, -1).applyQuaternion(this.camera.quaternion);
+        this._right.set(1, 0, 0).applyQuaternion(this.camera.quaternion);
+        this._move.set(0, 0, 0);
+        if (this._keys.has("KeyW")) this._move.add(this._fwd);
+        if (this._keys.has("KeyS")) this._move.sub(this._fwd);
+        if (this._keys.has("KeyD")) this._move.add(this._right);
+        if (this._keys.has("KeyA")) this._move.sub(this._right);
+        if (this._keys.has("Space")) this._move.add(this._up);
+        if (this._keys.has("KeyC"))  this._move.sub(this._up);
+        if (this._move.lengthSq() > 0) {
+            this._move.normalize().multiplyScalar(this.moveSpeed * (shift ? this.boostMultiplier : 1) * dt);
+            this.camera.position.add(this._move);
+        }
+    }
+    setSpeed(s) { this.moveSpeed = Math.max(0.05, Math.min(50, s)); }
+    handleResize() {}
+    dispose() {
+        window.removeEventListener("keydown", this._onKeyDown);
+        window.removeEventListener("keyup", this._onKeyUp);
+        window.removeEventListener("blur", this._onBlur);
+        this.dom.removeEventListener("mousedown", this._onMouseDown);
+        window.removeEventListener("mousemove", this._onMouseMove);
+        window.removeEventListener("mouseup", this._onMouseUp);
+        this.dom.removeEventListener("contextmenu", this._onContextMenu);
+        this.dom.removeEventListener("wheel", this._onWheel);
+    }
+}
+
+// Camera controls on the container (works for both layouts). Orbit =
+// TrackballControls; spectate = WASD fly-cam. Both drive adapter1's camera.
 function setupControls(camera) {
-    const target = LAYOUT === "slider" ? sliderOverlay : canvas1;
+    // Bind to the whole container so input works anywhere on the canvas in both
+    // layouts. In slider mode the overlay is click-through, so only the handle
+    // grabs the slider and everything else drives the camera.
+    const target = container;
+    if (MODE === "spectate") {
+        controls = new SpectateControls(camera, target);
+        return;
+    }
     controls = new TrackballControls(camera, target);
     controls.rotateSpeed = 3.5;
     controls.zoomSpeed = 1.2;
@@ -323,12 +468,19 @@ function setupControls(camera) {
 }
 
 function syncCameras() {
-    if (!adapter1 || !adapter2) return;
+    if (!adapter1 || !adapter2 || !controls) return;
+
+    // Spark: adapter1's THREE camera is driven by TrackballControls. Mirror its
+    // full pose (position + orientation incl. roll) onto adapter2 so the two
+    // views stay locked. Don't touch adapter1 — that would fight the trackball.
+    if (adapter1.camera && adapter2.syncCameraFrom) {
+        adapter2.syncCameraFrom(adapter1.camera);
+        return;
+    }
+
+    // PlayCanvas (no THREE camera on the adapter): sync position + target.
     const pos = { x: adapter1.camera?.position?.x ?? 0, y: adapter1.camera?.position?.y ?? 0, z: adapter1.camera?.position?.z ?? 0 };
     const tgt = { x: controls.target.x, y: controls.target.y, z: controls.target.z };
-
-    // For Spark adapter, camera is Three.js — already controlled by TrackballControls
-    // For PlayCanvas, sync position + target
     if (adapter1.setCamera) adapter1.setCamera(pos, tgt);
     if (adapter2.setCamera) adapter2.setCamera(pos, tgt);
 }
@@ -431,8 +583,34 @@ document.getElementById('resetCamera').addEventListener('click', () => {
     if (!initialPose) return;
     applyCameraState(initialPose);
 });
+
+// Fullscreen the canvas container (a non-:root element, so the UA stretches it
+// to the screen). Both adapters re-fit via the kick + the container RO.
+const fsReq = container.requestFullscreen || container.webkitRequestFullscreen;
+const fsExit = document.exitFullscreen || document.webkitExitFullscreen;
+function fsElement() { return document.fullscreenElement || document.webkitFullscreenElement; }
+document.getElementById('fullscreenBtn').addEventListener('click', () => {
+    try {
+        if (!fsElement()) {
+            const p = fsReq.call(container);
+            if (p && p.then) p.catch((err) => console.warn('[FS] requestFullscreen rejected:', err && err.name, err && err.message));
+        } else {
+            fsExit.call(document);
+        }
+    } catch (err) { console.warn('[FS] toggle threw:', err); }
+});
+const fsKick = () => {
+    const r = () => { adapter1?._resize(); adapter2?._resize(); controls?.handleResize?.(); };
+    requestAnimationFrame(() => requestAnimationFrame(r));
+    setTimeout(r, 150);
+};
+document.addEventListener('fullscreenchange', fsKick);
+document.addEventListener('webkitfullscreenchange', fsKick);
+window.addEventListener('resize', () => { adapter1?._resize(); adapter2?._resize(); });
 canvas1.addEventListener('pointerup', emitCameraState);
 canvas1.addEventListener('wheel', emitCameraState, { passive: true });
+canvas2.addEventListener('pointerup', emitCameraState);
+canvas2.addEventListener('wheel', emitCameraState, { passive: true });
 if (LAYOUT === "slider") {
     sliderOverlay.addEventListener('pointerup', emitCameraState);
     sliderOverlay.addEventListener('wheel', emitCameraState, { passive: true });

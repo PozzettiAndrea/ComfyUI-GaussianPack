@@ -184,7 +184,7 @@ class GaussianAnalysis:
         if not ply_path or not os.path.exists(ply_path):
             err = f"GaussianAnalysis: file not found: {ply_path!r}"
             log.warning(err)
-            return {"ui": {"report": [err]}, "result": (err,)}
+            return {"ui": {"text": [err]}, "result": (err,)}
 
         try:
             header = _parse_ply_header(ply_path)
@@ -194,7 +194,7 @@ class GaussianAnalysis:
         except Exception as e:
             err = f"GaussianAnalysis: failed to parse {ply_path}: {e}"
             log.exception(err)
-            return {"ui": {"report": [err]}, "result": (err,)}
+            return {"ui": {"text": [err]}, "result": (err,)}
 
         log.info("GaussianAnalysis:\n%s", report)
-        return {"ui": {"report": [report]}, "result": (report,)}
+        return {"ui": {"text": [report]}, "result": (report,)}
