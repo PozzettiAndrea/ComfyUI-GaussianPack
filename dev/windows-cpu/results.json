@@ -1,12 +1,12 @@
 {
-  "timestamp": "2026-06-07T12:54:32.002893+00:00",
+  "timestamp": "2026-06-07T14:07:12.948869+00:00",
   "platform": "windows",
   "hardware": {
-    "os": "Windows-10-10.0.26100-SP0",
+    "os": "Windows-2025Server-10.0.26100-SP0",
     "cpu": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD"
   },
-  "commit_hash": "03612bca162c9c720e64d52305f8891d1770a0e3",
-  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/27092990334",
+  "commit_hash": "ca04634aaa050a5180a6a7d26546b7b845579976",
+  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/27094636628",
   "success": true,
   "summary": {
     "total": 4,
@@ -17,34 +17,34 @@
     {
       "name": "gaussian_analysis",
       "status": "pass",
-      "duration_seconds": 15.36,
+      "duration_seconds": 14.86,
       "error": null,
       "hardware": {
-        "os": "Windows-10-10.0.26100-SP0",
+        "os": "Windows-2025Server-10.0.26100-SP0",
         "cpu": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
           "peak": 0.75,
-          "avg": 0.6
+          "avg": 0.59
         },
         "total_ram_gb": 16.0,
-        "samples": 16
+        "samples": 15
       }
     },
     {
       "name": "merge_splats",
       "status": "pass",
-      "duration_seconds": 90.44,
+      "duration_seconds": 89.64,
       "error": null,
       "hardware": {
-        "os": "Windows-10-10.0.26100-SP0",
+        "os": "Windows-2025Server-10.0.26100-SP0",
         "cpu": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
           "peak": 0.95,
-          "avg": 0.8
+          "avg": 0.78
         },
         "total_ram_gb": 16.0,
         "samples": 90
@@ -53,34 +53,34 @@
     {
       "name": "rotate_splats",
       "status": "pass",
-      "duration_seconds": 72.56,
+      "duration_seconds": 72.35,
       "error": null,
       "hardware": {
-        "os": "Windows-10-10.0.26100-SP0",
+        "os": "Windows-2025Server-10.0.26100-SP0",
         "cpu": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
-          "peak": 0.74,
-          "avg": 0.67
+          "peak": 0.86,
+          "avg": 0.66
         },
         "total_ram_gb": 16.0,
-        "samples": 73
+        "samples": 72
       }
     },
     {
       "name": "spectate",
       "status": "pass",
-      "duration_seconds": 19.45,
+      "duration_seconds": 18.8,
       "error": null,
       "hardware": {
-        "os": "Windows-10-10.0.26100-SP0",
+        "os": "Windows-2025Server-10.0.26100-SP0",
         "cpu": "AMD64 Family 25 Model 1 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
-          "peak": 0.65,
-          "avg": 0.62
+          "peak": 0.61,
+          "avg": 0.58
         },
         "total_ram_gb": 16.0,
         "samples": 19

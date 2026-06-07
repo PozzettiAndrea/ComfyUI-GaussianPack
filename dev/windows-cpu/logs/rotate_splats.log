@@ -1,5 +1,5 @@
-Capturing execution frames: rotate_splats.json
   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+Capturing execution frames: rotate_splats.json
   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
   Frame 1 saved (frame_000.jpg, t=0.0s)
   Validating workflow...
@@ -8,12 +8,12 @@ Capturing execution frames: rotate_splats.json
   [ComfyUI] [32m[INFO][0m Prompt has 3 nodes
   [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
   [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "apple.ply"}
-  [ComfyUI] [32m[INFO][0m   Node 14: PreviewGaussianDual
   Queuing workflow for execution...
+  [ComfyUI] [32m[INFO][0m   Node 14: PreviewGaussianDual
   [ComfyUI] [32m[INFO][0m     Inputs: {"layout": "slider", "camera_mode": "orbit", "fov_degrees": 70, "renderer": "playcanvas", "transport_format": "ply", "ply_path_1": ["1", 0], "ply_path_2": ["18", 0]}
   [ComfyUI] [32m[INFO][0m   Node 18: TransformGaussian
   [ComfyUI] [32m[INFO][0m     Inputs: {"rotate_x": -90, "rotate_y": 0, "rotate_z": 0, "ply_path": ["1", 0]}
-  [ComfyUI] [32m[INFO][0m Generated prompt_id: d7aa6707-c533-454c-b9de-4c209acb4d40
+  [ComfyUI] [32m[INFO][0m Generated prompt_id: 35ef54fd-b25d-4137-a0b9-dafb2115bb79
   [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
   [ComfyUI] [32m[INFO][0m Validation result: valid=True
   [ComfyUI] [32m[INFO][0m === Validation PASSED ===
@@ -24,13 +24,13 @@ Capturing execution frames: rotate_splats.json
   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
   [ComfyUI] [ComfyUI-GaussianPack] Health check: failed
   [ComfyUI] [ComfyUI-GaussianPack] Socket unhealthy, restarting worker...
-  [ComfyUI] [comfy-env] gaussianpack-nodes: Library/bin has 157 DLLs
+  [ComfyUI] [comfy-env] gaussianpack-nodes: Library/bin has 158 DLLs
   [ComfyUI] [ComfyUI-GaussianPack] python: C:\Users\stduser\AppData\Local\Programs\comfy-env\.pixi\envs\gaussianpack-nodes\python.exe
-  [ComfyUI] [ComfyUI-GaussianPack] sys_path sent to worker: ['D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1247\\ComfyUI', 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1247\\ComfyUI\\custom_nodes\\ComfyUI-GaussianPack', 'C:\\Users\\stduser\\AppData\\Local\\Programs\\comfy-env\\.pixi\\envs\\gaussianpack-nodes\\Lib\\site-packages', 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1247\\ComfyUI\\custom_nodes\\ComfyUI-GaussianPack']
+  [ComfyUI] [ComfyUI-GaussianPack] sys_path sent to worker: ['D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1400\\ComfyUI', 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1400\\ComfyUI\\custom_nodes\\ComfyUI-GaussianPack', 'C:\\Users\\stduser\\AppData\\Local\\Programs\\comfy-env\\.pixi\\envs\\gaussianpack-nodes\\Lib\\site-packages', 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\GaussianPack-1400\\ComfyUI\\custom_nodes\\ComfyUI-GaussianPack']
   [ComfyUI] [SubprocessWorker] is_pixi=True, python=C:\Users\stduser\AppData\Local\Programs\comfy-env\.pixi\envs\gaussianpack-nodes\python.exe
-  [ComfyUI] [SubprocessWorker] launching cmd=['C:\\Users\\stduser\\.pixi\\bin\\pixi.exe', 'run', '--as-is', '--manifest-path', 'C:\\Users\\stduser\\AppData\\Local\\Programs\\comfy-env\\pixi.toml', '-e', 'gaussianpack-nodes', 'python', 'C:\\Users\\stduser\\AppData\\Local\\Temp\\comfyui_pvenv_d4yba5md\\persistent_worker.py', 'tcp://127.0.0.1:57689']...
+  [ComfyUI] [SubprocessWorker] launching cmd=['C:\\Users\\stduser\\.pixi\\bin\\pixi.exe', 'run', '--as-is', '--manifest-path', 'C:\\Users\\stduser\\AppData\\Local\\Programs\\comfy-env\\pixi.toml', '-e', 'gaussianpack-nodes', 'python', 'C:\\Users\\stduser\\AppData\\Local\\Temp\\comfyui_pvenv_aamctmub\\persistent_worker.py', 'tcp://127.0.0.1:52668']...
   Frame 2 saved (frame_001.jpg, t=2.2s)
-  [capture-periodic] freeze=2ms shot=95ms unfreeze=4ms saved=True
+  [capture-periodic] freeze=4ms shot=89ms unfreeze=4ms saved=True
   [ComfyUI] [SubprocessWorker] worker started/confirmed
   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
   [ComfyUI] [SubprocessWorker] created 0 shm blocks
@@ -38,7 +38,7 @@ Capturing execution frames: rotate_splats.json
   [ComfyUI] [SubprocessWorker] call_id=8 sending call_method
   [ComfyUI] [worker:ComfyUI-GaussianPack] WARNING: SPZ route not registered (ModuleNotFoundError: No module named 'comfy_aimdo')
   [ComfyUI] [SubprocessWorker] got response: ok
-  [ComfyUI] [comfy-env] LoadPLY done (2.84s): result: list[1]
+  [ComfyUI] [comfy-env] LoadPLY done (2.60s): result: list[1]
   [ComfyUI] [comfy-env] Running TransformGaussian: rotate_x: -90.0, rotate_y: 0.0, rotate_z: 0.0, ply_path: 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\Gaus...
   [ComfyUI] [SubprocessWorker] call_method: nodes.transform_gaussian.TransformGaussian.transform
   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
@@ -50,7 +50,7 @@ Capturing execution frames: rotate_splats.json
   [ComfyUI] [SubprocessWorker] sending request via socket...
   [ComfyUI] [SubprocessWorker] call_id=9 sending call_method
   [ComfyUI] [SubprocessWorker] got response: ok
-  [ComfyUI] [comfy-env] TransformGaussian done (0.64s): result: list[1]
+  [ComfyUI] [comfy-env] TransformGaussian done (0.68s): result: list[1]
   [ComfyUI] [comfy-env] Running PreviewGaussianDual: layout: 'slider', camera_mode: 'orbit', fov_degrees: 70.0, renderer: 'playcanvas', transport_format: 'ply', ply_path_1: 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\Gaus..., ply_path_2: 'D:\\a\\comfy-gpu-ci\\comfy-gpu-ci\\test_workspaces\\Gaus...
   [ComfyUI] [SubprocessWorker] call_method: nodes.preview_gaussian_dual.PreviewGaussianDual.preview
   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
@@ -62,14 +62,14 @@ Capturing execution frames: rotate_splats.json
   [ComfyUI] [SubprocessWorker] sending request via socket...
   [ComfyUI] [SubprocessWorker] call_id=10 sending call_method
   [ComfyUI] [SubprocessWorker] got response: ok
-  [ComfyUI] [comfy-env] PreviewGaussianDual done (0.06s): result: dict
-  [ComfyUI] [32m[INFO][0m [32mPrompt executed in 3.55 seconds[0m
+  [ComfyUI] [comfy-env] PreviewGaussianDual done (0.09s): result: dict
+  [ComfyUI] [32m[INFO][0m [32mPrompt executed in 3.39 seconds[0m
   Node executed (1 total), capturing...
-  Frame 3 saved (frame_002.jpg, t=3.9s)
-  [capture-node] freeze=50ms shot=151ms unfreeze=0ms saved=True
-  Execution complete (t=3.9s)
+  Frame 3 saved (frame_002.jpg, t=3.7s)
+  [capture-node] freeze=21ms shot=261ms unfreeze=0ms saved=True
+  Execution complete (t=3.7s)
   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
-  [3d-wait] Phase 1 done in 0.1s
+  [3d-wait] Phase 1 done in 0.2s
   [3d-wait] Phase 2: iframes=1
   [3d-wait] iframe viewer_ready=False (matched 0 console logs)
   [3d-wait] Waiting for 'Loaded successfully' console message (timeout=60s)...
@@ -77,10 +77,10 @@ Capturing execution frames: rotate_splats.json
 =========================== logs ===========================
 waiting for event "console"
 ============================================================
-  [3d-wait] Total 3D wait: 60.2s
-  Captured 3 unique frames over 64.4s
+  [3d-wait] Total 3D wait: 60.3s
+  Captured 3 unique frames over 64.35s
   [debug] iframes: 1
-  [debug]   iframe[0]: src=http://127.0.0.1:41891/extensions/ComfyUI-GaussianPack/viewer_gaussian_dual.html, canvas=486x214, rafFrozen=True
+  [debug]   iframe[0]: src=http://127.0.0.1:41897/extensions/ComfyUI-GaussianPack/viewer_gaussian_dual.html, canvas=486x214, rafFrozen=True
   [timing] trigger_3d_previews: 0.0s
   Saved high-quality screenshot: rotate_splats_executed.png
   [timing] final_screenshot: 0.2s
