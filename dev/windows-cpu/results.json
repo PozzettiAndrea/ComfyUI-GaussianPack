@@ -1,89 +1,89 @@
 {
-  "timestamp": "2026-06-07T17:23:50.547215+00:00",
+  "timestamp": "2026-06-07T17:36:18.159453+00:00",
   "platform": "windows",
   "hardware": {
-    "os": "Windows-10-10.0.26100-SP0",
+    "os": "Windows-2025Server-10.0.26100-SP0",
     "cpu": "AMD64 Family 25 Model 17 Stepping 1, AuthenticAMD"
   },
-  "commit_hash": "6753db6f21be5bb21c87b5358f3bd10fb98c0c1d",
-  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/27099444119",
-  "success": false,
+  "commit_hash": "39e4b5ebcdb33b937523d2c9bcb5506249b3da06",
+  "run_url": "https://github.com/PozzettiAndrea/comfy-gpu-ci/actions/runs/27099644488",
+  "success": true,
   "summary": {
     "total": 4,
-    "passed": 0,
-    "failed": 4
+    "passed": 4,
+    "failed": 0
   },
   "workflows": [
     {
       "name": "gaussian_analysis",
-      "status": "fail",
-      "duration_seconds": 9.14,
-      "error": "Workflow validation failed\n\nDetails:\ngraphToPrompt produced nodes without class_type: graphToPrompt: 4 nodes, missing class_type: [1,19,20,21], sample: {\"inputs\":{\"UNKNOWN\":\"apple.ply\"},\"_meta\":{}}",
+      "status": "pass",
+      "duration_seconds": 13.41,
+      "error": null,
       "hardware": {
-        "os": "Windows-10-10.0.26100-SP0",
+        "os": "Windows-2025Server-10.0.26100-SP0",
         "cpu": "AMD64 Family 25 Model 17 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
-          "peak": 0.52,
-          "avg": 0.52
+          "peak": 0.77,
+          "avg": 0.62
         },
         "total_ram_gb": 16.0,
-        "samples": 10
+        "samples": 14
       }
     },
     {
       "name": "merge_splats",
-      "status": "fail",
-      "duration_seconds": 5.99,
-      "error": "Workflow validation failed\n\nDetails:\ngraphToPrompt produced nodes without class_type: graphToPrompt: 3 nodes, missing class_type: [1,12,14], sample: {\"inputs\":{\"UNKNOWN\":\"apple.ply\"},\"_meta\":{}}",
+      "status": "pass",
+      "duration_seconds": 94.88,
+      "error": null,
       "hardware": {
-        "os": "Windows-10-10.0.26100-SP0",
+        "os": "Windows-2025Server-10.0.26100-SP0",
         "cpu": "AMD64 Family 25 Model 17 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
-          "peak": 0.52,
-          "avg": 0.52
+          "peak": 0.98,
+          "avg": 0.81
         },
         "total_ram_gb": 16.0,
-        "samples": 6
+        "samples": 84
       }
     },
     {
       "name": "rotate_splats",
-      "status": "fail",
-      "duration_seconds": 5.93,
-      "error": "Workflow validation failed\n\nDetails:\ngraphToPrompt produced nodes without class_type: graphToPrompt: 3 nodes, missing class_type: [1,14,18], sample: {\"inputs\":{\"UNKNOWN\":\"apple.ply\"},\"_meta\":{}}",
+      "status": "pass",
+      "duration_seconds": 72.61,
+      "error": null,
       "hardware": {
-        "os": "Windows-10-10.0.26100-SP0",
+        "os": "Windows-2025Server-10.0.26100-SP0",
         "cpu": "AMD64 Family 25 Model 17 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
-          "peak": 0.52,
-          "avg": 0.52
+          "peak": 0.85,
+          "avg": 0.7
         },
         "total_ram_gb": 16.0,
-        "samples": 6
+        "samples": 73
       }
     },
     {
       "name": "spectate",
-      "status": "fail",
-      "duration_seconds": 5.96,
-      "error": "Workflow validation failed\n\nDetails:\ngraphToPrompt produced nodes without class_type: graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {\"inputs\":{\"UNKNOWN\":\"compressed_room.ply\"},\"_meta\":{}}",
+      "status": "pass",
+      "duration_seconds": 19.42,
+      "error": null,
       "hardware": {
-        "os": "Windows-10-10.0.26100-SP0",
+        "os": "Windows-2025Server-10.0.26100-SP0",
         "cpu": "AMD64 Family 25 Model 17 Stepping 1, AuthenticAMD"
       },
       "resources": {
         "ram": {
-          "peak": 0.52,
-          "avg": 0.52
+          "peak": 0.68,
+          "avg": 0.65
         },
         "total_ram_gb": 16.0,
-        "samples": 6
+        "samples": 19
       }
     }
   ]
