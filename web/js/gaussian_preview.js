@@ -65,6 +65,345 @@ app.registerExtension({
             };
         }
 
+        // ============================================================
+        // Preview Gaussian Dual — side-by-side / slider comparison
+        // ============================================================
+        if (nodeData.name === "PreviewGaussianDual") {
+            console.log("[GaussianPack] Registering Preview Gaussian Dual node");
+
+            const _origOnConfigureDual = nodeType.prototype.onConfigure;
+            nodeType.prototype.onConfigure = function(info) {
+                const r = _origOnConfigureDual ? _origOnConfigureDual.apply(this, arguments) : undefined;
+                this.properties = this.properties || {};
+                const saved = this.properties["Widget Values"] || {};
+                for (const w of (this.widgets || [])) {
+                    if (w && w.name && w.name in saved) {
+                        const v = saved[w.name];
+                        if (v !== undefined) w.value = v;
+                    }
+                }
+                // Validate combo widgets
+                for (const w of (this.widgets || [])) {
+                    const optsValues = w.options && Array.isArray(w.options.values);
+                    const isCombo = w.type === "combo" || optsValues;
+                    if (isCombo && optsValues && !w.options.values.includes(w.value)) {
+                        w.value = w.options.default ?? w.options.values[0];
+                    }
+                }
+                return r;
+            };
+
+            const onNodeCreatedDual = nodeType.prototype.onNodeCreated;
+            nodeType.prototype.onNodeCreated = function() {
+                const r = onNodeCreatedDual ? onNodeCreatedDual.apply(this, arguments) : undefined;
+
+                // Widget persistence
+                const TRACKED_DUAL = new Set([
+                    "layout", "fov_degrees", "image_width", "image_height",
+                    "renderer", "transport_format",
+                ]);
+                this.properties = this.properties || {};
+                if (!this.properties["Widget Values"]) {
+                    this.properties["Widget Values"] = {};
+                }
+                const propVals = this.properties["Widget Values"];
+                for (const w of (this.widgets || [])) {
+                    if (!w || !TRACKED_DUAL.has(w.name)) continue;
+                    if (propVals[w.name] === undefined) propVals[w.name] = w.value;
+                    const origCb = w.callback;
+                    w.callback = function(v) {
+                        propVals[w.name] = v;
+                        return origCb ? origCb.apply(this, arguments) : undefined;
+                    };
+                }
+
+                // Container
+                const container = document.createElement("div");
+                container.style.cssText = "width:100%;height:100%;display:flex;flex-direction:column;background:#1a1a1a;overflow:hidden;position:relative;";
+
+                // Two independent loading bars — one per splat
+                const node = this;
+
+                function _makeLoadBar(topOffset, gradientColors) {
+                    const bar = document.createElement("div");
+                    bar.style.cssText = `position:absolute;top:${topOffset}px;left:0;right:0;height:4px;background:rgba(0,0,0,0.35);z-index:100;transition:opacity 0.3s;pointer-events:none;opacity:0;`;
+                    const fill = document.createElement("div");
+                    fill.style.cssText = `height:100%;width:0%;background:linear-gradient(90deg,${gradientColors});transition:width 0.15s linear;`;
+                    bar.appendChild(fill);
+                    const lbl = document.createElement("div");
+                    lbl.style.cssText = `position:absolute;top:6px;left:8px;font:10px monospace;color:#cfc;text-shadow:0 0 4px rgba(0,0,0,0.8);pointer-events:none;`;
+                    bar.appendChild(lbl);
+                    return { bar, fill, lbl };
+                }
+
+                const lb1 = _makeLoadBar(0, "#3a8,#6c6");
+                const lb2 = _makeLoadBar(6, "#38a,#6ac");
+
+                function showLoadBar1(label) { lb1.fill.style.width = "0%"; lb1.lbl.textContent = label || ""; lb1.bar.style.opacity = "1"; }
+                function setLoadProgress1(pct, label) { lb1.fill.style.width = Math.max(0,Math.min(100,pct||0)).toFixed(1)+"%"; if (label!=null) lb1.lbl.textContent = label; }
+                function hideLoadBar1() { lb1.bar.style.opacity = "0"; }
+
+                function showLoadBar2(label) { lb2.fill.style.width = "0%"; lb2.lbl.textContent = label || ""; lb2.bar.style.opacity = "1"; }
+                function setLoadProgress2(pct, label) { lb2.fill.style.width = Math.max(0,Math.min(100,pct||0)).toFixed(1)+"%"; if (label!=null) lb2.lbl.textContent = label; }
+                function hideLoadBar2() { lb2.bar.style.opacity = "0"; }
+
+                this._showLoadBar1 = showLoadBar1;
+                this._setLoadProgress1 = setLoadProgress1;
+                this._hideLoadBar1 = hideLoadBar1;
+                this._showLoadBar2 = showLoadBar2;
+                this._setLoadProgress2 = setLoadProgress2;
+                this._hideLoadBar2 = hideLoadBar2;
+
+                // Iframe
+                const iframe = document.createElement("iframe");
+                iframe.style.cssText = "width:100%;flex:1 1 0;min-height:0;border:none;background:#1a1a1a;";
+
+                // Info panel
+                const infoPanel = document.createElement("div");
+                infoPanel.style.cssText = "background:#1a1a1a;border-top:1px solid #444;padding:6px 12px;font:10px monospace;color:#ccc;line-height:1.3;flex-shrink:0;overflow:hidden;";
+                infoPanel.innerHTML = '<span style="color:#888;">Dual Gaussian splat info will appear after execution</span>';
+
+                container.appendChild(iframe);
+                container.appendChild(infoPanel);
+                container.appendChild(loadBar);
+
+                // Camera state persistence
+                let pendingRestoreJSON = "";
+                const sendRestore = () => {
+                    if (!pendingRestoreJSON || !iframe.contentWindow) return;
+                    try {
+                        const state = JSON.parse(pendingRestoreJSON);
+                        iframe.contentWindow.postMessage({ type: "RESTORE_CAMERA_STATE", state }, "*");
+                    } catch (_) {}
+                };
+                const savedCfg = this.properties && this.properties["Camera Config"];
+                if (savedCfg && typeof savedCfg.state === "string") {
+                    pendingRestoreJSON = savedCfg.state;
+                }
+
+                const widget = this.addDOMWidget(
+                    "preview_gaussian_dual", "GAUSSIAN_DUAL_PREVIEW", container,
+                    { serialize: false },
+                );
+                let currentNodeSize = [512, 580];
+                widget.computeSize = () => currentNodeSize;
+
+                this.gaussianViewerIframe = iframe;
+                this.gaussianInfoPanel = infoPanel;
+
+                let iframeLoaded = false;
+                iframe.addEventListener('load', () => {
+                    iframeLoaded = true;
+                    sendRestore();
+                });
+
+                // Messages from iframe
+                window.addEventListener('message', async (event) => {
+                    if (event.source !== iframe.contentWindow) return;
+                    if (event.data?.type === "CAMERA_STATE" && event.data.state) {
+                        node.properties = node.properties || {};
+                        const cfg = node.properties["Camera Config"] || {};
+                        cfg.state = JSON.stringify(event.data.state);
+                        node.properties["Camera Config"] = cfg;
+                        return;
+                    }
+                    if (event.data?.type === "MESH_LOADED") {
+                        node._hideLoadBar?.();
+                        sendRestore();
+                    }
+                    if (event.data?.type === "MESH_ERROR") {
+                        if (loadFill) {
+                            loadFill.style.background = "#c44";
+                            loadFill.style.width = "100%";
+                            loadLabel.textContent = "Error: " + (event.data.error || "load failed");
+                        }
+                    }
+                    if (event.data?.type === 'SCREENSHOT' && event.data.image) {
+                        try {
+                            const base64Data = event.data.image.split(',')[1];
+                            const byteString = atob(base64Data);
+                            const uint8Array = new Uint8Array(byteString.length);
+                            for (let i = 0; i < byteString.length; i++) uint8Array[i] = byteString.charCodeAt(i);
+                            const blob = new Blob([uint8Array], { type: 'image/png' });
+                            const timestamp = new Date().toISOString().replace(/[:.]/g, '-');
+                            const formData = new FormData();
+                            formData.append('image', blob, `gaussian-dual-screenshot-${timestamp}.png`);
+                            formData.append('type', 'output');
+                            formData.append('subfolder', '');
+                            await fetch('/upload/image', { method: 'POST', body: formData });
+                        } catch (error) {
+                            console.error('[GaussianPack] Dual screenshot error:', error);
+                        }
+                    }
+                });
+
+                this.setSize([512, 580]);
+
+                // ---- onExecuted: fetch both splats & send to dual iframe ----
+                const onExecuted = this.onExecuted;
+                this.onExecuted = function(message) {
+                    onExecuted?.apply(this, arguments);
+
+                    if (message?.error && message.error[0]) {
+                        infoPanel.innerHTML = `<div style="color:#ff6b6b;">Error: ${message.error[0]}</div>`;
+                        return;
+                    }
+
+                    if (!message?.ply_file_1?.[0] || !message?.ply_file_2?.[0]) return;
+
+                    const layout = message.layout?.[0] || "side_by_side";
+                    const renderer = message.renderer?.[0] || "spark";
+                    const transportFormat = message.transport_format?.[0] || "ply";
+                    const intrinsics = message.intrinsics?.[0] || null;
+                    const extrinsics = message.extrinsics?.[0] || null;
+
+                    // Set iframe src with layout param (reload only if layout changed)
+                    const wantSrc = `/extensions/${EXTENSION_FOLDER}/viewer_gaussian_dual.html?layout=${layout}&v=` + Date.now();
+                    iframe.src = wantSrc;
+                    iframeLoaded = false;
+
+                    // Resize
+                    if (intrinsics && intrinsics[0] && intrinsics[1]) {
+                        const imageWidth = intrinsics[0][2] * 2;
+                        const imageHeight = intrinsics[1][2] * 2;
+                        const aspectRatio = imageWidth / imageHeight;
+                        const nodeWidth = 512;
+                        const viewerHeight = Math.round(nodeWidth / aspectRatio);
+                        currentNodeSize = [nodeWidth, viewerHeight + 60];
+                        node.setSize(currentNodeSize);
+                        node.setDirtyCanvas(true, true);
+                        app.graph.setDirtyCanvas(true, true);
+                    }
+
+                    // Update info panel
+                    const fn1 = message.filename_1?.[0] || message.ply_file_1[0];
+                    const fn2 = message.filename_2?.[0] || message.ply_file_2[0];
+                    const sz1 = message.file_size_mb_1?.[0] || '?';
+                    const sz2 = message.file_size_mb_2?.[0] || '?';
+                    const ng1 = message.num_gaussians_1?.[0] || 0;
+                    const ng2 = message.num_gaussians_2?.[0] || 0;
+                    infoPanel.innerHTML = `
+                        <div style="display:grid;grid-template-columns:auto 1fr auto 1fr;gap:2px 8px;">
+                            <span style="color:#888;">L:</span>
+                            <span style="color:#6cc;">${fn1}</span>
+                            <span style="color:#888;">${sz1} MB</span>
+                            <span>${ng1 > 0 ? ng1.toLocaleString() + ' gs' : ''}</span>
+                            <span style="color:#888;">R:</span>
+                            <span style="color:#c96;">${fn2}</span>
+                            <span style="color:#888;">${sz2} MB</span>
+                            <span>${ng2 > 0 ? ng2.toLocaleString() + ' gs' : ''}</span>
+                        </div>`;
+
+                    // Fetch and send both splats
+                    const fetchSplat = async (side, filename, plyType, plySubfolder, label) => {
+                        const qsType = encodeURIComponent(plyType);
+                        const qsSub = encodeURIComponent(plySubfolder);
+                        let filepath, iframeFilename;
+                        if (transportFormat === "spz") {
+                            filepath = `/gaussianpack/spz?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
+                            iframeFilename = filename.replace(/\.ply$/i, ".spz");
+                        } else {
+                            filepath = `/view?filename=${encodeURIComponent(filename)}&type=${qsType}&subfolder=${qsSub}`;
+                            iframeFilename = filename;
+                        }
+
+                        const response = await fetch(filepath);
+                        if (!response.ok) throw new Error(`HTTP ${response.status} for ${label}`);
+
+                        const totalHdr = response.headers.get("content-length");
+                        const total = totalHdr ? parseInt(totalHdr, 10) : 0;
+                        const chunks = [];
+                        let received = 0;
+                        const reader = response.body?.getReader();
+                        if (reader) {
+                            for (;;) {
+                                const { done, value } = await reader.read();
+                                if (done) break;
+                                chunks.push(value);
+                                received += value.byteLength;
+                                if (total > 0) {
+                                    const pct = (received / total) * 100;
+                                    node._setLoadProgress?.(pct * 0.5 + (side === 1 ? 0 : 50),
+                                        `${label}: ${(received/(1024*1024)).toFixed(1)} / ${(total/(1024*1024)).toFixed(1)} MB`);
+                                }
+                            }
+                        }
+                        const u8 = new Uint8Array(received);
+                        let off = 0;
+                        for (const c of chunks) { u8.set(c, off); off += c.byteLength; }
+                        return { buffer: u8.buffer, filename: iframeFilename };
+                    };
+
+                    const sendBothSplats = async () => {
+                        if (!iframe.contentWindow) return;
+                        try {
+                            node._showLoadBar?.("Downloading splats...");
+
+                            // Send labels first
+                            iframe.contentWindow.postMessage({
+                                type: "SET_LABELS",
+                                label1: fn1,
+                                label2: fn2,
+                            }, "*");
+
+                            // Fetch both in parallel
+                            const [res1, res2] = await Promise.all([
+                                fetchSplat(1, message.ply_file_1[0],
+                                    message.ply_type_1?.[0] || "output",
+                                    message.ply_subfolder_1?.[0] || "",
+                                    "Splat 1"),
+                                fetchSplat(2, message.ply_file_2[0],
+                                    message.ply_type_2?.[0] || "output",
+                                    message.ply_subfolder_2?.[0] || "",
+                                    "Splat 2"),
+                            ]);
+
+                            node._setLoadProgress?.(100, "Parsing splats...");
+
+                            // Send to iframe
+                            iframe.contentWindow.postMessage({
+                                type: "LOAD_DUAL_MESH_DATA",
+                                side: 1,
+                                data: res1.buffer,
+                                filename: res1.filename,
+                                intrinsics,
+                                extrinsics,
+                                renderer,
+                                timestamp: Date.now(),
+                            }, "*", [res1.buffer]);
+
+                            iframe.contentWindow.postMessage({
+                                type: "LOAD_DUAL_MESH_DATA",
+                                side: 2,
+                                data: res2.buffer,
+                                filename: res2.filename,
+                                intrinsics,
+                                extrinsics,
+                                renderer,
+                                timestamp: Date.now(),
+                            }, "*", [res2.buffer]);
+
+                        } catch (error) {
+                            console.error("[GaussianPack] Dual fetch error:", error);
+                            infoPanel.innerHTML = `<div style="color:#ff6b6b;">Error: ${error.message}</div>`;
+                        }
+                    };
+
+                    // Wait for iframe to load then send
+                    const waitAndSend = () => {
+                        if (iframeLoaded) {
+                            sendBothSplats();
+                        } else {
+                            iframe.addEventListener('load', () => sendBothSplats(), { once: true });
+                        }
+                    };
+                    waitAndSend();
+                };
+
+                return r;
+            };
+        }
+
         if (nodeData.name === "PreviewGaussians" || nodeData.name === "PreviewGaussianSpectate") {
             const _isSpectate = nodeData.name === "PreviewGaussianSpectate";
             console.log("[GaussianPack] Registering " + (_isSpectate ? "Preview Gaussian Spectate" : "Preview Gaussians") + " node");

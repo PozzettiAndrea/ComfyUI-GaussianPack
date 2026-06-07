@@ -9,6 +9,7 @@ set at the root, not here.
 
 from .preview_gaussian import PreviewGaussians
 from .preview_gaussian_spectate import PreviewGaussianSpectate
+from .preview_gaussian_dual import PreviewGaussianDual
 from .preview_gaussian_camera import PreviewGaussianCamera
 from .merge_gaussians import GaussianMerge
 from .load_ply import LoadPLY
@@ -26,6 +27,7 @@ _register_load_ply_output_route()
 NODE_CLASS_MAPPINGS = {
     "PreviewGaussians": PreviewGaussians,
     "PreviewGaussianSpectate": PreviewGaussianSpectate,
+    "PreviewGaussianDual": PreviewGaussianDual,
     "PreviewGaussianCamera": PreviewGaussianCamera,
     "GaussianMerge": GaussianMerge,
     "LoadPLY": LoadPLY,
@@ -39,6 +41,7 @@ NODE_CLASS_MAPPINGS = {
 NODE_DISPLAY_NAME_MAPPINGS = {
     "PreviewGaussians": "Preview Gaussians",
     "PreviewGaussianSpectate": "Preview Gaussian Spectate",
+    "PreviewGaussianDual": "Preview Gaussian Dual",
     "PreviewGaussianCamera": "Preview Gaussian Camera",
     "GaussianMerge": "Gaussian Merge to Target",
     "LoadPLY": "Load PLY",
