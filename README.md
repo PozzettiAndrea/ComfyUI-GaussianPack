@@ -1,3 +1,8 @@
+
+https://github.com/user-attachments/assets/582f6b84-0a83-4b8a-b449-2cf9bf184bc5
+
+https://github.com/user-attachments/assets/74f17146-3e5b-4dcf-8ab1-dd2e9d18e474
+
 > [!WARNING]
 > Warning, uses experimental package `comfy-env` to attempt a one click isolated install. Will download and use pixi package manager.
 
