@@ -1,41 +1,15 @@
 Capturing execution frames: spectate.json
   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+  [ComfyUI] [1m[31m[ERROR][0m Exception in callback _ProactorBasePipeTransport._call_connection_lost()
+  [ComfyUI] handle: <Handle _ProactorBasePipeTransport._call_connection_lost()>
+  [ComfyUI] Traceback (most recent call last):
+  [ComfyUI]   File "asyncio\events.py", line 89, in _run
+  [ComfyUI]   File "asyncio\proactor_events.py", line 165, in _call_connection_lost
+  [ComfyUI] ConnectionResetError: [WinError 10054] An existing connection was forcibly closed by the remote host
   Frame 1 saved (frame_000.jpg, t=0.0s)
   Validating workflow...
-  Queuing workflow for execution...
-  [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
-  [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
-  [ComfyUI] [32m[INFO][0m Prompt has 2 nodes
-  [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
-  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "compressed_room.ply"}
-  [ComfyUI] [32m[INFO][0m   Node 2: PreviewGaussians
-  [ComfyUI] [32m[INFO][0m     Inputs: {"camera_mode": "spectate", "fov_degrees": 70, "renderer": "playcanvas", "transport_format": "ply", "ply_path": ["1", 0]}
-  [ComfyUI] [32m[INFO][0m Generated prompt_id: 5a885c67-a806-4dae-a8c2-710d79b29166
-  [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
-  [ComfyUI] [32m[INFO][0m Validation result: valid=True
-  [ComfyUI] [32m[INFO][0m === Validation PASSED ===
-  [ComfyUI] [32m[INFO][0m got prompt
-  [ComfyUI] [32m[INFO][0m LoadPLY: compressed_room.ply -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1400\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\compressed_room.ply
-  [ComfyUI] [32m[INFO][0m [32mPrompt executed in 0.01 seconds[0m
-  Node executed (1 total), capturing...
-  Frame 2 saved (frame_001.jpg, t=0.5s)
-  [capture-node] freeze=5ms shot=98ms unfreeze=0ms saved=True
-  Execution complete (t=0.5s)
-  [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
-  [3d-wait] Phase 1 done in 0.0s
-  [3d-wait] Phase 2: iframes=1
-  [3d-wait] iframe viewer_ready=False (matched 0 console logs)
-  [3d-wait] Waiting for 'Loaded successfully' console message (timeout=60s)...
-  [3d-wait] Got 'Loaded successfully' after 1.2s
-  [3d-wait] Unfrozen in 0.011s, rendering for 5s...
-  [3d-wait] JS halted via CDP after 6.1s
-  [3d-wait] Re-frozen in 7.2s
-  [3d-wait] Total 3D wait: 8.4s
-  Captured 2 unique frames over 9.0s
-  [debug] iframes: 1
-  [debug]   iframe[0]: src=http://127.0.0.1:41884/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?mode, canvas=781x394, rafFrozen=True
-  [timing] trigger_3d_previews: 0.0s
-  Saved high-quality screenshot: spectate_executed.png
-  [timing] final_screenshot: 0.3s
-    Captured 3 video frames
+  Validation failed: graphToPrompt produced nodes without class_type: graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {"inputs":{"UNKNOWN":"compressed_room.ply"},"_meta":{}}
+    Status: FAILED
+    Error: Workflow validation failed
+    Details: graphToPrompt produced nodes without class_type: graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {"inputs":{"UNKNOWN":"compressed_room.ply"},"_meta":{}}

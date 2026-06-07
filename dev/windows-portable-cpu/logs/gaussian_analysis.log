@@ -1,71 +1,9 @@
-  [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
 Capturing execution frames: gaussian_analysis.json
+  [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
   Frame 1 saved (frame_000.jpg, t=0.0s)
   Validating workflow...
-  Queuing workflow for execution...
-  [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
-  [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
-  [ComfyUI] [32m[INFO][0m Prompt has 4 nodes
-  [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
-  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "apple.ply"}
-  [ComfyUI] [32m[INFO][0m   Node 19: GaussianAnalysis
-  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_path": ["1", 0]}
-  [ComfyUI] [32m[INFO][0m   Node 20: LoadPLY
-  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "compressed_room.ply"}
-  [ComfyUI] [32m[INFO][0m   Node 21: GaussianAnalysis
-  [ComfyUI] [32m[INFO][0m     Inputs: {"ply_path": ["20", 0]}
-  [ComfyUI] [32m[INFO][0m Generated prompt_id: 68d52ede-a37c-4f48-b22a-4bbb68beb4aa
-  [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
-  [ComfyUI] [32m[INFO][0m Validation result: valid=True
-  [ComfyUI] [32m[INFO][0m === Validation PASSED ===
-  [ComfyUI] [32m[INFO][0m got prompt
-  [ComfyUI] [32m[INFO][0m LoadPLY: compressed_room.ply -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1400\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\compressed_room.ply
-  [ComfyUI] [32m[INFO][0m GaussianAnalysis:
-  [ComfyUI] == Gaussian PLY analysis ==
-  [ComfyUI]   path:           D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1400\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\compressed_room.ply
-  [ComfyUI]   size:           26.70 MB  (28,000,362 bytes)
-  [ComfyUI]   encoding:       binary_little_endian 1.0
-  [ComfyUI]   splat count:    500,000
-  [ComfyUI]   bytes/splat:    56.0
-  [ComfyUI]   flavor:         SH-stripped 3DGS (DC only, no view-dependent term)
-  [ComfyUI]   SH degree:      0
-  [ComfyUI]   precision:      float32 (all)
-  [ComfyUI]   has f_dc_*:     True
-  [ComfyUI]   has RGB uchar:  False
-  [ComfyUI]   has opacity:    True
-  [ComfyUI]   has scale_*:    True
-  [ComfyUI]   has rot_*:      True
-  [ComfyUI]   total props:    14
-  [ComfyUI] [32m[INFO][0m LoadPLY: apple.ply -> D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1400\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\apple.ply
-  [ComfyUI] [32m[INFO][0m GaussianAnalysis:
-  [ComfyUI] == Gaussian PLY analysis ==
-  [ComfyUI]   path:           D:\a\comfy-gpu-ci\comfy-gpu-ci\test_workspaces\GaussianPack-1400\portable-comfyui\ComfyUI_windows_portable\ComfyUI\input\apple.ply
-  [ComfyUI]   size:           47.30 MB  (49,601,531 bytes)
-  [ComfyUI]   encoding:       binary_little_endian 1.0
-  [ComfyUI]   splat count:    200,000
-  [ComfyUI]   bytes/splat:    248.0
-  [ComfyUI]   flavor:         raw 3DGS PLY (SH degree 3)
-  [ComfyUI]   SH degree:      3
-  [ComfyUI]   precision:      float32 (all)
-  [ComfyUI]   has f_dc_*:     True
-  [ComfyUI]   has RGB uchar:  False
-  [ComfyUI]   has opacity:    True
-  [ComfyUI]   has scale_*:    True
-  [ComfyUI]   has rot_*:      True
-  [ComfyUI]   total props:    62
-  [ComfyUI] [32m[INFO][0m [32mPrompt executed in 0.02 seconds[0m
-  Node executed (2 total), capturing...
-  Frame 2 saved (frame_001.jpg, t=0.5s)
-  [capture-node] freeze=6ms shot=103ms unfreeze=0ms saved=True
-  Execution complete (t=0.5s)
-  [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
-  [3d-wait] Phase 1 done in 0.0s
-  [3d-wait] Phase 2: iframes=0
-  [3d-wait] Total 3D wait: 0.0s
-  Captured 2 unique frames over 0.67s
-  [debug] iframes: 0
-  [timing] trigger_3d_previews: 0.0s
-  Saved high-quality screenshot: gaussian_analysis_executed.png
-  [timing] final_screenshot: 0.3s
-    Captured 3 video frames
+  Validation failed: graphToPrompt produced nodes without class_type: graphToPrompt: 4 nodes, missing class_type: [1,19,20,21], sample: {"inputs":{"UNKNOWN":"apple.ply"},"_meta":{}}
+    Status: FAILED
+    Error: Workflow validation failed
+    Details: graphToPrompt produced nodes without class_type: graphToPrompt: 4 nodes, missing class_type: [1,19,20,21], sample: {"inputs":{"UNKNOWN":"apple.ply"},"_meta":{}}
