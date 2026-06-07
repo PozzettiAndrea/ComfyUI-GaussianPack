@@ -1,4 +1,4 @@
-[00:00] Crash dump logging enabled: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/comfy-test-logs/GaussianPack-1719/dev/linux-cpu/crash_dump.log
+[00:00] Crash dump logging enabled: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/comfy-test-logs/GaussianPack-1728/dev/linux-cpu/crash_dump.log
 [00:00] 
 [00:00] [1/5] SYNTAX
 [00:00] ----------------------------------------
@@ -17,252 +17,559 @@
 [00:00] 
 Setting up ComfyUI...
 [00:00] Creating virtual environment...
-[00:00] Running: uv venv /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/.venv --python 3.13
+[00:00] Running: uv venv /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/.venv --python 3.12
 [00:00] torch_version='2.10.0' -> pinning torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0
 [00:00] Cloning ComfyUI (latest)...
-[00:00] Running: git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI
+[00:00] Running: git clone --depth 1 https://github.com/comfyanonymous/ComfyUI.git /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI
 [00:01] Pinning torch family from https://download.pytorch.org/whl/cpu: torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0
-[00:01] Running: uv pip install --python /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/.venv/bin/python --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple --index-strategy unsafe-best-match torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0
-[00:05] Installing ComfyUI requirements...
-[00:05] Running: uv pip install --python /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/.venv/bin/python --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple --index-strategy unsafe-best-match -r /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/requirements.txt
-[00:10] 
+[00:01] Running: uv pip install --python /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/.venv/bin/python --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple --index-strategy unsafe-best-match torch==2.10.0 torchvision==0.25.0 torchaudio==2.10.0
+[00:06] Installing ComfyUI requirements...
+[00:06] Running: uv pip install --python /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/.venv/bin/python --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple --index-strategy unsafe-best-match -r /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/requirements.txt
+[00:13] 
 Installing custom node...
-[00:10] Copying ComfyUI-GaussianPack to custom_nodes/...
-[00:10] Installing node requirements...
-[00:10] Running: uv pip install --python /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/.venv/bin/python --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple --index-strategy unsafe-best-match -r /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack/requirements.txt
-[00:12] 
+[00:13] Copying ComfyUI-GaussianPack to custom_nodes/...
+[00:13] Installing node requirements...
+[00:13] Running: uv pip install --python /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/.venv/bin/python --index-url https://download.pytorch.org/whl/cpu --extra-index-url https://pypi.org/simple --index-strategy unsafe-best-match -r /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack/requirements.txt
+[00:16] 
 Running install.py...
-[00:12] Running: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/.venv/bin/python /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack/install.py
-[00:13]   [comfy-env] _discover: scanning /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes
-[00:13]   [comfy-env] _discover: ComfyUI-GaussianPack -> gaussianpack-nodes (custom_nodes/ComfyUI-GaussianPack/nodes/comfy-env.toml)
-[00:13]   [comfy-env] Workspace: /home/runner/.ce
-[00:13]   [comfy-env] ComfyUI: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI
-[00:13]   [comfy-env] Found 1 node config(s):
-[00:13]     - gaussianpack-nodes <- custom_nodes/ComfyUI-GaussianPack/nodes/comfy-env.toml (python=host)
-[00:13]   [comfy-env] Bootstrap interpreter has python 3.13 + torch 2.10.0 (cpu). Looking for cuda-only wheels matching cpu/torch2.10/cp313.
-[00:16]   [comfy-env] GPU: No GPU detected
-[00:16]   [comfy-env] No CUDA detected -- pinning comfyui torch to CPU index
-[00:16]   [comfy-env] Host glibc 2.39 -> system-requirements
-[00:16]   Generated /home/runner/.ce/pixi.toml
-[00:16]   [comfy-env] Installing 1 environment(s):
-[00:16]     - gaussianpack-nodes (python=host, 8 pypi deps, 1 cuda wheels)
-[00:16]   [comfy-env] Running `pixi install -e gaussianpack-nodes`...
-[00:24]     ✔ The gaussianpack-nodes environment has been installed.
-[00:24]   [comfy-env] Recorded install hash b37afdb81be9 -> /home/runner/.ce/install.hash
-[00:24]   [comfy-env] Install log: /home/runner/.ce/install.log
-[00:24]   
-[00:24]   Installation complete!
-[00:24] Installing validation endpoint...
-[00:24]   Cloning PozzettiAndrea/ComfyUI-validate-endpoint...
-[00:24] Running: git clone --depth 1 https://x-access-token:***@github.com/PozzettiAndrea/ComfyUI-validate-endpoint.git /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-validate-endpoint
-[00:25] CUDA packages absent (will mock): gsplat
-[00:25] [INSTALL] PASSED
-[00:25] 
-[00:25] [3/5] REGISTRATION
-[00:25] ----------------------------------------
-[00:25] 
+[00:16] Running: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/.venv/bin/python /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack/install.py
+[00:17]   [comfy-env] _discover: scanning /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes
+[00:17]   [comfy-env] _discover: ComfyUI-GaussianPack -> gaussianpack-nodes (custom_nodes/ComfyUI-GaussianPack/nodes/comfy-env.toml)
+[00:17]   [comfy-env] Workspace: /home/runner/.ce
+[00:17]   [comfy-env] ComfyUI: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI
+[00:17]   [comfy-env] Found 1 node config(s):
+[00:17]     - gaussianpack-nodes <- custom_nodes/ComfyUI-GaussianPack/nodes/comfy-env.toml (python=host)
+[00:17]   [comfy-env] Bootstrap interpreter has python 3.12 + torch 2.10.0 (cpu). Looking for cuda-only wheels matching cpu/torch2.10/cp312.
+[00:20]   [comfy-env] GPU: No GPU detected
+[00:20]   [comfy-env] No CUDA detected -- pinning comfyui torch to CPU index
+[00:20]   [comfy-env] Host glibc 2.39 -> system-requirements
+[00:20]   Generated /home/runner/.ce/pixi.toml
+[00:20]   [comfy-env] Installing 1 environment(s):
+[00:20]     - gaussianpack-nodes (python=host, 8 pypi deps, 1 cuda wheels)
+[00:20]   [comfy-env] Running `pixi install -e gaussianpack-nodes`...
+[00:26]      WARN Skipped running the post-link scripts because `run-post-link-scripts` = `false`
+[00:26]     	- bin/.librsvg-pre-unlink.sh
+[00:26]     To enable them, run:
+[00:26]     	pixi config set --local run-post-link-scripts insecure
+[00:26]     More info:
+[00:26]     	https://pixi.sh/latest/reference/pixi_configuration/#run-post-link-scripts
+[00:31]     ✔ The gaussianpack-nodes environment has been installed.
+[00:32]   [comfy-env] Recorded install hash 995e807740b4 -> /home/runner/.ce/install.hash
+[00:32]   [comfy-env] Install log: /home/runner/.ce/install.log
+[00:32]   
+[00:32]   Installation complete!
+[00:32] Installing validation endpoint...
+[00:32]   Cloning PozzettiAndrea/ComfyUI-validate-endpoint...
+[00:32] Running: git clone --depth 1 https://x-access-token:***@github.com/PozzettiAndrea/ComfyUI-validate-endpoint.git /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-validate-endpoint
+[00:32] CUDA packages absent (will mock): gsplat
+[00:32] [INSTALL] PASSED
+[00:32] 
+[00:32] [3/5] REGISTRATION
+[00:32] ----------------------------------------
+[00:32] 
 [DEBUG] server=None, api=None
-[00:25] 
+[00:32] 
 Starting ComfyUI server...
-[00:25] Starting ComfyUI server on port 41895...
-[00:25] CUDA mock packages: gsplat
-[00:25] Starting ComfyUI server on port 41895...
-[00:25] Waiting for server to be ready (timeout: 600s)...
-[00:26]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.schemas
-[00:26]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.tables
-[00:26]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.types
-[00:26]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.constraints
-[00:26]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.defaults
-[00:26]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.comments
-[00:26]   [ComfyUI] [32m[INFO][0m
-[00:26]   [ComfyUI] Prestartup times for custom nodes:
-[00:26]   [ComfyUI] [32m[INFO][0m    0.0 seconds: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack
-[00:26]   [ComfyUI] [32m[INFO][0m
-[00:32]   [ComfyUI] [32m[INFO][0m Found comfy_kitchen backend eager: {'available': True, 'disabled': False, 'unavailable_reason': None, 'capabilities': ['apply_rope', 'apply_rope1', 'apply_rope_split_half', 'apply_rope_split_half1', 'dequantize_mxfp8', 'dequantize_nvfp4', 'dequantize_per_tensor_fp8', 'gemv_awq_w4a16', 'quantize_mxfp8', 'quantize_nvfp4', 'quantize_per_tensor_fp8', 'quantize_svdquant_w4a4', 'scaled_mm_mxfp8', 'scaled_mm_nvfp4', 'scaled_mm_svdquant_w4a4', 'stochastic_rounding_fp8']}
-[00:32]   [ComfyUI] [32m[INFO][0m Found comfy_kitchen backend triton: {'available': False, 'disabled': True, 'unavailable_reason': "ImportError: No module named 'triton'", 'capabilities': []}
-[00:32]   [ComfyUI] [32m[INFO][0m Found comfy_kitchen backend cuda: {'available': False, 'disabled': True, 'unavailable_reason': 'CUDA not available on this system', 'capabilities': []}
-[00:32]   [ComfyUI] [32m[INFO][0m Checkpoint files will always be loaded safely.
-[00:32]   [ComfyUI] [32m[INFO][0m Total VRAM 15990 MB, total RAM 15990 MB
-[00:32]   [ComfyUI] [32m[INFO][0m pytorch version: 2.10.0+cpu
-[00:32]   [ComfyUI] [32m[INFO][0m Set vram state to: DISABLED
-[00:32]   [ComfyUI] [32m[INFO][0m Device: cpu
-[00:33]   [ComfyUI] [32m[INFO][0m Using sub quadratic optimization for attention, if you have memory or speed issues try using: --use-split-cross-attention
-[00:38]   [ComfyUI] [32m[INFO][0m Python version: 3.13.13 (main, Apr 30 2026, 14:44:12) [GCC 13.3.0]
-[00:38]   [ComfyUI] [32m[INFO][0m ComfyUI version: 0.24.0
-[00:38]   [ComfyUI] [32m[INFO][0m comfy-aimdo version: 0.4.9
-[00:38]   [ComfyUI] [32m[INFO][0m comfy-kitchen version: 0.2.10
-[00:38]   [ComfyUI] [1m[33m[WARNING][0m ****** User settings have been changed to be stored on the server instead of browser storage. ******
-[00:38]   [ComfyUI] [1m[33m[WARNING][0m ****** For multi-user setups add the --multi-user CLI argument to enable multiple user profiles. ******
-[00:38]   [ComfyUI] [32m[INFO][0m comfyui-frontend-package version: 1.45.15
-[00:38]   [ComfyUI] [32m[INFO][0m comfyui-workflow-templates version: 0.9.98
-[00:38]   [ComfyUI] [32m[INFO][0m comfyui-embedded-docs version: 0.5.2
-[00:38]   [ComfyUI] [32m[INFO][0m comfy-kitchen version: 0.2.10
-[00:38]   [ComfyUI] [32m[INFO][0m comfy-aimdo version: 0.4.9
-[00:38]   [ComfyUI] [32m[INFO][0m [Prompt Server] web root: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/.venv/lib/python3.13/site-packages/comfyui_frontend_package/static
-[00:38]   [ComfyUI] [32m[INFO][0m Asset seeder disabled
-[00:42]   [ComfyUI] [comfy-env] Version: 0.3.89
-[00:42]   [ComfyUI] [comfy-env] register_nodes: ComfyUI-GaussianPack
-[00:42]   [ComfyUI] [comfy-env] ComfyUI source dir: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI
-[00:42]   [ComfyUI] [comfy-env] Workspace: /home/runner/.ce
-[00:42]   [ComfyUI] [comfy-env] Found 1 isolation env(s)
-[00:42]   [ComfyUI] [comfy-env] Scanning nodes metadata (isolation root)...
-[00:42]   [ComfyUI] [comfy-env] Metadata scan: /home/runner/.pixi/bin/pixi run --as-is --manifest-path /home/runner/.ce/pixi.toml -e gaussianpack-nodes python /tmp/comfy_meta_atganin5.py /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack nodes /tmp/comfy_meta_out_72pj4k59.pkl
-[00:42]   [ComfyUI] [comfy-env] Scan env PATH for nodes:
-[00:42]   [ComfyUI] [comfy-env]   [0] /opt/hostedtoolcache/Python/3.13.13/x64/bin
-[00:42]   [ComfyUI] [comfy-env]   [1] /opt/hostedtoolcache/Python/3.13.13/x64
-[00:42]   [ComfyUI] [comfy-env]   [2] /snap/bin
-[00:42]   [ComfyUI] [comfy-env]   [3] /home/runner/.local/bin
-[00:42]   [ComfyUI] [comfy-env]   [4] /opt/pipx_bin
-[00:42]   [ComfyUI] [comfy-env]   [5] /home/runner/.cargo/bin
-[00:42]   [ComfyUI] [comfy-env]   [6] /home/runner/.config/composer/vendor/bin
-[00:42]   [ComfyUI] [comfy-env]   [7] /usr/local/.ghcup/bin
-[00:42]   [ComfyUI] [comfy-env]   [8] /home/runner/.dotnet/tools
-[00:42]   [ComfyUI] [comfy-env]   [9] /usr/local/sbin
-[00:42]   [ComfyUI] [comfy-env]   [10] /usr/local/bin
-[00:42]   [ComfyUI] [comfy-env]   [11] /usr/sbin
-[00:42]   [ComfyUI] [comfy-env]   [12] /usr/bin
-[00:42]   [ComfyUI] [comfy-env]   [13] /sbin
-[00:42]   [ComfyUI] [comfy-env]   [14] /bin
-[00:42]   [ComfyUI] [comfy-env]   [15] /usr/games
-[00:42]   [ComfyUI] [comfy-env]   [16] /usr/local/games
-[00:42]   [ComfyUI] [comfy-env]   [17] /snap/bin
-[00:45]   [ComfyUI] [comfy-env] Metadata scan stderr for nodes:
-[00:45]   [ComfyUI] [comfy-env]   [meta-scan] importing nodes from /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack
-[00:45]   [ComfyUI] [comfy-env]   Traceback (most recent call last):
-[00:45]   [ComfyUI] [comfy-env]     File "/tmp/comfy_meta_atganin5.py", line 65, in <module>
-[00:45]   [ComfyUI] [comfy-env]       module = importlib.import_module(package_name)
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/.ce/.pixi/envs/gaussianpack-nodes/lib/python3.13/importlib/__init__.py", line 88, in import_module
-[00:45]   [ComfyUI] [comfy-env]       return _bootstrap._gcd_import(name[level:], package, level)
-[00:45]   [ComfyUI] [comfy-env]              ~~~~~~~~~~~~~~~~~~~~~~^^^^^^^^^^^^^^^^^^^^^^^^^^^^^^
-[00:45]   [ComfyUI] [comfy-env]     File "<frozen importlib._bootstrap>", line 1395, in _gcd_import
-[00:45]   [ComfyUI] [comfy-env]     File "<frozen importlib._bootstrap>", line 1360, in _find_and_load
-[00:45]   [ComfyUI] [comfy-env]     File "<frozen importlib._bootstrap>", line 1331, in _find_and_load_unlocked
-[00:45]   [ComfyUI] [comfy-env]     File "<frozen importlib._bootstrap>", line 935, in _load_unlocked
-[00:45]   [ComfyUI] [comfy-env]     File "<frozen importlib._bootstrap_external>", line 1023, in exec_module
-[00:45]   [ComfyUI] [comfy-env]     File "<frozen importlib._bootstrap>", line 488, in _call_with_frames_removed
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack/nodes/__init__.py", line 11, in <module>
-[00:45]   [ComfyUI] [comfy-env]       from .preview_gaussian_sharp import PreviewGaussianSharp
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack/nodes/preview_gaussian_sharp.py", line 21, in <module>
-[00:45]   [ComfyUI] [comfy-env]       from comfy_api.latest import io
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/comfy_api/latest/__init__.py", line 6, in <module>
-[00:45]   [ComfyUI] [comfy-env]       from ._input import ImageInput, AudioInput, MaskInput, LatentInput, VideoInput
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/comfy_api/latest/_input/__init__.py", line 4, in <module>
-[00:45]   [ComfyUI] [comfy-env]       from .video_types import VideoInput
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/comfy_api/latest/_input/video_types.py", line 6, in <module>
-[00:45]   [ComfyUI] [comfy-env]       import av
-[00:45]   [ComfyUI] [comfy-env]   ModuleNotFoundError: No module named 'av'
-[00:45]   [ComfyUI] [comfy-env] Metadata scan failed for nodes (exit 1, 2.9s):
-[00:45]   [ComfyUI] [comfy-env]       from .preview_gaussian_sharp import PreviewGaussianSharp
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack/nodes/preview_gaussian_sharp.py", line 21, in <module>
-[00:45]   [ComfyUI] [comfy-env]       from comfy_api.latest import io
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/comfy_api/latest/__init__.py", line 6, in <module>
-[00:45]   [ComfyUI] [comfy-env]       from ._input import ImageInput, AudioInput, MaskInput, LatentInput, VideoInput
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/comfy_api/latest/_input/__init__.py", line 4, in <module>
-[00:45]   [ComfyUI] [comfy-env]       from .video_types import VideoInput
-[00:45]   [ComfyUI] [comfy-env]     File "/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/comfy_api/latest/_input/video_types.py", line 6, in <module>
-[00:45]   [ComfyUI] [comfy-env]       import av
-[00:45]   [ComfyUI] [comfy-env]   ModuleNotFoundError: No module named 'av'
-[00:45]   [ComfyUI] [comfy-env] Scanned nodes root: 0 nodes (2.9s)
-[00:45]   [ComfyUI] [comfy-env] Imported nodes root: 0 nodes (isolation)
-[00:45]   [ComfyUI] [comfy-env] Registered 0 total nodes
-[00:45]   [ComfyUI] [32m[INFO][0m
-[00:45]   [ComfyUI] Import times for custom nodes:
-[00:45]   [ComfyUI] [32m[INFO][0m    0.0 seconds: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/websocket_image_save.py
-[00:45]   [ComfyUI] [32m[INFO][0m    0.0 seconds: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-validate-endpoint
-[00:45]   [ComfyUI] [32m[INFO][0m    3.1 seconds: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1719/ComfyUI/custom_nodes/ComfyUI-GaussianPack
-[00:45]   [ComfyUI] [32m[INFO][0m
-[00:45]   [ComfyUI] [32m[INFO][0m Context impl SQLiteImpl.
-[00:45]   [ComfyUI] [32m[INFO][0m Will assume non-transactional DDL.
-[00:45]   [ComfyUI] [32m[INFO][0m Context impl SQLiteImpl.
-[00:45]   [ComfyUI] [32m[INFO][0m Will assume non-transactional DDL.
-[00:45]   [ComfyUI] [32m[INFO][0m Running upgrade  -> 0001_assets, Initial assets schema
-[00:45]   [ComfyUI] Revision ID: 0001_assets
-[00:45]   [ComfyUI] Revises: None
-[00:45]   [ComfyUI] Create Date: 2025-12-10 00:00:00
-[00:45]   [ComfyUI] [32m[INFO][0m Running upgrade 0001_assets -> 0002_merge_to_asset_references, Merge AssetInfo and AssetCacheState into unified asset_references table.
-[00:45]   [ComfyUI] [32m[INFO][0m Running upgrade 0002_merge_to_asset_references -> 0003_add_metadata_job_id, Add system_metadata and job_id columns to asset_references.
-[00:45]   [ComfyUI] Change preview_id FK from assets.id to asset_references.id.
-[00:45]   [ComfyUI] [32m[INFO][0m Database upgraded from None to 0003_add_metadata_job_id
-[00:45]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[00:45]   [ComfyUI] [32m[INFO][0m Starting server
-[00:45]   [ComfyUI] 
-[00:45]   [ComfyUI] [32m[INFO][0m To see the GUI go to: http://127.0.0.1:41895
-[00:46] Server responding, waiting for nodes to load...
-[01:06] Server is ready!
-[01:06] Checking for import errors in server logs...
-[01:06] No import errors detected
-[01:06] Found 771 registered nodes
-[01:06] [REGISTRATION] PASSED
-[01:06] 
-[01:06] [4/5] INSTANTIATION
-[01:06] ----------------------------------------
-[01:06] 
-[DEBUG] server=<comfy_test.comfyui.server.ComfyUIServer object at 0x7fc0e95b17f0>, api=<comfy_test.comfyui.api.ComfyUIAPI object at 0x7fc0e95b2120>
-[01:06] Testing node constructors...
-[01:09] All 0 node(s) instantiated successfully!
-[01:09] [INSTANTIATION] PASSED
-[01:09] 
-[01:09] [5/5] EXECUTION
-[01:09] ----------------------------------------
-[01:09] 
-[DEBUG] server=<comfy_test.comfyui.server.ComfyUIServer object at 0x7fc0e95b17f0>, api=<comfy_test.comfyui.api.ComfyUIAPI object at 0x7fc0e95b2120>
-[01:09] CPU runner - will execute 4 workflow(s)
-[01:09] Running 4 workflow(s) (all with videos)...
-[01:09] Installing screenshot dependencies (playwright, pillow)...
-[01:10]   Packages installed, downloading chromium browser...
-[01:20]   Screenshot dependencies installed successfully
-[01:20] Starting headless browser...
-[01:20]   Installing Mesa llvmpipe (apt)...
-[01:34]   Mesa install failed: E: Unable to locate package libegl1-mesa
+[00:32] Starting ComfyUI server on port 41884...
+[00:32] CUDA mock packages: gsplat
+[00:32] Starting ComfyUI server on port 41884...
+[00:32] Waiting for server to be ready (timeout: 600s)...
+[00:33]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.schemas
+[00:33]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.tables
+[00:33]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.types
+[00:33]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.constraints
+[00:33]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.defaults
+[00:33]   [ComfyUI] [32m[INFO][0m setup plugin alembic.autogenerate.comments
+[00:34]   [ComfyUI] [32m[INFO][0m
+[00:34]   [ComfyUI] Prestartup times for custom nodes:
+[00:34]   [ComfyUI] [32m[INFO][0m    0.0 seconds: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack
+[00:34]   [ComfyUI] [32m[INFO][0m
+[00:38]   [ComfyUI] [32m[INFO][0m Found comfy_kitchen backend eager: {'available': True, 'disabled': False, 'unavailable_reason': None, 'capabilities': ['apply_rope', 'apply_rope1', 'apply_rope_split_half', 'apply_rope_split_half1', 'dequantize_mxfp8', 'dequantize_nvfp4', 'dequantize_per_tensor_fp8', 'gemv_awq_w4a16', 'quantize_mxfp8', 'quantize_nvfp4', 'quantize_per_tensor_fp8', 'quantize_svdquant_w4a4', 'scaled_mm_mxfp8', 'scaled_mm_nvfp4', 'scaled_mm_svdquant_w4a4', 'stochastic_rounding_fp8']}
+[00:38]   [ComfyUI] [32m[INFO][0m Found comfy_kitchen backend cuda: {'available': False, 'disabled': True, 'unavailable_reason': 'CUDA not available on this system', 'capabilities': []}
+[00:38]   [ComfyUI] [32m[INFO][0m Found comfy_kitchen backend triton: {'available': False, 'disabled': True, 'unavailable_reason': "ImportError: No module named 'triton'", 'capabilities': []}
+[00:38]   [ComfyUI] [32m[INFO][0m Checkpoint files will always be loaded safely.
+[00:38]   [ComfyUI] [32m[INFO][0m Total VRAM 15990 MB, total RAM 15990 MB
+[00:38]   [ComfyUI] [32m[INFO][0m pytorch version: 2.10.0+cpu
+[00:38]   [ComfyUI] [32m[INFO][0m Set vram state to: DISABLED
+[00:38]   [ComfyUI] [32m[INFO][0m Device: cpu
+[00:39]   [ComfyUI] [32m[INFO][0m Using sub quadratic optimization for attention, if you have memory or speed issues try using: --use-split-cross-attention
+[00:44]   [ComfyUI] [32m[INFO][0m Python version: 3.12.3 (main, Mar 23 2026, 19:04:32) [GCC 13.3.0]
+[00:44]   [ComfyUI] [32m[INFO][0m ComfyUI version: 0.24.0
+[00:44]   [ComfyUI] [32m[INFO][0m comfy-aimdo version: 0.4.9
+[00:44]   [ComfyUI] [32m[INFO][0m comfy-kitchen version: 0.2.10
+[00:44]   [ComfyUI] [1m[33m[WARNING][0m ****** User settings have been changed to be stored on the server instead of browser storage. ******
+[00:44]   [ComfyUI] [1m[33m[WARNING][0m ****** For multi-user setups add the --multi-user CLI argument to enable multiple user profiles. ******
+[00:44]   [ComfyUI] [32m[INFO][0m comfyui-frontend-package version: 1.45.15
+[00:44]   [ComfyUI] [32m[INFO][0m comfyui-workflow-templates version: 0.9.98
+[00:44]   [ComfyUI] [32m[INFO][0m comfyui-embedded-docs version: 0.5.2
+[00:44]   [ComfyUI] [32m[INFO][0m comfy-kitchen version: 0.2.10
+[00:44]   [ComfyUI] [32m[INFO][0m comfy-aimdo version: 0.4.9
+[00:44]   [ComfyUI] [32m[INFO][0m [Prompt Server] web root: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/.venv/lib/python3.12/site-packages/comfyui_frontend_package/static
+[00:44]   [ComfyUI] [32m[INFO][0m Asset seeder disabled
+[00:47]   [ComfyUI] [comfy-env] Version: 0.3.89
+[00:47]   [ComfyUI] [comfy-env] register_nodes: ComfyUI-GaussianPack
+[00:47]   [ComfyUI] [comfy-env] ComfyUI source dir: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI
+[00:47]   [ComfyUI] [comfy-env] Workspace: /home/runner/.ce
+[00:47]   [ComfyUI] [comfy-env] Found 1 isolation env(s)
+[00:47]   [ComfyUI] [comfy-env] Scanning nodes metadata (isolation root)...
+[00:47]   [ComfyUI] [comfy-env] Metadata scan: /home/runner/.pixi/bin/pixi run --as-is --manifest-path /home/runner/.ce/pixi.toml -e gaussianpack-nodes python /tmp/comfy_meta_753kmuvi.py /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack nodes /tmp/comfy_meta_out_e3410cc0.pkl
+[00:47]   [ComfyUI] [comfy-env] Scan env PATH for nodes:
+[00:47]   [ComfyUI] [comfy-env]   [0] /opt/hostedtoolcache/Python/3.13.13/x64/bin
+[00:47]   [ComfyUI] [comfy-env]   [1] /opt/hostedtoolcache/Python/3.13.13/x64
+[00:47]   [ComfyUI] [comfy-env]   [2] /snap/bin
+[00:47]   [ComfyUI] [comfy-env]   [3] /home/runner/.local/bin
+[00:47]   [ComfyUI] [comfy-env]   [4] /opt/pipx_bin
+[00:47]   [ComfyUI] [comfy-env]   [5] /home/runner/.cargo/bin
+[00:47]   [ComfyUI] [comfy-env]   [6] /home/runner/.config/composer/vendor/bin
+[00:47]   [ComfyUI] [comfy-env]   [7] /usr/local/.ghcup/bin
+[00:47]   [ComfyUI] [comfy-env]   [8] /home/runner/.dotnet/tools
+[00:47]   [ComfyUI] [comfy-env]   [9] /usr/local/sbin
+[00:47]   [ComfyUI] [comfy-env]   [10] /usr/local/bin
+[00:47]   [ComfyUI] [comfy-env]   [11] /usr/sbin
+[00:47]   [ComfyUI] [comfy-env]   [12] /usr/bin
+[00:47]   [ComfyUI] [comfy-env]   [13] /sbin
+[00:47]   [ComfyUI] [comfy-env]   [14] /bin
+[00:47]   [ComfyUI] [comfy-env]   [15] /usr/games
+[00:47]   [ComfyUI] [comfy-env]   [16] /usr/local/games
+[00:47]   [ComfyUI] [comfy-env]   [17] /snap/bin
+[00:50]   [ComfyUI] [comfy-env] Metadata scan stderr for nodes:
+[00:50]   [ComfyUI] [comfy-env]   [meta-scan] importing nodes from /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack
+[00:50]   [ComfyUI] [comfy-env]   SPZ route not registered (ModuleNotFoundError: No module named 'comfy_aimdo')
+[00:50]   [ComfyUI] [comfy-env]   [meta-scan] import OK
+[00:50]   [ComfyUI] [comfy-env] Scanned nodes: 11 nodes (3.2s)
+[00:50]   [ComfyUI] [comfy-env] Scanned nodes root: 11 nodes (3.2s)
+[00:50]   [ComfyUI] [comfy-env] Imported nodes root: 11 nodes (isolation)
+[00:50]   [ComfyUI] [comfy-env] Registered 11 total nodes
+[00:50]   [ComfyUI] [32m[INFO][0m
+[00:50]   [ComfyUI] Import times for custom nodes:
+[00:50]   [ComfyUI] [32m[INFO][0m    0.0 seconds: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/websocket_image_save.py
+[00:50]   [ComfyUI] [32m[INFO][0m    0.0 seconds: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-validate-endpoint
+[00:50]   [ComfyUI] [32m[INFO][0m    3.5 seconds: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack
+[00:50]   [ComfyUI] [32m[INFO][0m
+[00:50]   [ComfyUI] [32m[INFO][0m Context impl SQLiteImpl.
+[00:50]   [ComfyUI] [32m[INFO][0m Will assume non-transactional DDL.
+[00:50]   [ComfyUI] [32m[INFO][0m Context impl SQLiteImpl.
+[00:50]   [ComfyUI] [32m[INFO][0m Will assume non-transactional DDL.
+[00:50]   [ComfyUI] [32m[INFO][0m Running upgrade  -> 0001_assets, Initial assets schema
+[00:50]   [ComfyUI] Revision ID: 0001_assets
+[00:50]   [ComfyUI] Revises: None
+[00:50]   [ComfyUI] Create Date: 2025-12-10 00:00:00
+[00:50]   [ComfyUI] [32m[INFO][0m Running upgrade 0001_assets -> 0002_merge_to_asset_references, Merge AssetInfo and AssetCacheState into unified asset_references table.
+[00:50]   [ComfyUI] [32m[INFO][0m Running upgrade 0002_merge_to_asset_references -> 0003_add_metadata_job_id, Add system_metadata and job_id columns to asset_references.
+[00:50]   [ComfyUI] Change preview_id FK from assets.id to asset_references.id.
+[00:51]   [ComfyUI] [32m[INFO][0m Database upgraded from None to 0003_add_metadata_job_id
+[00:51]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[00:51]   [ComfyUI] [32m[INFO][0m Starting server
+[00:51]   [ComfyUI] 
+[00:51]   [ComfyUI] [32m[INFO][0m To see the GUI go to: http://127.0.0.1:41884
+[00:51] Server responding, waiting for nodes to load...
+[01:11] Server is ready!
+[01:11] Checking for import errors in server logs...
+[01:11] No import errors detected
+[01:11] Found 782 registered nodes
+[01:11] [REGISTRATION] PASSED
+[01:11] 
+[01:11] [4/5] INSTANTIATION
+[01:11] ----------------------------------------
+[01:11] 
+[DEBUG] server=<comfy_test.comfyui.server.ComfyUIServer object at 0x7fed6dc857f0>, api=<comfy_test.comfyui.api.ComfyUIAPI object at 0x7fed6dc86120>
+[01:11] Testing node constructors...
+[01:13] All 11 node(s) instantiated successfully!
+[01:13] [INSTANTIATION] PASSED
+[01:13] 
+[01:13] [5/5] EXECUTION
+[01:13] ----------------------------------------
+[01:13] 
+[DEBUG] server=<comfy_test.comfyui.server.ComfyUIServer object at 0x7fed6dc857f0>, api=<comfy_test.comfyui.api.ComfyUIAPI object at 0x7fed6dc86120>
+[01:13] CPU runner - will execute 4 workflow(s)
+[01:13] Running 4 workflow(s) (all with videos)...
+[01:13] Installing screenshot dependencies (playwright, pillow)...
+[01:13]   Packages installed, downloading chromium browser...
+[01:25]   Screenshot dependencies installed successfully
+[01:25] Starting headless browser...
+[01:26]   Installing Mesa llvmpipe (apt)...
+[01:36]   Mesa install failed: E: Unable to locate package libegl1-mesa
 
-[01:34]   No GPU, no Mesa -- using SwiftShader software rendering
-[01:35]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:35] Capturing execution frames: gaussian_analysis.json
-[01:35]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[01:36]   No GPU, no Mesa -- using SwiftShader software rendering
+[01:36]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[01:36] Capturing execution frames: gaussian_analysis.json
+[01:36]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
 [01:42]   Frame 1 saved (frame_000.jpg, t=0.0s)
 [01:42]   Validating workflow...
-[01:42]   Validation failed: graphToPrompt produced nodes without class_type: graphToPrompt: 4 nodes, missing class_type: [1,19,20,21], sample: {"inputs":{"UNKNOWN":"apple.ply"},"_meta":{}}
-[01:42]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:42]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:42] Capturing execution frames: merge_splats.json
-[01:42]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:48]   Frame 1 saved (frame_000.jpg, t=0.0s)
-[01:48]   Validating workflow...
-[01:48]   Validation failed: graphToPrompt produced nodes without class_type: graphToPrompt: 3 nodes, missing class_type: [1,12,14], sample: {"inputs":{"UNKNOWN":"apple.ply"},"_meta":{}}
-[01:48]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:49] Capturing execution frames: rotate_splats.json
-[01:49]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:49]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:55]   Frame 1 saved (frame_000.jpg, t=0.0s)
-[01:55]   Validating workflow...
-[01:55]   Validation failed: graphToPrompt produced nodes without class_type: graphToPrompt: 3 nodes, missing class_type: [1,14,18], sample: {"inputs":{"UNKNOWN":"apple.ply"},"_meta":{}}
-[01:55]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:55]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[01:55] Capturing execution frames: spectate.json
-[01:55]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[02:01]   Frame 1 saved (frame_000.jpg, t=0.0s)
-[02:01]   Validating workflow...
-[02:01]   Validation failed: graphToPrompt produced nodes without class_type: graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {"inputs":{"UNKNOWN":"compressed_room.ply"},"_meta":{}}
-[02:01]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
-[02:01] Results saved to /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/comfy-test-logs/GaussianPack-1719/dev/linux-cpu/results.json
-[02:01] Saved: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/comfy-test-logs/GaussianPack-1719/dev/linux-cpu/index.html
-[02:01] 
-linux: FAILED
-[02:01] Error: Workflow execution failed (4 error(s))
-[02:01] Details: gaussian_analysis.json: Workflow validation failed
-
-Details:
-graphToPrompt produced nodes without class_type: graphToPrompt: 4 nodes, missing class_type: [1,19,20,21], sample: {"inputs":{"UNKNOWN":"apple.ply"},"_meta":{}}
-merge_splats.json: Workflow validation failed
-
-Details:
-graphToPrompt produced nodes without class_type: graphToPrompt: 3 nodes, missing class_type: [1,12,14], sample: {"inputs":{"UNKNOWN":"apple.ply"},"_meta":{}}
-rotate_splats.json: Workflow validation failed
-
-Details:
-graphToPrompt produced nodes without class_type: graphToPrompt: 3 nodes, missing class_type: [1,14,18], sample: {"inputs":{"UNKNOWN":"apple.ply"},"_meta":{}}
-spectate.json: Workflow validation failed
-
-Details:
-graphToPrompt produced nodes without class_type: graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {"inputs":{"UNKNOWN":"compressed_room.ply"},"_meta":{}}
-[02:01] Stopping ComfyUI server...
+[01:42]   [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
+[01:42]   [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
+[01:42]   [ComfyUI] [32m[INFO][0m Prompt has 4 nodes
+[01:42]   [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
+[01:42]   [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "apple.ply"}
+[01:42]   Queuing workflow for execution...
+[01:42]   [ComfyUI] [32m[INFO][0m   Node 19: GaussianAnalysis
+[01:42]   [ComfyUI] [32m[INFO][0m     Inputs: {"ply_path": ["1", 0]}
+[01:42]   [ComfyUI] [32m[INFO][0m   Node 20: LoadPLY
+[01:42]   [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "compressed_room.ply"}
+[01:42]   [ComfyUI] [32m[INFO][0m   Node 21: GaussianAnalysis
+[01:42]   [ComfyUI] [32m[INFO][0m     Inputs: {"ply_path": ["20", 0]}
+[01:42]   [ComfyUI] [32m[INFO][0m Generated prompt_id: e92f40ff-64a0-434a-ab4c-d4c19153032a
+[01:42]   [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
+[01:42]   [ComfyUI] [32m[INFO][0m Validation result: valid=True
+[01:42]   [ComfyUI] [32m[INFO][0m === Validation PASSED ===
+[01:42]   [ComfyUI] [32m[INFO][0m got prompt
+[01:42]   [ComfyUI] [comfy-env] SubprocessWorker: /home/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+[01:42]   [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'compressed_room.ply'
+[01:42]   [ComfyUI] [comfy-env] env_vars: {'COMFYUI_BASE': '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI'}
+[01:42]   [ComfyUI] [SubprocessWorker] call_method: nodes.load_ply.LoadPLY.load
+[01:42]   [ComfyUI] [ComfyUI-GaussianPack] python: /home/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+[01:42]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[01:42]   [ComfyUI] [ComfyUI-GaussianPack] sys_path sent to worker: ['/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI', '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack', '/home/runner/.ce/.pixi/envs/gaussianpack-nodes/lib/python3.12/site-packages', '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack']
+[01:42]   [ComfyUI] [SubprocessWorker] is_pixi=True, python=/home/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+[01:42]   [ComfyUI] [SubprocessWorker] launching cmd=['/home/runner/.pixi/bin/pixi', 'run', '--as-is', '--manifest-path', '/home/runner/.ce/pixi.toml', '-e', 'gaussianpack-nodes', 'python', '/tmp/comfyui_pvenv_wwaqo7fk/persistent_worker.py', 'abstract://comfy_worker_878570b9fb5e']...
+[01:42]   [ComfyUI] [SubprocessWorker] socket_addr=abstract://comfy_worker_878570b9fb5e (abstract, no filesystem path)
+[01:44]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[01:44]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[01:44]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[01:44]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[01:44]   [ComfyUI] [SubprocessWorker] call_id=1 sending call_method
+[01:44]   [ComfyUI] [worker:ComfyUI-GaussianPack] WARNING: SPZ route not registered (ModuleNotFoundError: No module named 'comfy_aimdo')
+[01:44]   [ComfyUI] [SubprocessWorker] got response: ok
+[01:44]   [ComfyUI] [comfy-env] LoadPLY done (1.61s): result: list[1]
+[01:44]   [ComfyUI] [comfy-env] Running GaussianAnalysis: ply_path: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa...
+[01:44]   [ComfyUI] [SubprocessWorker] call_method: nodes.analyze_gaussians.GaussianAnalysis.analyze
+[01:44]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[01:44]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[01:44]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[01:44]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[01:44]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[01:44]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[01:44]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[01:44]   [ComfyUI] [SubprocessWorker] call_id=2 sending call_method
+[01:44]   [ComfyUI] [SubprocessWorker] got response: ok
+[01:44]   [ComfyUI] [comfy-env] GaussianAnalysis done (0.01s): result: dict
+[01:44]   [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'apple.ply'
+[01:44]   [ComfyUI] [SubprocessWorker] call_method: nodes.load_ply.LoadPLY.load
+[01:44]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[01:44]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[01:44]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[01:44]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[01:44]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[01:44]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[01:44]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[01:44]   [ComfyUI] [SubprocessWorker] call_id=3 sending call_method
+[01:44]   [ComfyUI] [SubprocessWorker] got response: ok
+[01:44]   [ComfyUI] [comfy-env] LoadPLY done (0.01s): result: list[1]
+[01:44]   [ComfyUI] [comfy-env] Running GaussianAnalysis: ply_path: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa...
+[01:44]   [ComfyUI] [SubprocessWorker] call_method: nodes.analyze_gaussians.GaussianAnalysis.analyze
+[01:44]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[01:44]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[01:44]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[01:44]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[01:44]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[01:44]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[01:44]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[01:44]   [ComfyUI] [SubprocessWorker] call_id=4 sending call_method
+[01:44]   [ComfyUI] [SubprocessWorker] got response: ok
+[01:44]   [ComfyUI] [comfy-env] GaussianAnalysis done (0.01s): result: dict
+[01:44]   [ComfyUI] [32m[INFO][0m [32mPrompt executed in 1.64 seconds[0m
+[01:44]   Node executed (2 total), capturing...
+[01:44]   Frame 2 saved (frame_001.jpg, t=2.0s)
+[01:44]   [capture-node] freeze=3ms shot=90ms unfreeze=0ms saved=True
+[01:44]   Execution complete (t=2.0s)
+[01:44]   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
+[01:44]   [3d-wait] Phase 1 done in 0.0s
+[01:44]   [3d-wait] Phase 2: iframes=0
+[01:44]   [3d-wait] Total 3D wait: 0.0s
+[01:44]   Captured 2 unique frames over 2.16s
+[01:44]   [debug] iframes: 0
+[01:44]   [timing] trigger_3d_previews: 0.0s
+[01:46]   Saved high-quality screenshot: gaussian_analysis_executed.png
+[01:46]   [timing] final_screenshot: 0.3s
+[01:46]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[01:47] Capturing execution frames: merge_splats.json
+[01:47]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[01:52]   Frame 1 saved (frame_000.jpg, t=0.0s)
+[01:52]   Validating workflow...
+[01:52]   [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
+[01:52]   [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
+[01:52]   [ComfyUI] [32m[INFO][0m Prompt has 3 nodes
+[01:52]   [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
+[01:52]   [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "apple.ply"}
+[01:52]   [ComfyUI] [32m[INFO][0m   Node 12: GaussianMerge
+[01:52]   Queuing workflow for execution...
+[01:52]   [ComfyUI] [32m[INFO][0m     Inputs: {"target_count": 100000, "output_filename": "applemerged", "opacity_threshold": 0.1, "k": 16, "backend": "nanogs_cpu", "ply_path": ["1", 0]}
+[01:52]   [ComfyUI] [32m[INFO][0m   Node 14: PreviewGaussianDual
+[01:52]   [ComfyUI] [32m[INFO][0m     Inputs: {"layout": "slider", "camera_mode": "orbit", "fov_degrees": 70, "renderer": "playcanvas", "transport_format": "ply", "ply_path_1": ["1", 0], "ply_path_2": ["12", 0]}
+[01:52]   [ComfyUI] [32m[INFO][0m Generated prompt_id: 0583cf3f-691e-4509-80fd-c1f4d1f20bb9
+[01:52]   [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
+[01:52]   [ComfyUI] [32m[INFO][0m Validation result: valid=True
+[01:52]   [ComfyUI] [32m[INFO][0m === Validation PASSED ===
+[01:52]   [ComfyUI] [32m[INFO][0m got prompt
+[01:52]   [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'apple.ply'
+[01:52]   [ComfyUI] [SubprocessWorker] call_method: nodes.load_ply.LoadPLY.load
+[01:52]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[01:52]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[01:52]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[01:52]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[01:52]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[01:52]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[01:52]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[01:52]   [ComfyUI] [SubprocessWorker] call_id=5 sending call_method
+[01:52]   [ComfyUI] [SubprocessWorker] got response: ok
+[01:52]   [ComfyUI] [comfy-env] LoadPLY done (0.01s): result: list[1]
+[01:52]   [ComfyUI] [comfy-env] Running GaussianMerge: target_count: 100000, output_filename: 'applemerged', opacity_threshold: 0.1, k: 16, backend: 'nanogs_cpu', ply_path: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa...
+[01:52]   [ComfyUI] [SubprocessWorker] call_method: nodes.merge_gaussians.GaussianMerge.merge
+[01:52]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[01:52]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[01:52]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[01:52]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[01:52]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[01:52]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[01:52]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[01:52]   [ComfyUI] [SubprocessWorker] call_id=6 sending call_method
+[01:52]   [ComfyUI] [worker:ComfyUI-GaussianPack] Loading PLY: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/input/apple.ply
+[01:52]   [ComfyUI] [worker:ComfyUI-GaussianPack] Initial splats: 200000
+[01:52]   [ComfyUI] [worker:ComfyUI-GaussianPack] Pruned splats: 200000, target: 100000
+[01:52]   [ComfyUI] [worker:ComfyUI-GaussianPack] Opacity Mean: 0.53443545 Median: 0.48362076
+[01:52]   [ComfyUI] [worker:ComfyUI-GaussianPack] Pruning splats with opacity below 0.1000
+[01:52]   [ComfyUI] [worker:ComfyUI-GaussianPack] Original count: 200000, after opacity pruning: 200000
+[01:52]   [ComfyUI] [worker:ComfyUI-GaussianPack] After opacity pruning, 200000 splats remain.
+[01:52]   [ComfyUI] [worker:ComfyUI-GaussianPack] Pass 1: 200000 splats
+[01:54]   Frame 2 saved (frame_001.jpg, t=2.2s)
+[01:54]   [capture-periodic] freeze=2ms shot=83ms unfreeze=5ms saved=True
+[01:56]   [ComfyUI] 
+[01:56]   [ComfyUI] Edge costs:   0%|          | 0/19 [00:00<?, ?it/s]
+[01:56]   [ComfyUI] Edge costs:   5%|▌         | 1/19 [00:00<00:02,  6.46it/s]
+[01:57]   Frame 3 saved (frame_002.jpg, t=4.4s)
+[01:57]   [ComfyUI] Edge costs:  11%|█         | 2/19 [00:00<00:02,  5.94it/s]
+[01:57]   [capture-periodic] freeze=3ms shot=87ms unfreeze=3ms saved=True
+[01:57]   [ComfyUI] Edge costs:  16%|█▌        | 3/19 [00:00<00:02,  5.77it/s]
+[01:57]   [ComfyUI] Edge costs:  21%|██        | 4/19 [00:00<00:02,  5.92it/s]
+[01:57]   [ComfyUI] Edge costs:  26%|██▋       | 5/19 [00:00<00:02,  6.02it/s]
+[01:57]   [ComfyUI] Edge costs:  32%|███▏      | 6/19 [00:01<00:02,  5.95it/s]
+[01:57]   [ComfyUI] Edge costs:  37%|███▋      | 7/19 [00:01<00:02,  5.90it/s]
+[01:58]   [ComfyUI] Edge costs:  42%|████▏     | 8/19 [00:01<00:01,  5.99it/s]
+[01:58]   [capture-loop] iter=50 t=5.7s state={'complete': False, 'error': None, 'executedCount': 0, 'wsState': 1} eval_ms=3 ram=2.5/15.6GB (16%) swap=0.0/3.0GB (0%) cpu=32% browser_rss=0.86GB
+[01:58]   [ComfyUI] Edge costs:  47%|████▋     | 9/19 [00:01<00:01,  6.09it/s]
+[01:58]   [ComfyUI] Edge costs:  53%|█████▎    | 10/19 [00:01<00:01,  6.10it/s]
+[01:58]   [ComfyUI] Edge costs:  58%|█████▊    | 11/19 [00:01<00:01,  6.12it/s]
+[01:58]   [ComfyUI] Edge costs:  63%|██████▎   | 12/19 [00:01<00:01,  6.17it/s]
+[01:58]   [ComfyUI] Edge costs:  68%|██████▊   | 13/19 [00:02<00:00,  6.23it/s]
+[01:59]   [ComfyUI] Edge costs:  74%|███████▎  | 14/19 [00:02<00:00,  6.27it/s]
+[01:59]   [ComfyUI] Edge costs:  79%|███████▉  | 15/19 [00:02<00:00,  6.35it/s]
+[01:59]   [ComfyUI] Edge costs:  84%|████████▍ | 16/19 [00:02<00:00,  6.32it/s]
+[01:59]   [ComfyUI] Edge costs:  89%|████████▉ | 17/19 [00:02<00:00,  6.30it/s]
+[01:59]   [ComfyUI] Edge costs:  95%|█████████▍| 18/19 [00:02<00:00,  6.38it/s]
+[01:59]   [ComfyUI] Edge costs: 100%|██████████| 19/19 [00:02<00:00,  6.35it/s]
+[02:00]   [ComfyUI] [worker:ComfyUI-GaussianPack]   edges: 1848776, pairs: 96906 (need 100000)
+[02:00]   [ComfyUI] [worker:ComfyUI-GaussianPack]   Merging 96906 pairs
+[02:01]   [ComfyUI] [worker:ComfyUI-GaussianPack] Pass 2: 103094 splats
+[02:02]   [ComfyUI] 
+[02:02]   [ComfyUI] Edge costs:   0%|          | 0/10 [00:00<?, ?it/s]
+[02:03]   [ComfyUI] Edge costs:  10%|█         | 1/10 [00:00<00:01,  6.99it/s]
+[02:03]   [ComfyUI] Edge costs:  20%|██        | 2/10 [00:00<00:01,  6.93it/s]
+[02:03]   [ComfyUI] Edge costs:  30%|███       | 3/10 [00:00<00:01,  6.98it/s]
+[02:03]   [ComfyUI] Edge costs:  40%|████      | 4/10 [00:00<00:00,  6.92it/s]
+[02:03]   [ComfyUI] Edge costs:  50%|█████     | 5/10 [00:00<00:00,  6.83it/s]
+[02:03]   [capture-loop] iter=100 t=11.2s state={'complete': False, 'error': None, 'executedCount': 0, 'wsState': 1} eval_ms=3 ram=2.4/15.6GB (16%) swap=0.0/3.0GB (0%) cpu=33% browser_rss=0.86GB
+[02:03]   [ComfyUI] Edge costs:  60%|██████    | 6/10 [00:00<00:00,  6.71it/s]
+[02:03]   [ComfyUI] Edge costs:  70%|███████   | 7/10 [00:01<00:00,  6.70it/s]
+[02:04]   [ComfyUI] Edge costs:  80%|████████  | 8/10 [00:01<00:00,  6.74it/s]
+[02:04]   [ComfyUI] Edge costs:  90%|█████████ | 9/10 [00:01<00:00,  6.85it/s]
+[02:04]   [ComfyUI] Edge costs: 100%|██████████| 10/10 [00:01<00:00,  7.43it/s]
+[02:04]   [ComfyUI] [worker:ComfyUI-GaussianPack]   edges: 919857, pairs: 3094 (need 3094)
+[02:04]   [ComfyUI] [worker:ComfyUI-GaussianPack]   Merging 3094 pairs
+[02:04]   [ComfyUI] [worker:ComfyUI-GaussianPack] Final splats: 100000
+[02:07]   [ComfyUI] [SubprocessWorker] got response: ok
+[02:07]   [ComfyUI] [comfy-env] GaussianMerge done (14.64s): result: dict
+[02:07]   [ComfyUI] [comfy-env] Running PreviewGaussianDual: layout: 'slider', camera_mode: 'orbit', fov_degrees: 70.0, renderer: 'playcanvas', transport_format: 'ply', ply_path_1: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa..., ply_path_2: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa...
+[02:07]   [ComfyUI] [SubprocessWorker] call_method: nodes.preview_gaussian_dual.PreviewGaussianDual.preview
+[02:07]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[02:07]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[02:07]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[02:07]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[02:07]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[02:07]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[02:07]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[02:07]   [ComfyUI] [SubprocessWorker] call_id=7 sending call_method
+[02:07]   [ComfyUI] [SubprocessWorker] got response: ok
+[02:07]   [ComfyUI] [comfy-env] PreviewGaussianDual done (0.01s): result: dict
+[02:07]   [ComfyUI] [32m[INFO][0m [32mPrompt executed in 14.66 seconds[0m
+[02:07]   Node executed (2 total), capturing...
+[02:07]   Frame 4 saved (frame_003.jpg, t=15.0s)
+[02:07]   [capture-node] freeze=2ms shot=101ms unfreeze=0ms saved=True
+[02:07]   Execution complete (t=15.0s)
+[02:07]   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
+[02:07]   [3d-wait] Phase 1 done in 0.0s
+[02:07]   [3d-wait] Phase 2: iframes=1
+[02:07]   [3d-wait] iframe viewer_ready=False (matched 0 console logs)
+[02:07]   [3d-wait] Waiting for 'Loaded successfully' console message (timeout=60s)...
+[03:07]   [3d-wait] iframe wait exception: Timeout 60000ms exceeded while waiting for event "console"
+=========================== logs ===========================
+waiting for event "console"
+============================================================
+[03:09]   [3d-wait] Total 3D wait: 62.2s
+[03:09]   Captured 4 unique frames over 77.35s
+[03:12]   [debug] iframes: 1
+[03:12]   [debug]   iframe[0]: src=http://127.0.0.1:41884/extensions/ComfyUI-GaussianPack/viewer_gaussian_dual.html, canvas=486x240, rafFrozen=True
+[03:12]   [timing] trigger_3d_previews: 0.0s
+[03:14]   Saved high-quality screenshot: merge_splats_executed.png
+[03:14]   [timing] final_screenshot: 0.2s
+[03:14]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[03:15] Capturing execution frames: rotate_splats.json
+[03:15]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[03:20]   Frame 1 saved (frame_000.jpg, t=0.0s)
+[03:20]   Validating workflow...
+[03:20]   [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
+[03:20]   [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
+[03:20]   [ComfyUI] [32m[INFO][0m Prompt has 3 nodes
+[03:20]   [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
+[03:20]   [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "apple.ply"}
+[03:20]   [ComfyUI] [32m[INFO][0m   Node 14: PreviewGaussianDual
+[03:20]   Queuing workflow for execution...
+[03:20]   [ComfyUI] [32m[INFO][0m     Inputs: {"layout": "slider", "camera_mode": "orbit", "fov_degrees": 70, "renderer": "playcanvas", "transport_format": "ply", "ply_path_1": ["1", 0], "ply_path_2": ["18", 0]}
+[03:20]   [ComfyUI] [32m[INFO][0m   Node 18: TransformGaussian
+[03:20]   [ComfyUI] [32m[INFO][0m     Inputs: {"rotate_x": -90, "rotate_y": 0, "rotate_z": 0, "ply_path": ["1", 0]}
+[03:20]   [ComfyUI] [32m[INFO][0m Generated prompt_id: 869a66a1-b7e2-41f2-991e-1fae9c1a04bc
+[03:20]   [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
+[03:20]   [ComfyUI] [32m[INFO][0m Validation result: valid=True
+[03:20]   [ComfyUI] [32m[INFO][0m === Validation PASSED ===
+[03:20]   [ComfyUI] [32m[INFO][0m got prompt
+[03:20]   [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'apple.ply'
+[03:20]   [ComfyUI] [SubprocessWorker] call_method: nodes.load_ply.LoadPLY.load
+[03:20]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[03:20]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[03:20]   [ComfyUI] [ComfyUI-GaussianPack] Health check: failed
+[03:20]   [ComfyUI] [ComfyUI-GaussianPack] Socket unhealthy, restarting worker...
+[03:20]   [ComfyUI] [ComfyUI-GaussianPack] python: /home/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+[03:20]   [ComfyUI] [ComfyUI-GaussianPack] sys_path sent to worker: ['/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI', '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack', '/home/runner/.ce/.pixi/envs/gaussianpack-nodes/lib/python3.12/site-packages', '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack']
+[03:20]   [ComfyUI] [SubprocessWorker] is_pixi=True, python=/home/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+[03:20]   [ComfyUI] [SubprocessWorker] launching cmd=['/home/runner/.pixi/bin/pixi', 'run', '--as-is', '--manifest-path', '/home/runner/.ce/pixi.toml', '-e', 'gaussianpack-nodes', 'python', '/tmp/comfyui_pvenv_wwaqo7fk/persistent_worker.py', 'abstract://comfy_worker_1c2607df29c7']...
+[03:20]   [ComfyUI] [SubprocessWorker] socket_addr=abstract://comfy_worker_1c2607df29c7 (abstract, no filesystem path)
+[03:21]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[03:21]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[03:21]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[03:21]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[03:21]   [ComfyUI] [SubprocessWorker] call_id=8 sending call_method
+[03:22]   [ComfyUI] [worker:ComfyUI-GaussianPack] WARNING: SPZ route not registered (ModuleNotFoundError: No module named 'comfy_aimdo')
+[03:22]   [ComfyUI] [SubprocessWorker] got response: ok
+[03:22]   [ComfyUI] [comfy-env] LoadPLY done (1.60s): result: list[1]
+[03:22]   [ComfyUI] [comfy-env] Running TransformGaussian: rotate_x: -90.0, rotate_y: 0.0, rotate_z: 0.0, ply_path: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa...
+[03:22]   [ComfyUI] [SubprocessWorker] call_method: nodes.transform_gaussian.TransformGaussian.transform
+[03:22]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[03:22]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[03:22]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[03:22]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[03:22]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[03:22]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[03:22]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[03:22]   [ComfyUI] [SubprocessWorker] call_id=9 sending call_method
+[03:22]   [ComfyUI] [SubprocessWorker] got response: ok
+[03:22]   [ComfyUI] [comfy-env] TransformGaussian done (0.39s): result: list[1]
+[03:22]   [ComfyUI] [comfy-env] Running PreviewGaussianDual: layout: 'slider', camera_mode: 'orbit', fov_degrees: 70.0, renderer: 'playcanvas', transport_format: 'ply', ply_path_1: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa..., ply_path_2: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa...
+[03:22]   [ComfyUI] [SubprocessWorker] call_method: nodes.preview_gaussian_dual.PreviewGaussianDual.preview
+[03:22]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[03:22]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[03:22]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[03:22]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[03:22]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[03:22]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[03:22]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[03:22]   [ComfyUI] [SubprocessWorker] call_id=10 sending call_method
+[03:22]   [ComfyUI] [SubprocessWorker] got response: ok
+[03:22]   [ComfyUI] [comfy-env] PreviewGaussianDual done (0.01s): result: dict
+[03:22]   [ComfyUI] [32m[INFO][0m [32mPrompt executed in 2.00 seconds[0m
+[03:22]   Node executed (1 total), capturing...
+[03:23]   Frame 2 saved (frame_001.jpg, t=2.3s)
+[03:23]   [capture-node] freeze=26ms shot=194ms unfreeze=0ms saved=True
+[03:23]   Execution complete (t=2.3s)
+[03:23]   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
+[03:23]   [3d-wait] Phase 1 done in 0.0s
+[03:23]   [3d-wait] Phase 2: iframes=1
+[03:23]   [3d-wait] iframe viewer_ready=False (matched 0 console logs)
+[03:23]   [3d-wait] Waiting for 'Loaded successfully' console message (timeout=60s)...
+[04:23]   [3d-wait] iframe wait exception: Timeout 60000ms exceeded while waiting for event "console"
+=========================== logs ===========================
+waiting for event "console"
+============================================================
+[04:23]   [3d-wait] Total 3D wait: 60.1s
+[04:23]   Captured 2 unique frames over 62.71s
+[04:23]   [debug] iframes: 1
+[04:23]   [debug]   iframe[0]: src=http://127.0.0.1:41884/extensions/ComfyUI-GaussianPack/viewer_gaussian_dual.html, canvas=486x214, rafFrozen=True
+[04:23]   [timing] trigger_3d_previews: 0.0s
+[04:25]   Saved high-quality screenshot: rotate_splats_executed.png
+[04:25]   [timing] final_screenshot: 0.2s
+[04:25]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[04:25]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[04:25] Capturing execution frames: spectate.json
+[04:26]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[04:31]   Frame 1 saved (frame_000.jpg, t=0.0s)
+[04:31]   Validating workflow...
+[04:31]   [ComfyUI] [32m[INFO][0m === /validate endpoint called ===
+[04:31]   [ComfyUI] [32m[INFO][0m Received JSON with keys: ['prompt']
+[04:31]   [ComfyUI] [32m[INFO][0m Prompt has 2 nodes
+[04:31]   [ComfyUI] [32m[INFO][0m   Node 1: LoadPLY
+[04:31]   [ComfyUI] [32m[INFO][0m     Inputs: {"ply_file": "compressed_room.ply"}
+[04:31]   [ComfyUI] [32m[INFO][0m   Node 2: PreviewGaussians
+[04:31]   [ComfyUI] [32m[INFO][0m     Inputs: {"camera_mode": "spectate", "fov_degrees": 70, "renderer": "playcanvas", "transport_format": "ply", "ply_path": ["1", 0]}
+[04:31]   [ComfyUI] [32m[INFO][0m Generated prompt_id: 541e47cc-e238-4508-a1cb-f2a8304ff9db
+[04:31]   Queuing workflow for execution...
+[04:31]   [ComfyUI] [32m[INFO][0m Calling execution.validate_prompt()...
+[04:31]   [ComfyUI] [32m[INFO][0m Validation result: valid=True
+[04:31]   [ComfyUI] [32m[INFO][0m === Validation PASSED ===
+[04:31]   [ComfyUI] [32m[INFO][0m got prompt
+[04:31]   [ComfyUI] [comfy-env] Running LoadPLY: ply_file: 'compressed_room.ply'
+[04:31]   [ComfyUI] [SubprocessWorker] call_method: nodes.load_ply.LoadPLY.load
+[04:31]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[04:31]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[04:31]   [ComfyUI] [ComfyUI-GaussianPack] Health check: failed
+[04:31]   [ComfyUI] [ComfyUI-GaussianPack] Socket unhealthy, restarting worker...
+[04:31]   [ComfyUI] [ComfyUI-GaussianPack] python: /home/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+[04:31]   [ComfyUI] [ComfyUI-GaussianPack] sys_path sent to worker: ['/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI', '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack', '/home/runner/.ce/.pixi/envs/gaussianpack-nodes/lib/python3.12/site-packages', '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspaces/GaussianPack-1728/ComfyUI/custom_nodes/ComfyUI-GaussianPack']
+[04:31]   [ComfyUI] [SubprocessWorker] is_pixi=True, python=/home/runner/.ce/.pixi/envs/gaussianpack-nodes/bin/python
+[04:31]   [ComfyUI] [SubprocessWorker] launching cmd=['/home/runner/.pixi/bin/pixi', 'run', '--as-is', '--manifest-path', '/home/runner/.ce/pixi.toml', '-e', 'gaussianpack-nodes', 'python', '/tmp/comfyui_pvenv_wwaqo7fk/persistent_worker.py', 'abstract://comfy_worker_7f15f9f19225']...
+[04:31]   [ComfyUI] [SubprocessWorker] socket_addr=abstract://comfy_worker_7f15f9f19225 (abstract, no filesystem path)
+[04:33]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[04:33]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[04:33]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[04:33]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[04:33]   [ComfyUI] [SubprocessWorker] call_id=11 sending call_method
+[04:33]   [ComfyUI] [worker:ComfyUI-GaussianPack] WARNING: SPZ route not registered (ModuleNotFoundError: No module named 'comfy_aimdo')
+[04:33]   [ComfyUI] [SubprocessWorker] got response: ok
+[04:33]   [ComfyUI] [comfy-env] LoadPLY done (1.65s): result: list[1]
+[04:33]   [ComfyUI] [comfy-env] Running PreviewGaussians: camera_mode: 'spectate', fov_degrees: 70.0, renderer: 'playcanvas', transport_format: 'ply', ply_path: '/home/runner/work/comfy-gpu-ci/comfy-gpu-ci/test_workspa...
+[04:33]   [ComfyUI] [SubprocessWorker] call_method: nodes.preview_gaussian.PreviewGaussians.preview
+[04:33]   [ComfyUI] [SubprocessWorker] acquired lock, ensuring started...
+[04:33]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ping (timeout=5.0s)...
+[04:33]   [ComfyUI] [ComfyUI-GaussianPack] Health check: ok
+[04:33]   [ComfyUI] [SubprocessWorker] worker started/confirmed
+[04:33]   [ComfyUI] [SubprocessWorker] serializing kwargs to shm...
+[04:33]   [ComfyUI] [SubprocessWorker] created 0 shm blocks
+[04:33]   [ComfyUI] [SubprocessWorker] sending request via socket...
+[04:33]   [ComfyUI] [SubprocessWorker] call_id=12 sending call_method
+[04:33]   [ComfyUI] [SubprocessWorker] got response: ok
+[04:33]   [ComfyUI] [comfy-env] PreviewGaussians done (0.01s): result: dict
+[04:33]   [ComfyUI] [32m[INFO][0m [32mPrompt executed in 1.66 seconds[0m
+[04:33]   Node executed (1 total), capturing...
+[04:33]   Frame 2 saved (frame_001.jpg, t=2.1s)
+[04:33]   [capture-node] freeze=2ms shot=83ms unfreeze=0ms saved=True
+[04:33]   Execution complete (t=2.1s)
+[04:33]   [3d-wait] Phase 1: Waiting for 'Loading 3D Model' text to disappear...
+[04:33]   [3d-wait] Phase 1 done in 0.0s
+[04:33]   [3d-wait] Phase 2: iframes=1
+[04:33]   [3d-wait] iframe viewer_ready=False (matched 0 console logs)
+[04:33]   [3d-wait] Waiting for 'Loaded successfully' console message (timeout=60s)...
+[04:34]   [3d-wait] Got 'Loaded successfully' after 1.0s
+[04:34]   [3d-wait] Unfrozen in 0.009s, rendering for 5s...
+[04:40]   [3d-wait] JS halted via CDP after 5.2s
+[04:41]   [3d-wait] Re-frozen in 6.3s
+[04:41]   [3d-wait] Total 3D wait: 7.3s
+[04:41]   Captured 2 unique frames over 9.49s
+[04:41]   [debug] iframes: 1
+[04:41]   [debug]   iframe[0]: src=http://127.0.0.1:41884/extensions/ComfyUI-GaussianPack/viewer_gaussian.html?mode, canvas=781x404, rafFrozen=True
+[04:41]   [timing] trigger_3d_previews: 0.0s
+[04:43]   Saved high-quality screenshot: spectate_executed.png
+[04:43]   [timing] final_screenshot: 0.4s
+[04:43]   [ComfyUI] [32m[INFO][0m Using RAM pressure cache.
+[04:43] Results saved to /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/comfy-test-logs/GaussianPack-1728/dev/linux-cpu/results.json
+[04:43] Saved: /home/runner/work/comfy-gpu-ci/comfy-gpu-ci/comfy-test-logs/GaussianPack-1728/dev/linux-cpu/index.html
+[04:43] [EXECUTION] PASSED
+[04:43] 
+linux: PASSED
+[04:43] Stopping ComfyUI server...
