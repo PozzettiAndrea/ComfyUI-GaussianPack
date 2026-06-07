@@ -5,23 +5,14 @@ packages = ["gsplat"]
 # Numerical / image staples.
 numpy = "*"
 pillow = "*"
+av = "*"
 
 [pypi-dependencies]
-# PLY I/O (3DGS PLY parser).
 plyfile = ">=1.0.0"
-# Web route shim used by the iframe-based PreviewGaussians viewer. The
-# routes can't actually be registered from a worker subprocess (the
-# server lives in the host ComfyUI process), but the import still has
-# to resolve.
 aiohttp = "*"
-# NanoGS — Gaussian-splat compression / decimation for GaussianMerge's
-# `cpu_nanogs` method. Git dep; matches the existing requirements.txt.
 nanogs = { git = "https://github.com/saliteta/NanoGS.git" }
 packaging = "*"
 psutil = "*"
 rich = "*"
-# SPZ route uses safetensors for compact splat I/O — cosmetic warning at
-# worker startup otherwise (and the SPZ format is unusable in the iframe
-# viewer without it).
 safetensors = "*"
 scikit-learn = "*"
