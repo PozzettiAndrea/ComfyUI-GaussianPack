@@ -8,37 +8,13 @@
 [Console-error] Failed to load resource: the server responded with a status of 404 (Not Found)
 [Console-error] Failed to load resource: the server responded with a status of 404 (Not Found)
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
-[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
 [Console-warning] THREE.WARNING: Multiple instances of Three.js being imported.
-[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
-[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
+[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "three". Relati…ences must start with either "/", "./", or "../".}
+[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
+[Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
+[Console-log] [GaussianPack Sharp] Loading extension...
 [Console-error] [vite:preloadError] {url: null, fileType: unknown, chunkName: null, message: Failed to resolve module specifier "playcanvas". R…ences must start with either "/", "./", or "../".}
 [Console-log] [GaussianPack] Loading extension...
 [Console-warning] [MaskEditor] ComfyApp.open_maskeditor is deprecated. Plugins should migrate to using the command system or direct node context menu integration.
-[Console-log] [GaussianPack] Registering Preview Gaussians node
-[Console-log] [GaussianPack] Registering Preview Gaussian Dual node
-[Console-warning] Allow attribute will take precedence over 'allowfullscreen'.
-[Console-log] [GaussianViewer] Ready — waiting for LOAD_MESH_DATA
-[Console-log] [comfy-test] graphToPrompt: 2 nodes, missing class_type: [], sample: {"inputs":{"ply_file":"compressed_room.ply"},"class_type":"LoadPLY","_meta":{"title":"Load PLY"}}
-[Console-log] [GaussianPack] onExecuted called with: {ply_file: Array(1), filename: Array(1), ply_type: Array(1), ply_subfolder: Array(1), file_size_mb: Array(1)}
-[Console-log] [GaussianViewer] Ready — waiting for LOAD_MESH_DATA
-[Console-log] [GaussianPack] fetch start: /view?filename=compressed_room.ply&type=input&subfolder=&_=1780840784
-[Console-log] [GaussianPack] download 0%  0.1/26.7 MB
-[Console-log] [GaussianPack] download 5%  1.4/26.7 MB
-[Console-log] [GaussianPack] download 10%  2.7/26.7 MB
-[Console-log] [GaussianPack] download 15%  4.1/26.7 MB
-[Console-log] [GaussianPack] download 55%  14.9/26.7 MB
-[Console-log] [GaussianPack] download 85%  22.9/26.7 MB
-[Console-log] [GaussianPack] download 100%  26.7/26.7 MB
-[Console-log] [GaussianPack] fetch done: 28000362 bytes in 25 ms (1068.1 MB/s)
-[Console-log] [GaussianViewer] Received LOAD_MESH_DATA, size: 28000362 renderer: playcanvas
-[Console-log] [GaussianViewer] ensureRenderer('playcanvas') starting...
-[Console-log] [PlayCanvas] engine version: 2.19.4
-[Console-log] [PlayCanvas] adapter initialized (mode=spectate)
-[Console-log] [GaussianViewer] Adapter ready: playcanvas
-[Console-log] [GaussianViewer] Loading splat (28,000,362 bytes) via playcanvas...
-[Console-log] [PlayCanvas] loading splat: compressed_room.ply
-[Console-log] [PlayCanvas] loaded in 374 ms
-[Console-log] [GaussianViewer] adapter.loadSplat resolved in 375 ms
-[Console-log] [GaussianViewer] Loaded successfully
+[Console-log] [comfy-test] graphToPrompt: 2 nodes, missing class_type: [1,2], sample: {"inputs":{"UNKNOWN":"compressed_room.ply"},"_meta":{}}
