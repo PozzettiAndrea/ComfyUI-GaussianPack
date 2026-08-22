@@ -3,7 +3,7 @@ import { app } from "../../../scripts/app.js";
 // Show the GaussianAnalysis report inside the node, mirroring the in-node
 // text-panel pattern used by comfy_3d_viewers (addDOMWidget + onExecuted).
 app.registerExtension({
-    name: "GaussianPack.AnalysisReport",
+    name: "gaussianpack.analysisreport",
 
     async beforeRegisterNodeDef(nodeType, nodeData) {
         if (nodeData.name !== "GaussianAnalysis") return;

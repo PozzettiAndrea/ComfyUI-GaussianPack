@@ -169,9 +169,9 @@
     <script type="importmap">
     {
         "imports": {
-            "three": "./js/three.module.min.js",
-            "three/addons/controls/OrbitControls.js": "./js/OrbitControls.js",
-            "three/addons/controls/TrackballControls.js": "./js/TrackballControls.js"
+            "three": "./js/three.module.min.mjs",
+            "three/addons/controls/OrbitControls.js": "./js/OrbitControls.mjs",
+            "three/addons/controls/TrackballControls.js": "./js/TrackballControls.mjs"
         }
     }
     </script>
@@ -246,7 +246,7 @@
     // no gimbal lock at poles, supports roll). OrbitControls kept its
     // azimuth/up constraints which felt locked when looking from below.
     import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
-    import { SparkRenderer, SplatMesh } from './js/spark.module.min.js';
+    import { SparkRenderer, SplatMesh } from './js/spark.module.min.mjs';
 
     // ============================================================
     // Mode detection — `?mode=spectate` swaps TrackballControls for
@@ -755,7 +755,7 @@
 
         async init() {
             // Load PlayCanvas engine (non-module, attaches to window.pc)
-            await loadScript('./js/playcanvas.min.js');
+            await loadScript('./js/playcanvas.min.mjs');
             const pc = window.pc;
             if (!pc) throw new Error("PlayCanvas engine failed to load");
 

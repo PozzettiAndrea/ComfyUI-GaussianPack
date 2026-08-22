@@ -77,7 +77,7 @@ app.registerExtension({
 
     async beforeRegisterNodeDef(nodeType, nodeData, app) {
         // Auto-refresh PLY dropdown list for the file selector node
-        if (nodeData.name === "PlyPreviewLoadGaussianPLYEnhance") {
+        if (nodeData.name === "LoadPLY" || nodeData.name === "LoadPLYOutput") {
             const onNodeCreated = nodeType.prototype.onNodeCreated;
             nodeType.prototype.onNodeCreated = function() {
                 const r = onNodeCreated ? onNodeCreated.apply(this, arguments) : undefined;

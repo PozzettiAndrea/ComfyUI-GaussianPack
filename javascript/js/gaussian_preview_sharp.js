@@ -101,6 +101,9 @@ app.registerExtension({
 
                 // Listen for messages from iframe
                 window.addEventListener('message', async (event) => {
+                    // Provenance guard: the 'message' event is window-wide, so
+                    // without this we also handle every OTHER pack's iframe messages.
+                    if (event.source !== iframe.contentWindow) return;
                     // Handle screenshot messages
                     if (event.data.type === 'SCREENSHOT' && event.data.image) {
                         try {

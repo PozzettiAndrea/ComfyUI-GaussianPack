@@ -10,6 +10,7 @@ Documentation = "https://github.com/PozzettiAndrea/ComfyUI-GaussianPack"
 
 [tool.comfy]
 PublisherId = "pznodes"
-DisplayName = "ComfyUI-GaussianPack"
+DisplayName = "GaussianPack"
+web = "javascript"
 Icon = "https://raw.githubusercontent.com/PozzettiAndrea/ComfyUI-GaussianPack/dev/assets/icon.png"
 includes = []

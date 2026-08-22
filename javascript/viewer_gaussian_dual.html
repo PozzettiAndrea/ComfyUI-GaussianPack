@@ -61,8 +61,8 @@
     <script type="importmap">
     {
         "imports": {
-            "three": "./js/three.module.min.js",
-            "three/addons/controls/TrackballControls.js": "./js/TrackballControls.js"
+            "three": "./js/three.module.min.mjs",
+            "three/addons/controls/TrackballControls.js": "./js/TrackballControls.mjs"
         }
     }
     </script>
@@ -104,7 +104,7 @@
 <script type="module">
 import * as THREE from 'three';
 import { TrackballControls } from 'three/addons/controls/TrackballControls.js';
-import { SparkRenderer, SplatMesh } from './js/spark.module.min.js';
+import { SparkRenderer, SplatMesh } from './js/spark.module.min.mjs';
 
 const params = new URLSearchParams(window.location.search);
 const LAYOUT = params.get("layout") || "side_by_side";
@@ -219,7 +219,7 @@ class MiniPlayCanvasAdapter {
         this.splatMesh = null;
     }
     async init() {
-        await loadScript('./js/playcanvas.min.js');
+        await loadScript('./js/playcanvas.min.mjs');
         const pc = window.pc;
         this._app = new pc.Application(this.canvas, {
             graphicsDeviceOptions: { antialias: false, alpha: false, preserveDrawingBuffer: true },
