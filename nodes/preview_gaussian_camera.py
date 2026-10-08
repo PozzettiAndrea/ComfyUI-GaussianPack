@@ -651,6 +651,16 @@ class PreviewGaussianCamera:
            f"[{splat['opacities'].sigmoid().min():.3f}, "
            f"{splat['opacities'].sigmoid().max():.3f}]")
 
+        # SharpPredict (ComfyUI-Sharp) outputs extrinsics/intrinsics as Python
+        # lists, not tensors; normalize so .detach() below works for both.
+        def _to_tensor(x):
+            if isinstance(x, torch.Tensor):
+                return x
+            if isinstance(x, (list, tuple)) and x and all(isinstance(t, torch.Tensor) for t in x):
+                return torch.stack([t.float() for t in x])
+            return torch.as_tensor(x, dtype=torch.float32)
+        extrinsics = _to_tensor(extrinsics)
+        intrinsics = _to_tensor(intrinsics)
         # Normalize input shapes.
         ext = extrinsics.detach().float()
         if ext.dim() == 4 and ext.shape[0] == 1:
